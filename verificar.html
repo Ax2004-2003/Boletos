@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Verificación Oficial • Graduación 2025</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <meta name="theme-color" content="#c41b2a">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Bebas+Neue&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --red-dark: #8B0000;
+      --red-main: #c41b2a;
+      --gold: #FFD700;
+      --green: #10b981;
+      --text: #ffffff;
+      --gray: #f8f9fa;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #0f172a, #1e293b);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 15px;
+      color: white;
+    }
+
+    .container {
+      background: white;
+      color: #1e1b4b;
+      max-width: 480px;
+      width: 100%;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 25px 60px rgba(0,0,0,0.6);
+      position: relative;
+    }
+
+    .header {
+      background: linear-gradient(135deg, var(--red-dark), var(--red-main));
+      padding: 30px 20px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .header::before {
+      content: '';
+      position: absolute;
+      top: -50%; left: -50%;
+      width: 200%; height: 200%;
+      background: repeating-linear-gradient(45deg, transparent, transparent 35px, rgba(255,255,255,.1) 35px, rgba(255,255,255,.1) 70px);
+      animation: shine 20s linear infinite;
+    }
+
+    @keyframes shine { 0% { transform: translateX(-100%) translateY(-100%); } 100% { transform: translateX(100%) translateY(100%); } }
+
+    .header h1 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 42px;
+      color: var(--gold);
+      text-shadow: 0 4px 15px rgba(0,0,0,0.8);
+      letter-spacing: 4px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .header p {
+      font-size: 18px;
+      margin-top: 8px;
+      opacity: 0.9;
+      position: relative;
+      z-index: 2;
+    }
+
+    .content {
+      padding: 35px 30px;
+      text-align: center;
+    }
+
+    .status { font-family: 'Bebas Neue', sans-serif; font-size: 38px; color: var(--green); margin: 15px 0; text-shadow: 0 3px 10px rgba(0,0,0,0.3); }
+
+    .info-card {
+      background: #f8f9fa;
+      color: #1e1b4b;
+      border-radius: 18px;
+      padding: 25px;
+      margin: 25px 0;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 12px 0;
+      border-bottom: 1px dashed #ddd;
+      font-size: 17px;
+    }
+
+    .info-row:last-child { border: none; }
+
+    .label { font-weight: 600; color: #555; }
+    .value { font-weight: 700; color: #1e1b4b; text-align: right; }
+
+    .highlight {
+      background: var(--gold);
+      color: black;
+      padding: 3px 10px;
+      border-radius: 8px;
+      font-weight: bold;
+    }
+
+    .official-stamp {
+      margin: 30px 0;
+      padding: 20px;
+      background: rgba(196, 27, 42, 0.1);
+      border: 3px dashed var(--red-main);
+      border-radius: 16px;
+      font-size: 18px;
+      font-weight: bold;
+      color: var(--red-main);
+    }
+
+    .footer {
+      background: #1e1b4b;
+      color: white;
+      padding: 25px;
+      font-size: 16px;
+      text-align: center;
+    }
+
+    .error {
+      background: #fee2e2;
+      color: #991b1b;
+      padding: 30px;
+      border-radius: 20px;
+      font-size: 20px;
+      font-weight: 600;
+      border: 2px solid #ef4444;
+    }
+
+    .loader {
+      font-size: 18px;
+      padding: 40px;
+      color: var(--gold);
+    }
+
+    .no-purchase {
+      background: #fee2e2;
+      color: #991b1b;
+      padding: 30px;
+      border-radius: 20px;
+      font-size: 20px;
+      font-weight: 600;
+      border: 2px solid #ef4444;
+    }
+
+    @media (max-width: 480px) {
+      .header h1 { font-size: 34px; }
+      .status { font-size: 32px; }
+      .info-card { padding: 20px; }
+      .info-row { font-size: 16px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div class="header">
+      <h1>GRADUACIÓN 2025</h1>
+      <p>Verificación Oficial de Compra</p>
+    </div>
+
+    <div class="content" id="result">
+      <div class="loader">Verificando ticket...</div>
+    </div>
+  </div>
+
+  <script>
+    const DB_URL = "https://boletos-66dac-default-rtdb.firebaseio.com/";
+    const USERS_URL = DB_URL + "users.json";
+
+    const params = new URLSearchParams(window.location.search);
+    const matricula = params.get('mat');
+    const codigo = params.get('code');
+    const resultDiv = document.getElementById('result');
+
+    if (!matricula || !codigo) {
+      resultDiv.innerHTML = `<div class="error">QR NO VÁLIDO<br><br>Escanea el código oficial del ticket</div>`;
+      return;
+    }
+
+    async function verificarCompra() {
+      try {
+        const res = await fetch(USERS_URL);
+        const users = await res.json();
+
+        if (!users) {
+          resultDiv.innerHTML = `<div class="error">Sistema no disponible</div>`;
+          return;
+        }
+
+        let encontrado = false;
+        let hasPurchase = false;
+
+        for (const [userId, user] of Object.entries(users)) {
+          if (user.matricula !== matricula) continue;
+
+          encontrado = true;
+
+          // Comprobar si tiene compras
+          if (user.purchases && Object.keys(user.purchases).length > 0) {
+            const compras = Object.values(user.purchases);
+            const compra = compras.find(p => p.codigo === codigo);
+
+            if (compra) {
+              hasPurchase = true;
+              const fecha = new Date(compra.fecha);
+              const fechaStr = fecha.toLocaleDateString('es-MX') + ' ' + 
+                fecha.toLocaleTimeString('es-MX', {hour: '2-digit', minute: '2-digit'});
+
+              resultDiv.innerHTML = `
+                <div class="seal">Check</div>
+                <div class="status">TICKET VÁLIDO</div>
+
+                <div class="info-card">
+                  <div class="info-row">
+                    <span class="label">ALUMNO</span>
+                    <span class="value">${user.nombre}</span>
+                  </div>
+                  <div class="info-row">
+                    <span class="label">MATRÍCULA</span>
+                    <span class="value highlight">${user.matricula}</span>
+                  </div>
+                  <div class="info-row">
+                    <span class="label">CÓDIGO TICKET</span>
+                    <span class="value highlight">${compra.codigo}</span>
+                  </div>
+                  <div class="info-row">
+                    <span class="label">BOLETOS</span>
+                    <span class="value">${compra.cena} Cena + ${compra.ceremonia} Ceremonia</span>
+                  </div>
+                  <div class="info-row">
+                    <span class="label">TOTAL PAGADO</span>
+                    <span class="value">$${parseInt(compra.total).toLocaleString()} MXN</span>
+                  </div>
+                  <div class="info-row">
+                    <span class="label">FECHA DE COMPRA</span>
+                    <span class="value">${fechaStr}</span>
+                  </div>
+                </div>
+
+                <div class="official-stamp">
+                  TICKET AUTORIZADO<br>
+                  ENTREGA EN CAJA - RECEPCIÓN PRINCIPAL
+                </div>
+
+                <div class="footer">
+                  <strong>¡FELICIDADES!</strong><br>
+                  El alumno puede recoger sus boletos físicos
+                </div>
+              `;
+              break;
+            }
+          }
+        }
+
+        if (encontrado && !hasPurchase) {
+          resultDiv.innerHTML = `<div class="no-purchase">NO HAY COMPRAS REGISTRADAS<br><br>Esta persona está registrada pero no ha realizado compras de boletos.</div>`;
+        } else if (!encontrado) {
+          resultDiv.innerHTML = `<div class="error">PERSONA NO REGISTRADA<br><br>No se encontró ningún usuario con esta matrícula.</div>`;
+        }
+
+      } catch (err) {
+        console.error(err);
+        resultDiv.innerHTML = `<div class="error">Error de conexión<br>Intenta más tarde</div>`;
+      }
+    }
+
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('service-worker.js').catch(() => {});
+    }
+
+    verificarCompra();
+  </script>
+</body>
+</html>
