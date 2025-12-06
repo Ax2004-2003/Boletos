@@ -86,8 +86,20 @@
       cursor: pointer; margin-top: 15px; transition: all 0.4s;
     }
     button:hover { transform: translateY(-4px); box-shadow: 0 15px 30px rgba(99,102,241,0.4); }
-    button.delete { background: #ef4444; }
-    button.ticket { background: #10b981; }
+
+    .purchase-summary {
+      background: #d4edda;
+      color: #10b981;
+      padding: 20px;
+      border-radius: 16px;
+      margin: 20px 0;
+      text-align: center;
+      font-size: 18px;
+      font-weight: bold;
+      border: 2px solid #10b981;
+      animation: fadeIn 0.6s;
+    }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
     .message { margin-top: 20px; padding: 15px; border-radius: 12px; text-align: center; font-weight: 600; display: none; }
     .message.success { background: #d4edda; color: #10b981; }
@@ -109,8 +121,6 @@
 
     @media (max-width: 480px) {
       #ticket { width: 95%; }
-      .qr-container { width: 200px; height: 200px; }
-      #qrCode { width: 160px; height: 160px; }
       select { width: 100%; }
     }
   </style>
@@ -124,7 +134,6 @@
     </div>
 
     <div class="content" id="mainContent">
-      <!-- PERFIL -->
       <div class="profile">
         <h3 id="userName">Axel</h3>
         <p>Mis boletos comprados</p>
@@ -136,20 +145,17 @@
         <div><h3>Boletos Ceremonia</h3><span id="ceremonyAvailable">200</span></div>
       </div>
 
-      <!-- MIS COMPRAS -->
-      <div id="myPurchases">
-        <div style="background:#fef3cd;padding:20px;border-radius:12px;text-align:center;font-size:18px;">
-          Cargando tus compras...
-        </div>
-      </div>
+      <!-- RESUMEN DE COMPRAS -->
+      <div id="purchaseSummary"></div>
 
-      <!-- OPCIONES DE COMPRA -->
+      <!-- PAQUETE COMPLETO -->
       <div class="option">
         <h3>Paquete Completo • $3,000 MXN</h3>
         <p>2 boletos de cena + 2 de ceremonia</p>
         <button id="buyPackage">Comprar Paquete</button>
       </div>
 
+      <!-- BOLETOS INDIVIDUALES -->
       <div class="option">
         <h3>Boletos Individuales</h3>
         <p>Cena: $1,000 c/u • Ceremonia: $150 c/u</p>
@@ -166,9 +172,6 @@
         <div style="text-align:right; font-size:20px; font-weight:bold; color:#f59e0b; margin:15px 0;" id="individualTotal">Total: $0 MXN</div>
         <button id="buyIndividual">Comprar Individuales</button>
       </div>
-
-      <button class="ticket" id="goToTicket" style="display:none;">Ir a mi Ticket</button>
-      <button class="delete" id="deleteLast" style="display:none;">Eliminar última compra</button>
 
       <div id="message" class="message"></div>
     </div>
@@ -211,7 +214,6 @@
     const INVENTORY_URL = DB_URL + "inventory.json";
     const PURCHASES_URL = DB_URL + `users/${userId}/purchases.json`;
 
-    let compras = [];
     let totalCena = 0;
     let totalCeremonia = 0;
 
@@ -225,27 +227,27 @@
         document.getElementById('ceremonyAvailable').textContent = inventory.ceremony;
 
         if (data) {
-          compras = Object.entries(data).map(([id, c]) => ({id, ...c}));
+          const compras = Object.values(data);
           totalCena = compras.reduce((s, c) => s + c.cena, 0);
           totalCeremonia = compras.reduce((s, c) => s + c.ceremonia, 0);
-
-          document.getElementById('myPurchases').innerHTML = `
-            <div style="background:#d4edda;padding:20px;border-radius:12px;text-align:center;">
-              <h3 style="color:#10b981;">¡Ya tienes boletos!</h3>
-              <p><strong>${totalCena} Cena + ${totalCeremonia} Ceremonia</strong></p>
-            </div>
-          `;
-
-          document.getElementById('goToTicket').style.display = 'block';
-          document.getElementById('deleteLast').style.display = 'block';
-        } else {
-          document.getElementById('myPurchases').innerHTML = `
-            <div style="background:#fef3cd;padding:20px;border-radius:12px;text-align:center;">
-              <p>Aún no has comprado boletos</p>
-            </div>
-          `;
         }
+        actualizarResumen();
       } catch (err) { console.error(err); }
+    }
+
+    function actualizarResumen() {
+      if (totalCena === 0 && totalCeremonia === 0) {
+        document.getElementById('purchaseSummary').innerHTML = '';
+        return;
+      }
+
+      document.getElementById('purchaseSummary').innerHTML = `
+        <div class="purchase-summary">
+          ¡Compra realizada!<br>
+          Tienes: <strong>${totalCena} Cena + ${totalCeremonia} Ceremonia</strong><br>
+          Tu ticket ha sido actualizado
+        </div>
+      `;
     }
 
     function calculateTotal() {
@@ -255,45 +257,26 @@
       document.getElementById('individualTotal').textContent = `Total: $${total.toLocaleString()} MXN`;
     }
 
-    async function comprar(cena, ceremonia, total) {
+    async function comprar(cena, ceremonia, total, tipo = "individual") {
       const codigo = Math.random().toString(36).substr(2, 9).toUpperCase();
-      const compra = { cena, ceremonia, total, codigo, fecha: new Date().toISOString() };
+      const compra = { cena, ceremonia, total, codigo, fecha: new Date().toISOString(), tipo };
 
       await fetch(PURCHASES_URL, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(compra) });
 
       const inv = await (await fetch(INVENTORY_URL)).json();
       await fetch(INVENTORY_URL, { method: 'PATCH', body: JSON.stringify({dinner: inv.dinner - cena, ceremony: inv.ceremony - ceremonia}) });
 
-      loadData();
-      showMessage('¡Compra agregada!', 'success');
+      totalCena += cena;
+      totalCeremonia += ceremonia;
+      actualizarResumen();
+
+      // Mostrar ticket automáticamente
+      mostrarTicket({codigo, cena, ceremonia, total});
     }
 
-    document.getElementById('buyPackage').onclick = () => comprar(2, 2, 3000);
-    document.getElementById('buyIndividual').onclick = () => {
-      const d = parseInt(document.getElementById('qtyDinner').value) || 0;
-      const c = parseInt(document.getElementById('qtyCeremony').value) || 0;
-      if (d + c === 0) return showMessage('Selecciona al menos un boleto');
-      comprar(d, c, d*1000 + c*150);
-    };
-
-    document.getElementById('goToTicket').onclick = () => {
-      const ultima = compras[compras.length - 1];
-      if (ultima) mostrarTicket(ultima);
-    };
-
-    document.getElementById('deleteLast').onclick = async () => {
-      if (!confirm('¿Eliminar última compra?')) return;
-      const ultima = compras[compras.length - 1];
-      await fetch(DB_URL + `users/${userId}/purchases/${ultima.id}.json`, { method: 'DELETE' });
-      const inv = await (await fetch(INVENTORY_URL)).json();
-      await fetch(INVENTORY_URL, { method: 'PATCH', body: JSON.stringify({dinner: inv.dinner + ultima.cena, ceremony: inv.ceremony + ultima.ceremonia}) });
-      loadData();
-      showMessage('Compra eliminada', 'success');
-    };
-
     function mostrarTicket(compra) {
-      const fecha = new Date(compra.fecha).toLocaleDateString('es-MX');
-      const hora = new Date(compra.fecha).toLocaleTimeString('es-MX', {hour: '2-digit', minute: '2-digit'});
+      const fecha = new Date().toLocaleDateString('es-MX');
+      const hora = new Date().toLocaleTimeString('es-MX', {hour: '2-digit', minute: '2-digit'});
 
       document.getElementById('ticketNombre').textContent = userNombre;
       document.getElementById('ticketMatricula').textContent = userMatricula;
@@ -310,10 +293,18 @@
       QRCode.toCanvas(document.getElementById('qrCode'), url, { width: 180 });
     }
 
+    document.getElementById('buyPackage').onclick = () => comprar(2, 2, 3000, "paquete");
+    document.getElementById('buyIndividual').onclick = () => {
+      const d = parseInt(document.getElementById('qtyDinner').value) || 0;
+      const c = parseInt(document.getElementById('qtyCeremony').value) || 0;
+      if (d + c === 0) return showMessage('Selecciona al menos un boleto');
+      comprar(d, c, d*1000 + c*150);
+    };
+
     document.getElementById('downloadTicket').onclick = () => {
       html2canvas(document.getElementById('ticket'), { scale: 2 }).then(c => {
         const a = document.createElement('a');
-        a.download = `Ticket_${userMatricula}.png`;
+        a.download = `Ticket_Graduacion_${userMatricula}.png`;
         a.href = c.toDataURL();
         a.click();
       });
