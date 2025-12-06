@@ -54,16 +54,6 @@
 
     .content { padding: 40px 30px; background: rgba(255,255,255,0.97); color: #1e1b4b; }
 
-    .profile {
-      background: var(--gray);
-      padding: 20px;
-      border-radius: 16px;
-      text-align: center;
-      margin-bottom: 25px;
-      box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-    }
-    .profile h3 { color: var(--red-main); font-size: 24px; margin-bottom: 10px; }
-
     .inventory {
       display: flex; justify-content: space-around; margin-bottom: 30px; text-align: center;
     }
@@ -87,19 +77,16 @@
     }
     button:hover { transform: translateY(-4px); box-shadow: 0 15px 30px rgba(99,102,241,0.4); }
 
-    .purchase-summary {
-      background: #d4edda;
-      color: #10b981;
-      padding: 20px;
-      border-radius: 16px;
-      margin: 20px 0;
-      text-align: center;
-      font-size: 18px;
+    .total-display {
+      text-align: right;
+      font-size: 22px;
       font-weight: bold;
-      border: 2px solid #10b981;
-      animation: fadeIn 0.6s;
+      color: #f59e0b;
+      margin: 15px 0;
+      padding: 10px;
+      background: #fff8e1;
+      border-radius: 12px;
     }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
     .message { margin-top: 20px; padding: 15px; border-radius: 12px; text-align: center; font-weight: 600; display: none; }
     .message.success { background: #d4edda; color: #10b981; }
@@ -134,19 +121,11 @@
     </div>
 
     <div class="content" id="mainContent">
-      <div class="profile">
-        <h3 id="userName">Axel</h3>
-        <p>Mis boletos comprados</p>
-      </div>
-
       <!-- BOLETOS DISPONIBLES -->
       <div class="inventory">
         <div><h3>Boletos Cena</h3><span id="dinnerAvailable">200</span></div>
         <div><h3>Boletos Ceremonia</h3><span id="ceremonyAvailable">200</span></div>
       </div>
-
-      <!-- RESUMEN DE COMPRAS -->
-      <div id="purchaseSummary"></div>
 
       <!-- PAQUETE COMPLETO -->
       <div class="option">
@@ -169,14 +148,14 @@
           <option value="1">Ceremonia: 1 ($150)</option>
           <option value="2">Ceremonia: 2 ($300)</option>
         </select>
-        <div style="text-align:right; font-size:20px; font-weight:bold; color:#f59e0b; margin:15px 0;" id="individualTotal">Total: $0 MXN</div>
+        <div class="total-display" id="individualTotal">Total: $0 MXN</div>
         <button id="buyIndividual">Comprar Individuales</button>
       </div>
 
       <div id="message" class="message"></div>
     </div>
 
-    <!-- TICKET -->
+    <!-- TICKET FINAL -->
     <div id="ticket">
       <div class="ticket-title">GRADUACIÓN 2025</div>
       <div class="qr-container"><canvas id="qrCode"></canvas></div>
@@ -203,10 +182,9 @@
     const userId = localStorage.getItem('currentUserId');
 
     document.getElementById('welcome').textContent = `Hola, ${userNombre.split(' ')[0]}`;
-    document.getElementById('userName').textContent = userNombre;
 
     if (!userId) {
-      alert('Debes iniciar sesión');
+      alert('Debes iniciar sesión primero');
       window.location.href = 'index.html';
     }
 
@@ -217,37 +195,13 @@
     let totalCena = 0;
     let totalCeremonia = 0;
 
-    async function loadData() {
+    async function loadInventory() {
       try {
-        const [invRes, purRes] = await Promise.all([fetch(INVENTORY_URL), fetch(PURCHASES_URL)]);
-        const inventory = await invRes.json() || {dinner:200, ceremony:200};
-        const data = await purRes.json();
-
-        document.getElementById('dinnerAvailable').textContent = inventory.dinner;
-        document.getElementById('ceremonyAvailable').textContent = inventory.ceremony;
-
-        if (data) {
-          const compras = Object.values(data);
-          totalCena = compras.reduce((s, c) => s + c.cena, 0);
-          totalCeremonia = compras.reduce((s, c) => s + c.ceremonia, 0);
-        }
-        actualizarResumen();
+        const res = await fetch(INVENTORY_URL);
+        const inv = await res.json() || {dinner:200, ceremony:200};
+        document.getElementById('dinnerAvailable').textContent = inv.dinner;
+        document.getElementById('ceremonyAvailable').textContent = inv.ceremony;
       } catch (err) { console.error(err); }
-    }
-
-    function actualizarResumen() {
-      if (totalCena === 0 && totalCeremonia === 0) {
-        document.getElementById('purchaseSummary').innerHTML = '';
-        return;
-      }
-
-      document.getElementById('purchaseSummary').innerHTML = `
-        <div class="purchase-summary">
-          ¡Compra realizada!<br>
-          Tienes: <strong>${totalCena} Cena + ${totalCeremonia} Ceremonia</strong><br>
-          Tu ticket ha sido actualizado
-        </div>
-      `;
     }
 
     function calculateTotal() {
@@ -257,21 +211,22 @@
       document.getElementById('individualTotal').textContent = `Total: $${total.toLocaleString()} MXN`;
     }
 
-    async function comprar(cena, ceremonia, total, tipo = "individual") {
+    async function comprar(cena, ceremonia, total) {
       const codigo = Math.random().toString(36).substr(2, 9).toUpperCase();
-      const compra = { cena, ceremonia, total, codigo, fecha: new Date().toISOString(), tipo };
+      const compra = { cena, ceremonia, total, codigo, fecha: new Date().toISOString() };
 
+      // Guardar compra
       await fetch(PURCHASES_URL, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(compra) });
 
+      // Actualizar inventario
       const inv = await (await fetch(INVENTORY_URL)).json();
       await fetch(INVENTORY_URL, { method: 'PATCH', body: JSON.stringify({dinner: inv.dinner - cena, ceremony: inv.ceremony - ceremonia}) });
 
       totalCena += cena;
       totalCeremonia += ceremonia;
-      actualizarResumen();
 
-      // Mostrar ticket automáticamente
-      mostrarTicket({codigo, cena, ceremonia, total});
+      // Mostrar ticket directamente
+      mostrarTicket(compra);
     }
 
     function mostrarTicket(compra) {
@@ -293,20 +248,24 @@
       QRCode.toCanvas(document.getElementById('qrCode'), url, { width: 180 });
     }
 
-    document.getElementById('buyPackage').onclick = () => comprar(2, 2, 3000, "paquete");
+    // Comprar Paquete → directo al ticket
+    document.getElementById('buyPackage').onclick = () => comprar(2, 2, 3000);
+
+    // Comprar Individuales → muestra total y al dar clic → ticket
     document.getElementById('buyIndividual').onclick = () => {
       const d = parseInt(document.getElementById('qtyDinner').value) || 0;
       const c = parseInt(document.getElementById('qtyCeremony').value) || 0;
       if (d + c === 0) return showMessage('Selecciona al menos un boleto');
-      comprar(d, c, d*1000 + c*150);
+      const total = d*1000 + c*150;
+      comprar(d, c, total);
     };
 
     document.getElementById('downloadTicket').onclick = () => {
-      html2canvas(document.getElementById('ticket'), { scale: 2 }).then(c => {
-        const a = document.createElement('a');
-        a.download = `Ticket_Graduacion_${userMatricula}.png`;
-        a.href = c.toDataURL();
-        a.click();
+      html2canvas(document.getElementById('ticket'), { scale: 2 }).then(canvas => {
+        const link = document.createElement('a');
+        link.download = `Ticket_${userMatricula}.png`;
+        link.href = canvas.toDataURL();
+        link.click();
       });
     };
 
@@ -322,7 +281,7 @@
       navigator.serviceWorker.register('service-worker.js').catch(() => {});
     }
 
-    loadData();
+    loadInventory();
     calculateTotal();
   </script>
 </body>
