@@ -54,40 +54,21 @@
 
     .content { padding: 40px 30px; background: rgba(255,255,255,0.97); color: #1e1b4b; }
 
-    h2 { text-align: center; margin-bottom: 20px; font-size: 28px; background: linear-gradient(90deg, #6366f1, #ec4899); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 700; }
+    .profile {
+      background: var(--gray);
+      padding: 20px;
+      border-radius: 16px;
+      text-align: center;
+      margin-bottom: 25px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    }
+    .profile h3 { color: var(--red-main); font-size: 24px; margin-bottom: 10px; }
 
     .inventory {
       display: flex; justify-content: space-around; margin-bottom: 30px; text-align: center;
     }
     .inventory div { background: #f1f5f9; padding: 16px; border-radius: 14px; width: 48%; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
     .inventory span { font-size: 26px; font-weight: bold; color: #6366f1; }
-
-    .current-purchase {
-      background: var(--gray);
-      border-radius: 16px;
-      padding: 20px;
-      margin: 20px 0;
-      text-align: center;
-      box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-    }
-    .current-purchase h3 { color: var(--red-main); font-size: 22px; margin-bottom: 15px; }
-
-    .purchase-item {
-      background: white;
-      padding: 15px;
-      border-radius: 12px;
-      margin: 10px 0;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-    }
-
-    .no-purchase {
-      background: #fef3cd;
-      color: #92400e;
-      padding: 20px;
-      border-radius: 12px;
-      font-size: 18px;
-      font-weight: 600;
-    }
 
     .option {
       background: white;
@@ -105,6 +86,8 @@
       cursor: pointer; margin-top: 15px; transition: all 0.4s;
     }
     button:hover { transform: translateY(-4px); box-shadow: 0 15px 30px rgba(99,102,241,0.4); }
+    button.delete { background: #ef4444; }
+    button.ticket { background: #10b981; }
 
     .message { margin-top: 20px; padding: 15px; border-radius: 12px; text-align: center; font-weight: 600; display: none; }
     .message.success { background: #d4edda; color: #10b981; }
@@ -141,15 +124,23 @@
     </div>
 
     <div class="content" id="mainContent">
-      <h2>Disponibilidad de Boletos</h2>
+      <!-- PERFIL -->
+      <div class="profile">
+        <h3 id="userName">Axel</h3>
+        <p>Mis boletos comprados</p>
+      </div>
+
+      <!-- BOLETOS DISPONIBLES -->
       <div class="inventory">
         <div><h3>Boletos Cena</h3><span id="dinnerAvailable">200</span></div>
         <div><h3>Boletos Ceremonia</h3><span id="ceremonyAvailable">200</span></div>
       </div>
 
-      <!-- MIS COMPRAS ACTUALES -->
-      <div id="currentPurchases">
-        <div class="current-purchase"><h3>Cargando tus compras...</h3></div>
+      <!-- MIS COMPRAS -->
+      <div id="myPurchases">
+        <div style="background:#fef3cd;padding:20px;border-radius:12px;text-align:center;font-size:18px;">
+          Cargando tus compras...
+        </div>
       </div>
 
       <!-- OPCIONES DE COMPRA -->
@@ -176,10 +167,13 @@
         <button id="buyIndividual">Comprar Individuales</button>
       </div>
 
+      <button class="ticket" id="goToTicket" style="display:none;">Ir a mi Ticket</button>
+      <button class="delete" id="deleteLast" style="display:none;">Eliminar última compra</button>
+
       <div id="message" class="message"></div>
     </div>
 
-    <!-- TICKET FINAL -->
+    <!-- TICKET -->
     <div id="ticket">
       <div class="ticket-title">GRADUACIÓN 2025</div>
       <div class="qr-container"><canvas id="qrCode"></canvas></div>
@@ -197,7 +191,7 @@
       </div>
     </div>
 
-    <button class="download-btn" id="downloadTicket" style="display:none;">Descargar Ticket Actualizado</button>
+    <button class="download-btn" id="downloadTicket" style="display:none;">Descargar Ticket</button>
   </div>
 
   <script>
@@ -206,9 +200,10 @@
     const userId = localStorage.getItem('currentUserId');
 
     document.getElementById('welcome').textContent = `Hola, ${userNombre.split(' ')[0]}`;
+    document.getElementById('userName').textContent = userNombre;
 
     if (!userId) {
-      alert('Debes iniciar sesión primero');
+      alert('Debes iniciar sesión');
       window.location.href = 'index.html';
     }
 
@@ -216,50 +211,41 @@
     const INVENTORY_URL = DB_URL + "inventory.json";
     const PURCHASES_URL = DB_URL + `users/${userId}/purchases.json`;
 
+    let compras = [];
     let totalCena = 0;
     let totalCeremonia = 0;
-    let ultimaCompra = null;
 
-    // Cargar inventario y compras
     async function loadData() {
       try {
-        const [invRes, purRes] = await Promise.all([
-          fetch(INVENTORY_URL),
-          fetch(PURCHASES_URL)
-        ]);
+        const [invRes, purRes] = await Promise.all([fetch(INVENTORY_URL), fetch(PURCHASES_URL)]);
         const inventory = await invRes.json() || {dinner:200, ceremony:200};
-        const compras = await purRes.json();
+        const data = await purRes.json();
 
         document.getElementById('dinnerAvailable').textContent = inventory.dinner;
         document.getElementById('ceremonyAvailable').textContent = inventory.ceremony;
 
-        if (compras) {
-          const lista = Object.values(compras);
-          totalCena = lista.reduce((s, c) => s + (c.cena || 0), 0);
-          totalCeremonia = lista.reduce((s, c) => s + (c.ceremonia || 0), 0);
-          ultimaCompra = lista[lista.length - 1];
+        if (data) {
+          compras = Object.entries(data).map(([id, c]) => ({id, ...c}));
+          totalCena = compras.reduce((s, c) => s + c.cena, 0);
+          totalCeremonia = compras.reduce((s, c) => s + c.ceremonia, 0);
 
-          document.getElementById('currentPurchases').innerHTML = `
-            <div class="current-purchase">
-              <h3>Tus boletos actuales</h3>
-              <div class="purchase-item">
-                <strong>${totalCena} boletos de Cena</strong><br>
-                <strong>${totalCeremonia} boletos de Ceremonia</strong>
-              </div>
-              <p>¡Ya tienes tu lugar asegurado!</p>
+          document.getElementById('myPurchases').innerHTML = `
+            <div style="background:#d4edda;padding:20px;border-radius:12px;text-align:center;">
+              <h3 style="color:#10b981;">¡Ya tienes boletos!</h3>
+              <p><strong>${totalCena} Cena + ${totalCeremonia} Ceremonia</strong></p>
             </div>
           `;
+
+          document.getElementById('goToTicket').style.display = 'block';
+          document.getElementById('deleteLast').style.display = 'block';
         } else {
-          document.getElementById('currentPurchases').innerHTML = `
-            <div class="no-purchase">
-              Aún no has comprado boletos<br><br>
-              ¡Es momento de asegurar tu lugar!
+          document.getElementById('myPurchases').innerHTML = `
+            <div style="background:#fef3cd;padding:20px;border-radius:12px;text-align:center;">
+              <p>Aún no has comprado boletos</p>
             </div>
           `;
         }
-      } catch (err) {
-        console.error(err);
-      }
+      } catch (err) { console.error(err); }
     }
 
     function calculateTotal() {
@@ -269,73 +255,78 @@
       document.getElementById('individualTotal').textContent = `Total: $${total.toLocaleString()} MXN`;
     }
 
-    document.getElementById('qtyDinner').addEventListener('change', calculateTotal);
-    document.getElementById('qtyCeremony').addEventListener('change', calculateTotal);
-
     async function comprar(cena, ceremonia, total) {
       const codigo = Math.random().toString(36).substr(2, 9).toUpperCase();
       const compra = { cena, ceremonia, total, codigo, fecha: new Date().toISOString() };
 
-      await fetch(PURCHASES_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(compra) });
+      await fetch(PURCHASES_URL, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(compra) });
 
-      const invRes = await fetch(INVENTORY_URL);
-      const inv = await invRes.json();
-      await fetch(INVENTORY_URL, { method: 'PATCH', body: JSON.stringify({ dinner: inv.dinner - cena, ceremony: inv.ceremony - ceremonia }) });
+      const inv = await (await fetch(INVENTORY_URL)).json();
+      await fetch(INVENTORY_URL, { method: 'PATCH', body: JSON.stringify({dinner: inv.dinner - cena, ceremony: inv.ceremony - ceremonia}) });
 
-      totalCena += cena;
-      totalCeremonia += ceremonia;
-      ultimaCompra = compra;
-
-      mostrarTicketActualizado();
-      showMessage('¡Compra realizada con éxito!', 'success');
+      loadData();
+      showMessage('¡Compra agregada!', 'success');
     }
 
-    function mostrarTicketActualizado() {
-      const fecha = new Date().toLocaleDateString('es-MX');
-      const hora = new Date().toLocaleTimeString('es-MX', {hour: '2-digit', minute: '2-digit'}).toUpperCase();
+    document.getElementById('buyPackage').onclick = () => comprar(2, 2, 3000);
+    document.getElementById('buyIndividual').onclick = () => {
+      const d = parseInt(document.getElementById('qtyDinner').value) || 0;
+      const c = parseInt(document.getElementById('qtyCeremony').value) || 0;
+      if (d + c === 0) return showMessage('Selecciona al menos un boleto');
+      comprar(d, c, d*1000 + c*150);
+    };
+
+    document.getElementById('goToTicket').onclick = () => {
+      const ultima = compras[compras.length - 1];
+      if (ultima) mostrarTicket(ultima);
+    };
+
+    document.getElementById('deleteLast').onclick = async () => {
+      if (!confirm('¿Eliminar última compra?')) return;
+      const ultima = compras[compras.length - 1];
+      await fetch(DB_URL + `users/${userId}/purchases/${ultima.id}.json`, { method: 'DELETE' });
+      const inv = await (await fetch(INVENTORY_URL)).json();
+      await fetch(INVENTORY_URL, { method: 'PATCH', body: JSON.stringify({dinner: inv.dinner + ultima.cena, ceremony: inv.ceremony + ultima.ceremonia}) });
+      loadData();
+      showMessage('Compra eliminada', 'success');
+    };
+
+    function mostrarTicket(compra) {
+      const fecha = new Date(compra.fecha).toLocaleDateString('es-MX');
+      const hora = new Date(compra.fecha).toLocaleTimeString('es-MX', {hour: '2-digit', minute: '2-digit'});
 
       document.getElementById('ticketNombre').textContent = userNombre;
       document.getElementById('ticketMatricula').textContent = userMatricula;
       document.getElementById('ticketFecha').textContent = fecha;
       document.getElementById('ticketHora').textContent = hora;
       document.getElementById('ticketBoletos').textContent = `${totalCena} Cena + ${totalCeremonia} Ceremonia`;
-      document.getElementById('ticketCode').textContent = ultimaCompra.codigo;
+      document.getElementById('ticketCode').textContent = compra.codigo;
 
       document.getElementById('mainContent').style.display = 'none';
       document.getElementById('ticket').style.display = 'block';
       document.getElementById('downloadTicket').style.display = 'block';
 
-      const verifyURL = `https://ax2004-2003.github.io/Boletos/verificar.html?mat=${userMatricula}&code=${ultimaCompra.codigo}`;
-      QRCode.toCanvas(document.getElementById('qrCode'), verifyURL, { width: 180 });
+      const url = `https://ax2004-2003.github.io/Boletos/verificar.html?mat=${userMatricula}&code=${compra.codigo}`;
+      QRCode.toCanvas(document.getElementById('qrCode'), url, { width: 180 });
     }
 
-    document.getElementById('buyPackage').addEventListener('click', () => comprar(2, 2, 3000));
-    document.getElementById('buyIndividual').addEventListener('click', () => {
-      const d = parseInt(document.getElementById('qtyDinner').value) || 0;
-      const c = parseInt(document.getElementById('qtyCeremony').value) || 0;
-      if (d + c === 0) return showMessage('Selecciona al menos un boleto');
-      const total = d*1000 + c*150;
-      comprar(d, c, total);
-    });
-
-    document.getElementById('downloadTicket').addEventListener('click', () => {
-      html2canvas(document.getElementById('ticket'), { scale: 2 }).then(canvas => {
-        const link = document.createElement('a');
-        link.download = `Ticket_Graduacion_${userMatricula}.png`;
-        link.href = canvas.toDataURL();
-        link.click();
+    document.getElementById('downloadTicket').onclick = () => {
+      html2canvas(document.getElementById('ticket'), { scale: 2 }).then(c => {
+        const a = document.createElement('a');
+        a.download = `Ticket_${userMatricula}.png`;
+        a.href = c.toDataURL();
+        a.click();
       });
-    });
+    };
 
     function showMessage(text, type = 'error') {
       const msg = document.getElementById('message');
       msg.textContent = text;
       msg.className = `message ${type}`;
       msg.style.display = 'block';
-      setTimeout(() => msg.style.display = 'none', 5000);
+      setTimeout(() => msg.style.display = 'none', 4000);
     }
 
-    // PWA
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('service-worker.js').catch(() => {});
     }
