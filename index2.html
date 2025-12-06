@@ -3,26 +3,21 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Reservación de Boletos • Graduación 2025</title>
-
-  <!-- PWA Meta Tags -->
+  <title>Mis Boletos • Graduación 2025</title>
   <link rel="manifest" href="manifest.json">
   <link rel="apple-touch-icon" href="icon-192.png">
   <meta name="theme-color" content="#c41b2a">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-
-  <!-- Fuentes y librerías -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Bebas+Neue&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.0/build/qrcode.min.js"></script>
   <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
-  
+
   <style>
     :root {
       --red-dark: #8B0000;
       --red-main: #c41b2a;
       --gold: #FFD700;
-      --text-light: #ffffff;
+      --green: #10b981;
+      --gray: #f1f5f9;
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -49,8 +44,6 @@
       border-radius: 28px;
       overflow: hidden;
       box-shadow: 0 20px 50px rgba(0,0,0,0.4);
-      position: relative;
-      z-index: 10;
     }
 
     .header {
@@ -63,26 +56,44 @@
     .header h1 { font-size: clamp(28px, 6vw, 36px); font-weight: 700; margin-bottom: 8px; }
     .header p { font-size: 16px; opacity: 0.9; }
 
-    .content { padding: 40px 30px; background: rgba(255,255,255,0.97); }
+    .content { padding: 40px 30px; background: rgba(255,255,255,0.97); color: #1e1b4b; }
 
-    h2 { text-align: center; margin-bottom: 30px; font-size: 28px; background: linear-gradient(90deg, #6366f1, #ec4899); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 700; }
+    h2 { text-align: center; margin-bottom: 20px; font-size: 28px; background: linear-gradient(90deg, #6366f1, #ec4899); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 700; }
 
-    .inventory {
-      display: flex; justify-content: space-around; margin-bottom: 35px; text-align: center;
+    .current-purchase {
+      background: var(--gray);
+      border-radius: 16px;
+      padding: 20px;
+      margin: 20px 0;
+      text-align: center;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.1);
     }
-    .inventory div { background: #f1f5f9; padding: 16px; border-radius: 14px; width: 48%; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-    .inventory span { font-size: 26px; font-weight: bold; color: #6366f1; }
 
-    .option {
-      background: white; padding: 25px; border-radius: 16px; margin-bottom: 20px;
-      box-shadow: 0 8px 25px rgba(0,0,0,0.12); transition: transform 0.3s;
+    .current-purchase h3 { color: var(--red-main); font-size: 22px; margin-bottom: 15px; }
+
+    .purchase-item {
+      background: white;
+      padding: 15px;
+      border-radius: 12px;
+      margin: 10px 0;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
     }
-    .option:hover { transform: translateY(-6px); }
+
+    .no-purchase {
+      background: #fef3cd;
+      color: #92400e;
+      padding: 20px;
+      border-radius: 12px;
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .inventory, .option { margin-top: 20px; }
 
     button {
       width: 100%; padding: 16px; background: linear-gradient(90deg, #6366f1, #ec4899);
       color: white; border: none; border-radius: 12px; font-size: 18px; font-weight: 600;
-      cursor: pointer; margin-top: 15px; transition: all 0.4s;
+      cursor: pointer; margin-top: 15px; transition: all 0.4 pjes;
     }
     button:hover { transform: translateY(-4px); box-shadow: 0 15px 30px rgba(99,102,241,0.4); }
 
@@ -90,91 +101,15 @@
     .message.success { background: #d4edda; color: #10b981; }
     .message.error { background: #f8d7da; color: #ef4444; }
 
-    /* TICKET FINAL */
-    #ticket {
-      display: none;
-      margin: 30px auto;
-      width: 380px;
-      background: linear-gradient(145deg, var(--red-dark), var(--red-main));
-      color: white;
-      border-radius: 24px;
-      overflow: hidden;
-      box-shadow: 0 20px 50px rgba(0,0,0,0.6);
-      font-family: 'Bebas Neue', sans-serif;
-      text-align: center;
-      position: relative;
-    }
-
-    .ticket-title {
-      background: rgba(0,0,0,0.5);
-      padding: 18px;
-      font-size: 32px;
-      letter-spacing: 3px;
-      color: #ff6b6b;
-      text-shadow: 0 3px 10px rgba(0,0,0,0.8);
-    }
-
-    .qr-container {
-      background: white;
-      margin: 25px auto;
-      padding: 20px;
-      width: 220px;
-      height: 220px;
-      border-radius: 18px;
-      box-shadow: inset 0 0 20px rgba(0,0,0,0.2);
-    }
-
+    #ticket { display: none; margin: 30px auto; width: 380px; background: linear-gradient(145deg, #8B0000, #c41b2a); color: white; border-radius: 24px; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.6); font-family: 'Bebas Neue', sans-serif; text-align: center; }
+    .ticket-title { background: rgba(0,0,0,0.5); padding: 18px; font-size: 32px; color: #ff6b6b; }
+    .qr-container { background: white; margin: 25px auto; padding: 20px; width: 220px; height: 220px; border-radius: 18px; }
     #qrCode { width: 180px; height: 180px; margin: 0 auto; }
-
-    .ticket-code {
-      font-size: 36px;
-      color: var(--gold);
-      letter-spacing: 6px;
-      margin: 20px 0;
-      text-shadow: 0 3px 8px rgba(0,0,0,0.7);
-    }
-
-    .ticket-info {
-      padding: 0 30px 30px;
-      font-family: 'Poppins', sans-serif;
-      font-size: 17px;
-      line-height: 1.8;
-    }
-
-    .info-row {
-      display: flex;
-      justify-content: space-between;
-      padding: 8px 0;
-      border-bottom: 1px dashed rgba(255,255,255,0.4);
-    }
-
+    .ticket-code { font-size: 36px; color: var(--gold); letter-spacing: 6px; margin: 20px 0; }
+    .info-row { display: flex; justify-content: space-between; padding: 8px 30px; border-bottom: 1px dashed rgba(255,255,255,0.4); font-size: 17px; }
     .info-row:last-child { border: none; }
-
-    .label { opacity: 0.9; font-weight: 500; }
-    .value { font-weight: 700; text-align: right; }
-
-    .footer-note {
-      background: rgba(0,0,0,0.4);
-      padding: 18px;
-      font-size: 15px;
-      font-family: 'Poppins', sans-serif;
-      margin-top: 20px;
-      border-top: 2px dashed rgba(255,255,255,0.3);
-    }
-
-    .download-btn {
-      display: block;
-      margin: 30px auto;
-      padding: 16px 40px;
-      background: var(--gold);
-      color: black;
-      border: none;
-      border-radius: 50px;
-      font-weight: bold;
-      font-size: 18px;
-      cursor: pointer;
-      box-shadow: 0 10px 25px rgba(255,215,0,0.4);
-    }
+    .footer-note { background: rgba(0,0,0,0.4); padding: 18px; font-size: 15px; margin-top: 20px; border-top: 2px dashed rgba(255,255,255,0.3); }
+    .download-btn { display: block; margin: 30px auto; padding: 16px 40px; background: var(--gold); color: black; border: none; border-radius: 50px; font-weight: bold; font-size: 18px; cursor: pointer; }
 
     @media (max-width: 480px) {
       #ticket { width: 95%; }
@@ -191,85 +126,56 @@
       <p id="welcome">Cargando...</p>
     </div>
 
-    <div class="content" id="formSection">
-      <h2>Disponibilidad de Boletos</h2>
-      <div class="inventory">
-        <div><h3>Boletos Cena</h3><span id="dinnerAvailable">200</span></div>
-        <div><h3>Boletos Ceremonia</h3><span id="ceremonyAvailable">200</span></div>
+    <div class="content">
+      <h2>Mis Boletos</h2>
+
+      <!-- MIS COMPRAS ACTUALES -->
+      <div id="currentPurchases">
+        <div class="current-purchase">
+          <h3>Cargando tus compras...</h3>
+        </div>
       </div>
 
+      <!-- COMPRAR MÁS -->
       <div class="option">
-        <h3>Paquete Completo • $3,000 MXN</h3>
-        <p>2 boletos de cena + 2 de ceremonia</p>
-        <button id="buyPackage">Comprar Paquete</button>
-      </div>
-
-      <div class="option">
-        <h3>Boletos Individuales</h3>
-        <p>Cena: $1,000 c/u • Ceremonia: $150 c/u</p>
-        <select id="qtyDinner" style="width:48%; padding:12px; margin:8px 1%; border-radius:12px; border:2px solid #ddd;">
+        <h3>Comprar más boletos</h3>
+        <p>Puedes agregar al paquete que ya tienes</p>
+        <select id="qtyDinner">
           <option value="0">Cena: 0</option>
           <option value="1">Cena: 1 ($1,000)</option>
           <option value="2">Cena: 2 ($2,000)</option>
         </select>
-        <select id="qtyCeremony" style="width:48%; padding:12px; margin:8px 1%; border-radius:12px; border:2px solid #ddd;">
+        <select id="qtyCeremony">
           <option value="0">Ceremonia: 0</option>
           <option value="1">Ceremonia: 1 ($150)</option>
           <option value="2">Ceremonia: 2 ($300)</option>
         </select>
         <div style="text-align:right; font-size:20px; font-weight:bold; color:#f59e0b; margin:15px 0;" id="individualTotal">Total: $0 MXN</div>
-        <button id="buyIndividual">Comprar Individuales</button>
+        <button id="buyMore">Agregar a mi compra</button>
       </div>
 
       <div id="message" class="message"></div>
     </div>
 
-    <!-- TICKET FINAL -->
+    <!-- TICKET FINAL (actualizado) -->
     <div id="ticket">
       <div class="ticket-title">GRADUACIÓN 2025</div>
-      
-      <div class="qr-container">
-        <canvas id="qrCode"></canvas>
-      </div>
-
+      <div class="qr-container"><canvas id="qrCode"></canvas></div>
       <div class="ticket-code" id="ticketCode">XXXXXXXXX</div>
-
       <div class="ticket-info">
-        <div class="info-row">
-          <span class="label">ALUMNO</span>
-          <span class="value" id="ticketNombre">Nombre Apellido</span>
-        </div>
-        <div class="info-row">
-          <span class="label">MATRÍCULA</span>
-          <span class="value" id="ticketMatricula">2021000000</span>
-        </div>
-        <div class="info-row">
-          <span class="label">FECHA DE COMPRA</span>
-          <span class="value" id="ticketFecha">20 Junio 2025</span>
-        </div>
-        <div class="info-row">
-          <span class="label">HORA DE COMPRA</span>
-          <span class="value" id="ticketHora">7:30 PM</span>
-        </div>
-        <div class="info-row">
-          <span class="label">ENTREGA FÍSICA</span>
-          <span class="value">Caja - Recepción Principal</span>
-        </div>
-        <div class="info-row">
-          <span class="label">BOLETOS</span>
-          <span class="value" id="ticketBoletos">2 Cena + 2 Ceremonia</span>
-        </div>
+        <div class="info-row"><span class="label">ALUMNO</span><span class="value" id="ticketNombre"></span></div>
+        <div class="info-row"><span class="label">MATRÍCULA</span><span class="value" id="ticketMatricula"></span></div>
+        <div class="info-row"><span class="label">FECHA COMPRA</span><span class="value" id="ticketFecha"></span></div>
+        <div class="info-row"><span class="label">HORA COMPRA</span><span class="value" id="ticketHora"></span></div>
+        <div class="info-row"><span class="label">BOLETOS TOTALES</span><span class="value" id="ticketBoletos"></span></div>
       </div>
-
       <div class="footer-note">
         ¡Felicidades por tu graduación!<br>
         Presenta este ticket en <strong>Caja</strong> para recoger tus boletos físicos
       </div>
     </div>
 
-    <button class="download-btn" id="downloadTicket" style="display:none;">
-      Descargar Ticket
-    </button>
+    <button class="download-btn" id="downloadTicket" style="display:none;">Descargar Ticket Actualizado</button>
   </div>
 
   <script>
@@ -277,37 +183,53 @@
     const userMatricula = localStorage.getItem('currentUserMatricula') || '000000';
     const userId = localStorage.getItem('currentUserId');
 
-    document.getElementById('welcome').textContent = `Hola, ${userNombre.split(' ')[0]}`;
+    document.getElementById('welcome').textContent = `Hola, ${userNombre.split " ")[0]}`;
 
     if (!userId) {
-      alert('Debes iniciar sesión primero');
+      alert('Debes iniciar sesión');
       window.location.href = 'index.html';
     }
 
     const DB_URL = "https://boletos-66dac-default-rtdb.firebaseio.com/";
     const INVENTORY_URL = DB_URL + "inventory.json";
-    const USER_PURCHASE_URL = DB_URL + `users/${userId}/purchases.json`;
+    const PURCHASES_URL = DB_URL + `users/${userId}/purchases.json`;
 
-    let inventory = { dinner: 200, ceremony: 200 };
+    let totalCena = 0;
+    let totalCeremonia = 0;
+    let ultimaCompra = null;
 
-    async function loadInventory() {
+    async function cargarCompras() {
       try {
-        const res = await fetch(INVENTORY_URL);
-        const data = await res.json() || {dinner:200, ceremony:200};
-        inventory = data;
-        document.getElementById('dinnerAvailable').textContent = inventory.dinner;
-        document.getElementById('ceremonyAvailable').textContent = inventory.ceremony;
-      } catch (err) {
-        console.error("Error:", err);
-      }
-    }
+        const res = await fetch(PURCHASES_URL);
+        const compras = await res.json();
 
-    function showMessage(text, type = 'error') {
-      const msg = document.getElementById('message');
-      msg.textContent = text;
-      msg.className = `message ${type}`;
-      msg.style.display = 'block';
-      setTimeout(() => msg.style.display = 'none', 5000);
+        if (compras) {
+          const lista = Object.values(compras);
+          totalCena = lista.reduce((sum, c) => sum + c.cena, 0);
+          totalCeremonia = lista.reduce((sum, c) => sum + c.ceremonia, 0);
+          ultimaCompra = lista[lista.length - 1];
+
+          document.getElementById('currentPurchases').innerHTML = `
+            <div class="current-purchase">
+              <h3>Tus boletos actuales</h3>
+              <div class="purchase-item">
+                <strong>${totalCena} boletos de Cena</strong><br>
+                <strong>${totalCeremonia} boletos de Ceremonia</strong>
+              </div>
+              <p>Puedes comprar más si lo deseas</p>
+            </div>
+          `;
+        } else {
+          document.getElementById('currentPurchases').innerHTML = `
+            <div class="no-purchase">
+              Aún no has comprado boletos<br><br>
+              ¡Es momento de asegurar tu lugar!
+            </div>
+          `;
+        }
+      } catch (err) {
+        console.error(err);
+      }
     }
 
     function calculateTotal() {
@@ -320,109 +242,84 @@
     document.getElementById('qtyDinner').addEventListener('change', calculateTotal);
     document.getElementById('qtyCeremony').addEventListener('change', calculateTotal);
 
-    function generarCodigo() {
-      const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-      let result = '';
-      for (let i = 0; i < 9; i++) {
-        result += chars.charAt(Math.floor(Math.random() * chars.length));
-      }
-      return result;
-    }
+    async function comprar(d, c, total) {
+      const codigo = Math.random().toString(36).substr(2, 9).toUpperCase();
+      const compra = { cena: d, ceremonia: c, total, codigo, fecha: new Date().toISOString() };
 
-    function formatearFechaHora() {
-      const ahora = new Date();
-      const opcionesFecha = { day: 'numeric', month: 'long', year: 'numeric' };
-      const opcionesHora = { hour: 'numeric', minute: '2-digit', hour12: true };
-      return {
-        fecha: ahora.toLocaleDateString('es-MX', opcionesFecha),
-        hora: ahora.toLocaleTimeString('es-MX', opcionesHora).replace(':', 'h').toUpperCase()
-      };
-    }
-
-    async function guardarCompra(cena, ceremonia, total, codigo) {
-      const compra = {
-        cena, ceremonia, total, codigo,
-        fecha: new Date().toISOString(),
-        verificado: false
-      };
-      await fetch(USER_PURCHASE_URL, {
+      await fetch(PURCHASES_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(compra)
       });
+
+      // Actualizar inventario
+      const invRes = await fetch(INVENTORY_URL);
+      const inv = await invRes.json();
+      await fetch(INVENTORY_URL, {
+        method: 'PATCH',
+        body: JSON.stringify({ dinner: inv.dinner - d, ceremony: inv.ceremony - c })
+      });
+
+      totalCena += d;
+      totalCeremonia += c;
+      ultimaCompra = compra;
+
+      mostrarTicketActualizado();
+      showMessage('¡Compra agregada con éxito!', 'success');
     }
 
-    async function mostrarTicket(cena, ceremonia, total) {
-      const { fecha, hora } = formatearFechaHora();
-      const codigo = generarCodigo();
-
-      await guardarCompra(cena, ceremonia, total, codigo);
-
-      // TU DOMINIO REAL
-      const verifyURL = `https://ax2004-2003.github.io/Boletos/verificar.html?mat=${userMatricula}&code=${codigo}`;
+    function mostrarTicketActualizado() {
+      const fecha = new Date().toLocaleDateString('es-MX');
+      const hora = new Date().toLocaleTimeString('es-MX', {hour: '2-digit', minute: '2-digit'}).toUpperCase();
 
       document.getElementById('ticketNombre').textContent = userNombre;
       document.getElementById('ticketMatricula').textContent = userMatricula;
       document.getElementById('ticketFecha').textContent = fecha;
       document.getElementById('ticketHora').textContent = hora;
-      document.getElementById('ticketBoletos').textContent = 
-        cena > 0 ? `${cena} Cena + ${ceremonia} Ceremonia` : `${ceremonia} Ceremonia`;
-      document.getElementById('ticketCode').textContent = codigo;
+      document.getElementById('ticketBoletos').textContent = `${totalCena} Cena + ${totalCeremonia} Ceremonia`;
+      document.getElementById('ticketCode').textContent = ultimaCompra?.codigo || 'TEMP';
 
-      document.getElementById('formSection').style.display = 'none';
+      document.querySelector('.content').style.display = 'none';
       document.getElementById('ticket').style.display = 'block';
       document.getElementById('downloadTicket').style.display = 'block';
 
-      QRCode.toCanvas(document.getElementById('qrCode'), verifyURL, { 
-        width: 180,
-        color: { dark: '#000000', light: '#ffffff' }
-      });
+      const verifyURL = `https://ax2004-2003.github.io/Boletos/verificar.html?mat=${userMatricula}&code=${ultimaCompra.codigo}`;
+      QRCode.toCanvas(document.getElementById('qrCode'), verifyURL, { width: 180 });
     }
 
-    document.getElementById('buyPackage').addEventListener('click', async () => {
-      if (inventory.dinner < 2 || inventory.ceremony < 2) return showMessage('No hay suficientes boletos para el paquete', 'error');
-      
-      await fetch(INVENTORY_URL, { method: 'PATCH', body: JSON.stringify({dinner: inventory.dinner-2, ceremony: inventory.ceremony-2}) });
-      inventory.dinner -= 2; inventory.ceremony -= 2;
-      loadInventory();
-      mostrarTicket(2, 2, 3000);
-      showMessage('¡Paquete comprado con éxito!', 'success');
-    });
-
-    document.getElementById('buyIndividual').addEventListener('click', async () => {
+    document.getElementById('buyMore').addEventListener('click', async () => {
       const d = parseInt(document.getElementById('qtyDinner').value) || 0;
       const c = parseInt(document.getElementById('qtyCeremony').value) || 0;
       if (d + c === 0) return showMessage('Selecciona al menos un boleto');
-      if (inventory.dinner < d || inventory.ceremony < c) return showMessage('No hay suficientes boletos');
-
       const total = d*1000 + c*150;
-      await fetch(INVENTORY_URL, { method: 'PATCH', body: JSON.stringify({dinner: inventory.dinner-d, ceremony: inventory.ceremony-c}) });
-      inventory.dinner -= d; inventory.ceremony -= c;
-      loadInventory();
-      mostrarTicket(d, c, total);
-      showMessage('¡Compra exitosa!', 'success');
+      await comprar(d, c, total);
     });
 
     document.getElementById('downloadTicket').addEventListener('click', () => {
       html2canvas(document.getElementById('ticket'), { scale: 2 }).then(canvas => {
         const link = document.createElement('a');
-        link.download = `Ticket_Graduacion_${userMatricula}.png`;
+        link.download = `Ticket_Actualizado_${userMatricula}.png`;
         link.href = canvas.toDataURL();
         link.click();
       });
     });
 
-    // PWA
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('service-worker.js')
-          .then(() => console.log('SW registrado'))
-          .catch(() => {});
-      });
+    function showMessage(text, type = 'error') {
+      const msg = document.getElementById('message');
+      msg.textContent = text;
+      msg.className = `message ${type}`;
+      msg.style.display = 'block';
+      setTimeout(() => msg.style.display = 'none', 5000);
     }
 
-    loadInventory();
+    // Cargar compras al iniciar
+    cargarCompras();
     calculateTotal();
+
+    // PWA
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('service-worker.js').catch(() => {});
+    }
   </script>
 </body>
 </html>
