@@ -15,8 +15,6 @@
       --red-main: #c41b2a;
       --gold: #FFD700;
       --green: #10b981;
-      --text: #ffffff;
-      --gray: #f8f9fa;
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -40,7 +38,6 @@
       border-radius: 20px;
       overflow: hidden;
       box-shadow: 0 25px 60px rgba(0,0,0,0.6);
-      position: relative;
     }
 
     .header {
@@ -48,19 +45,7 @@
       padding: 30px 20px;
       text-align: center;
       position: relative;
-      overflow: hidden;
     }
-
-    .header::before {
-      content: '';
-      position: absolute;
-      top: -50%; left: -50%;
-      width: 200%; height: 200%;
-      background: repeating-linear-gradient(45deg, transparent, transparent 35px, rgba(255,255,255,.1) 35px, rgba(255,255,255,.1) 70px);
-      animation: shine 20s linear infinite;
-    }
-
-    @keyframes shine { 0% { transform: translateX(-100%) translateY(-100%); } 100% { transform: translateX(100%) translateY(100%); } }
 
     .header h1 {
       font-family: 'Bebas Neue', sans-serif;
@@ -68,16 +53,12 @@
       color: var(--gold);
       text-shadow: 0 4px 15px rgba(0,0,0,0.8);
       letter-spacing: 4px;
-      position: relative;
-      z-index: 2;
     }
 
     .header p {
       font-size: 18px;
       margin-top: 8px;
       opacity: 0.9;
-      position: relative;
-      z-index: 2;
     }
 
     .content {
@@ -85,7 +66,33 @@
       text-align: center;
     }
 
-    .status { font-family: 'Bebas Neue', sans-serif; font-size: 38px; color: var(--green); margin: 15px 0; text-shadow: 0 3px 10px rgba(0,0,0,0.3); }
+    .seal {
+      width: 120px;
+      height: 120px;
+      background: var(--green);
+      border-radius: 50%;
+      margin: 0 auto 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 60px;
+      color: white;
+      box-shadow: 0 10px 30px rgba(16,185,129,0.5);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(16,185,129,0.7); }
+      70% { box-shadow: 0 0 0 20px rgba(16,185,129,0); }
+      100% { box-shadow: 0 0 0 0 rgba(16,185,129,0); }
+    }
+
+    .status { 
+      font-family: 'Bebas Neue', sans-serif; 
+      font-size: 38px; 
+      color: var(--green); 
+      margin: 15px 0; 
+    }
 
     .info-card {
       background: #f8f9fa;
@@ -136,7 +143,7 @@
       text-align: center;
     }
 
-    .error {
+    .error, .no-purchase {
       background: #fee2e2;
       color: #991b1b;
       padding: 30px;
@@ -150,23 +157,6 @@
       font-size: 18px;
       padding: 40px;
       color: var(--gold);
-    }
-
-    .no-purchase {
-      background: #fee2e2;
-      color: #991b1b;
-      padding: 30px;
-      border-radius: 20px;
-      font-size: 20px;
-      font-weight: 600;
-      border: 2px solid #ef4444;
-    }
-
-    @media (max-width: 480px) {
-      .header h1 { font-size: 34px; }
-      .status { font-size: 32px; }
-      .info-card { padding: 20px; }
-      .info-row { font-size: 16px; }
     }
   </style>
 </head>
@@ -193,7 +183,7 @@
     const resultDiv = document.getElementById('result');
 
     if (!matricula || !codigo) {
-      resultDiv.innerHTML = `<div class="error">QR NO VÁLIDO<br><br>Escanea el código oficial del ticket</div>`;
+      resultDiv.innerHTML = `<div class="error">QR INVÁLIDO<br><br>Escanea el código oficial del ticket</div>`;
       return;
     }
 
@@ -208,20 +198,23 @@
         }
 
         let encontrado = false;
-        let hasPurchase = false;
+        let compraValida = false;
 
+        // Recorrer todos los usuarios
         for (const [userId, user] of Object.entries(users)) {
           if (user.matricula !== matricula) continue;
 
           encontrado = true;
 
-          // Comprobar si tiene compras
-          if (user.purchases && Object.keys(user.purchases).length > 0) {
+          // Buscar en todas las compras del usuario
+          if (user.purchases) {
             const compras = Object.values(user.purchases);
+            
+            // Buscar exactamente por el código del QR
             const compra = compras.find(p => p.codigo === codigo);
 
             if (compra) {
-              hasPurchase = true;
+              compraValida = true;
               const fecha = new Date(compra.fecha);
               const fechaStr = fecha.toLocaleDateString('es-MX') + ' ' + 
                 fecha.toLocaleTimeString('es-MX', {hour: '2-digit', minute: '2-digit'});
@@ -245,11 +238,11 @@
                   </div>
                   <div class="info-row">
                     <span class="label">BOLETOS</span>
-                    <span class="value">${compra.cena} Cena + ${compra.ceremonia} Ceremonia</span>
+                    <span class="value">${compra.cena || 0} Cena + ${compra.ceremonia || 0} Ceremonia</span>
                   </div>
                   <div class="info-row">
                     <span class="label">TOTAL PAGADO</span>
-                    <span class="value">$${parseInt(compra.total).toLocaleString()} MXN</span>
+                    <span class="value">$${parseInt(compra.total || 0).toLocaleString()} MXN</span>
                   </div>
                   <div class="info-row">
                     <span class="label">FECHA DE COMPRA</span>
@@ -267,27 +260,41 @@
                   El alumno puede recoger sus boletos físicos
                 </div>
               `;
-              break;
+              return; // Salir del bucle
             }
           }
         }
 
-        if (encontrado && !hasPurchase) {
-          resultDiv.innerHTML = `<div class="no-purchase">NO HAY COMPRAS REGISTRADAS<br><br>Esta persona está registrada pero no ha realizado compras de boletos.</div>`;
-        } else if (!encontrado) {
-          resultDiv.innerHTML = `<div class="error">PERSONA NO REGISTRADA<br><br>No se encontró ningún usuario con esta matrícula.</div>`;
+        // Si llegó aquí, no encontró el código
+        if (encontrado) {
+          resultDiv.innerHTML = `
+            <div class="no-purchase">
+              TICKET NO VÁLIDO<br><br>
+              El alumno está registrado pero este código no corresponde a ninguna compra.<br><br>
+              Posible duplicado o error.
+            </div>
+          `;
+        } else {
+          resultDiv.innerHTML = `
+            <div class="error">
+              PERSONA NO REGISTRADA<br><br>
+              No se encontró ningún alumno con esta matrícula.
+            </div>
+          `;
         }
 
       } catch (err) {
-        console.error(err);
+        console.error("Error de conexión:", err);
         resultDiv.innerHTML = `<div class="error">Error de conexión<br>Intenta más tarde</div>`;
       }
     }
 
+    // PWA
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('service-worker.js').catch(() => {});
     }
 
+    // Iniciar verificación
     verificarCompra();
   </script>
 </body>
