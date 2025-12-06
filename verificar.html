@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Verificación de Ticket • Graduación 2025</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Bebas+Neue&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --red-dark: #8B0000;
+      --red-main: #c41b2a;
+      --gold: #FFD700;
+      --green: #10b981;
+      --text: #ffffff;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #1e1b4b, #4c1d95, #7c3aed);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      color: white;
+    }
+
+    .container {
+      background: rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(20px);
+      border-radius: 28px;
+      width: 100%;
+      max-width: 480px;
+      overflow: hidden;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+      text-align: center;
+    }
+
+    .header {
+      background: linear-gradient(135deg, var(--red-dark), var(--red-main));
+      padding: 40px 20px;
+    }
+
+    .header h1 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 38px;
+      letter-spacing: 3px;
+      color: var(--gold);
+      text-shadow: 0 4px 10px rgba(0,0,0,0.6);
+    }
+
+    .header p {
+      margin-top: 10px;
+      font-size: 18px;
+      opacity: 0.9;
+    }
+
+    .content {
+      padding: 40px 30px;
+      background: rgba(255,255,255,0.1);
+    }
+
+    .status {
+      font-size: 52px;
+      font-weight: bold;
+      margin-bottom: 20px;
+      color: var(--green);
+      text-shadow: 0 4px 15px rgba(16,185,129,0.4);
+    }
+
+    .info {
+      background: rgba(255,255,255,0.15);
+      border-radius: 18px;
+      padding: 25px;
+      margin: 20px 0;
+      font-size: 18px;
+      line-height: 2;
+    }
+
+    .info strong {
+      color: var(--gold);
+    }
+
+    .purchase-details {
+      margin-top: 25px;
+      padding: 20px;
+      background: rgba(0,0,0,0.3);
+      border-radius: 16px;
+      font-size: 17px;
+    }
+
+    .footer {
+      margin-top: 30px;
+      padding: 20px;
+      background: rgba(0,0,0,0.4);
+      border-radius: 0 0 28px 28px;
+      font-size: 15px;
+    }
+
+    .error {
+      background: #fee2e2;
+      color: #991b1b;
+      padding: 30px;
+      border-radius: 20px;
+      font-size: 20px;
+    }
+
+    @media (max-width: 480px) {
+      .header h1 { font-size: 32px; }
+      .status { font-size: 42px; }
+      .info, .purchase-details { font-size: 16px; padding: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div class="header">
+      <h1>GRADUACIÓN 2025</h1>
+      <p>Verificación de Compra</p>
+    </div>
+
+    <div class="content" id="result">
+      <!-- Se llena con JS -->
+    </div>
+  </div>
+
+  <script>
+    const DB_URL = "https://boletos-66dac-default-rtdb.firebaseio.com/";
+    const USERS_URL = DB_URL + "users.json";
+
+    // Obtener matrícula del QR (desde la URL: verificar.html?mat=2021001234&code=ABC123)
+    const params = new URLSearchParams(window.location.search);
+    const matricula = params.get('mat');
+    const codigo = params.get('code');
+
+    const resultDiv = document.getElementById('result');
+
+    if (!matricula || !codigo) {
+      resultDiv.innerHTML = `<div class="error">QR inválido o incompleto.<br><br>Vuelve a escanear el código original del ticket.</div>`;
+      return;
+    }
+
+    async function verificarCompra() {
+      try {
+        const res = await fetch(USERS_URL);
+        const users = await res.json();
+
+        if (!users) {
+          throw new Error("No hay usuarios registrados");
+        }
+
+        let encontrado = false;
+
+        for (const [id, user] of Object.entries(users)) {
+          if (user.matricula === matricula) {
+            // Buscar en historial de compras (si guardaste las compras)
+            if (user.purchases) {
+              const compras = Object.values(user.purchases);
+              const compraValida = compras.some(p => {
+                const qrData = `${matricula}-${codigo}`;
+                return p.qr?.includes(codigo) || p.codigo === codigo;
+              });
+
+              if (compraValida || user.compraRealizada) {
+                const ultimaCompra = user.ultimaCompra || { cena: 2, ceremonia: 2, total: 3000, fecha: new Date().toLocaleString('es-MX') };
+                const esPaquete = ultimaCompra.cena === 2 && ultimaCompra.ceremonia === 2 && ultimaCompra.total === 3000;
+
+                resultDiv.innerHTML = `
+                  <div class="status">✓ COMPRA CONFIRMADA</div>
+                  <div class="info">
+                    <strong>Alumno:</strong> ${user.nombre}<br>
+                    <strong>Matrícula:</strong> ${user.matricula}<br><br>
+                    <strong>Compra realizada:</strong> ${esPaquete ? 'Paquete Completo' : 'Boletos Individuales'}<br>
+                    <strong>Boletos:</strong> ${ultimaCompra.cena} Cena + ${ultimaCompra.ceremonia} Ceremonia<br>
+                    <strong>Total pagado:</strong> $${ultimaCompra.total.toLocaleString()} MXN<br>
+                    <strong>Fecha y hora:</strong> ${new Date(ultimaCompra.fecha).toLocaleString('es-MX')}
+                  </div>
+                  <div class="purchase-details">
+                    Puede pasar a <strong>Caja - Recepción Principal</strong><br>
+                    para recoger sus boletos físicos
+                  </div>
+                  <div class="footer">
+                    ¡Felicidades por tu graduación!<br>
+                    Presenta este comprobante en caja
+                  </div>
+                `;
+                encontrado = true;
+                break;
+              }
+            }
+
+            // Si no tiene historial pero tiene datos básicos
+            if (user.nombre) {
+              resultDiv.innerHTML = `
+                <div class="status">✓ COMPRA CONFIRMADA</div>
+                <div class="info">
+                  <strong>Alumno:</strong> ${user.nombre}<br>
+                  <strong>Matrícula:</strong> ${user.matricula}<br><br>
+                  <strong>Estado:</strong> Compra registrada correctamente<br>
+                  <strong>Entrega:</strong> Caja - Recepción Principal
+                </div>
+                <div class="footer">
+                  ¡Todo en orden! Puede recoger sus boletos
+                </div>
+              `;
+              encontrado = true;
+              break;
+            }
+          }
+        }
+
+        if (!encontrado) {
+          resultDiv.innerHTML = `<div class="error">⚠ No se encontró compra con esta matrícula y código.<br><br>Contacta al comité de graduación.</div>`;
+        }
+
+      } catch (err) {
+        resultDiv.innerHTML = `<div class="error">Error de conexión.<br>Intenta de nuevo más tarde.</div>`;
+      }
+    }
+
+    // Ejecutar al cargar
+    verificarCompra();
+  </script>
+</body>
+</html>
