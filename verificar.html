@@ -3,8 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Verificación de Ticket • Graduación 2025</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Bebas+Neue&display=swap" rel="stylesheet">
+  <title>Verificación Oficial • Graduación 2025</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <meta name="theme-color" content="#c41b2a">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poppins:wght@400;500;700&display=swap" rel="stylesheet">
   
   <style>
     :root {
@@ -12,92 +15,153 @@
       --red-main: #c41b2a;
       --gold: #FFD700;
       --green: #10b981;
-      --text: #ffffff;
+      --white: #ffffff;
+      --gray: #f8f9fa;
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
       font-family: 'Poppins', sans-serif;
-      background: linear-gradient(135deg, #1e1b4b, #4c1d95, #7c3aed);
+      background: linear-gradient(135deg, #0f172a, #1e293b);
       min-height: 100vh;
       display: flex;
       justify-content: center;
       align-items: center;
-      padding: 20px;
+      padding: 15px;
       color: white;
     }
 
     .container {
-      background: rgba(255, 255, 255, 0.12);
-      backdrop-filter: blur(20px);
-      border-radius: 28px;
-      width: 100%;
+      background: white;
+      color: #1e1b4b;
       max-width: 480px;
+      width: 100%;
+      border-radius: 20px;
       overflow: hidden;
-      box-shadow: 0 20px 50px rgba(0,0,0,0.5);
-      text-align: center;
+      box-shadow: 0 25px 60px rgba(0,0,0,0.6);
+      position: relative;
     }
 
     .header {
       background: linear-gradient(135deg, var(--red-dark), var(--red-main));
-      padding: 40px 20px;
+      padding: 30px 20px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
     }
+
+    .header::before {
+      content: '';
+      position: absolute;
+      top: -50%; left: -50%;
+      width: 200%; height: 200%;
+      background: repeating-linear-gradient(45deg, transparent, transparent 35px, rgba(255,255,255,.1) 35px, rgba(255,255,255,.1) 70px);
+      animation: shine 20s linear infinite;
+    }
+
+    @keyframes shine { 0% { transform: translateX(-100%) translateY(-100%); } 100% { transform: translateX(100%) translateY(100%); } }
 
     .header h1 {
       font-family: 'Bebas Neue', sans-serif;
-      font-size: 38px;
-      letter-spacing: 3px;
+      font-size: 42px;
       color: var(--gold);
-      text-shadow: 0 4px 10px rgba(0,0,0,0.6);
+      text-shadow: 0 4px 15px rgba(0,0,0,0.8);
+      letter-spacing: 4px;
+      position: relative;
+      z-index: 2;
     }
 
     .header p {
-      margin-top: 10px;
       font-size: 18px;
+      margin-top: 8px;
       opacity: 0.9;
+      position: relative;
+      z-index: 2;
     }
 
     .content {
-      padding: 40px 30px;
-      background: rgba(255,255,255,0.1);
+      padding: 35px 30px;
+      text-align: center;
+    }
+
+    .seal {
+      width: 120px;
+      height: 120px;
+      background: var(--green);
+      border-radius: 50%;
+      margin: 0 auto 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 60px;
+      font-weight: bold;
+      color: white;
+      box-shadow: 0 10px 30px rgba(16,185,129,0.5);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(16,185,129,0.7); }
+      70% { box-shadow: 0 0 0 20px rgba(16,185,129,0); }
+      100% { box-shadow: 0 0 0 0 rgba(16,185,129,0); }
     }
 
     .status {
-      font-size: 52px;
-      font-weight: bold;
-      margin-bottom: 20px;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 38px;
       color: var(--green);
-      text-shadow: 0 4px 15px rgba(16,185,129,0.4);
+      margin: 15px 0;
+      text-shadow: 0 3px 10px rgba(0,0,0,0.3);
     }
 
-    .info {
-      background: rgba(255,255,255,0.15);
+    .info-card {
+      background: #f8f9fa;
+      color: #1e1b4b;
       border-radius: 18px;
       padding: 25px;
-      margin: 20px 0;
-      font-size: 18px;
-      line-height: 2;
+      margin: 25px 0;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
     }
 
-    .info strong {
-      color: var(--gold);
-    }
-
-    .purchase-details {
-      margin-top: 25px;
-      padding: 20px;
-      background: rgba(0,0,0,0.3);
-      border-radius: 16px;
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 12px 0;
+      border-bottom: 1px dashed #ddd;
       font-size: 17px;
     }
 
-    .footer {
-      margin-top: 30px;
+    .info-row:last-child { border: none; }
+
+    .label { font-weight: 600; color: #555; }
+    .value { font-weight: 700; color: #1e1b4b; text-align: right; }
+
+    .highlight {
+      background: var(--gold);
+      color: black;
+      padding: 3px 10px;
+      border-radius: 8px;
+      font-weight: bold;
+    }
+
+    .official-stamp {
+      margin: 30px 0;
       padding: 20px;
-      background: rgba(0,0,0,0.4);
-      border-radius: 0 0 28px 28px;
-      font-size: 15px;
+      background: rgba(196, 27, 42, 0.1);
+      border: 3px dashed var(--red-main);
+      border-radius: 16px;
+      font-size: 18px;
+      font-weight: bold;
+      color: var(--red-main);
+    }
+
+    .footer {
+      background: #1e1b4b;
+      color: white;
+      padding: 25px;
+      font-size: 16px;
+      text-align: center;
     }
 
     .error {
@@ -106,12 +170,21 @@
       padding: 30px;
       border-radius: 20px;
       font-size: 20px;
+      font-weight: 600;
+      border: 2px solid #ef4444;
+    }
+
+    .loader {
+      font-size: 18px;
+      padding: 40px;
+      color: var(--gold);
     }
 
     @media (max-width: 480px) {
-      .header h1 { font-size: 32px; }
-      .status { font-size: 42px; }
-      .info, .purchase-details { font-size: 16px; padding: 20px; }
+      .header h1 { font-size: 34px; }
+      .status { font-size: 32px; }
+      .info-card { padding: 20px; }
+      .info-row { font-size: 16px; }
     }
   </style>
 </head>
@@ -120,11 +193,11 @@
   <div class="container">
     <div class="header">
       <h1>GRADUACIÓN 2025</h1>
-      <p>Verificación de Compra</p>
+      <p>Verificación Oficial de Compra</p>
     </div>
 
     <div class="content" id="result">
-      <!-- Se llena con JS -->
+      <div class="loader">Verificando ticket...</div>
     </div>
   </div>
 
@@ -132,15 +205,13 @@
     const DB_URL = "https://boletos-66dac-default-rtdb.firebaseio.com/";
     const USERS_URL = DB_URL + "users.json";
 
-    // Obtener matrícula del QR (desde la URL: verificar.html?mat=2021001234&code=ABC123)
     const params = new URLSearchParams(window.location.search);
     const matricula = params.get('mat');
     const codigo = params.get('code');
-
     const resultDiv = document.getElementById('result');
 
     if (!matricula || !codigo) {
-      resultDiv.innerHTML = `<div class="error">QR inválido o incompleto.<br><br>Vuelve a escanear el código original del ticket.</div>`;
+      resultDiv.innerHTML = `<div class="error">QR NO VÁLIDO<br><br>Escanea el código oficial del ticket</div>`;
       return;
     }
 
@@ -150,61 +221,62 @@
         const users = await res.json();
 
         if (!users) {
-          throw new Error("No hay usuarios registrados");
+          resultDiv.innerHTML = `<div class="error">Sistema no disponible</div>`;
+          return;
         }
 
         let encontrado = false;
 
         for (const [id, user] of Object.entries(users)) {
-          if (user.matricula === matricula) {
-            // Buscar en historial de compras (si guardaste las compras)
-            if (user.purchases) {
-              const compras = Object.values(user.purchases);
-              const compraValida = compras.some(p => {
-                const qrData = `${matricula}-${codigo}`;
-                return p.qr?.includes(codigo) || p.codigo === codigo;
-              });
+          if (user.matricula !== matricula) continue;
 
-              if (compraValida || user.compraRealizada) {
-                const ultimaCompra = user.ultimaCompra || { cena: 2, ceremonia: 2, total: 3000, fecha: new Date().toLocaleString('es-MX') };
-                const esPaquete = ultimaCompra.cena === 2 && ultimaCompra.ceremonia === 2 && ultimaCompra.total === 3000;
+          if (user.purchases) {
+            const compras = Object.values(user.purchases);
+            const compra = compras.find(p => p.codigo === codigo);
 
-                resultDiv.innerHTML = `
-                  <div class="status">✓ COMPRA CONFIRMADA</div>
-                  <div class="info">
-                    <strong>Alumno:</strong> ${user.nombre}<br>
-                    <strong>Matrícula:</strong> ${user.matricula}<br><br>
-                    <strong>Compra realizada:</strong> ${esPaquete ? 'Paquete Completo' : 'Boletos Individuales'}<br>
-                    <strong>Boletos:</strong> ${ultimaCompra.cena} Cena + ${ultimaCompra.ceremonia} Ceremonia<br>
-                    <strong>Total pagado:</strong> $${ultimaCompra.total.toLocaleString()} MXN<br>
-                    <strong>Fecha y hora:</strong> ${new Date(ultimaCompra.fecha).toLocaleString('es-MX')}
-                  </div>
-                  <div class="purchase-details">
-                    Puede pasar a <strong>Caja - Recepción Principal</strong><br>
-                    para recoger sus boletos físicos
-                  </div>
-                  <div class="footer">
-                    ¡Felicidades por tu graduación!<br>
-                    Presenta este comprobante en caja
-                  </div>
-                `;
-                encontrado = true;
-                break;
-              }
-            }
+            if (compra) {
+              const fecha = new Date(compra.fecha);
+              const fechaStr = fecha.toLocaleDateString('es-MX') + ' ' + fecha.toLocaleTimeString('es-MX', {hour: '2-digit', minute: '2-digit'});
 
-            // Si no tiene historial pero tiene datos básicos
-            if (user.nombre) {
               resultDiv.innerHTML = `
-                <div class="status">✓ COMPRA CONFIRMADA</div>
-                <div class="info">
-                  <strong>Alumno:</strong> ${user.nombre}<br>
-                  <strong>Matrícula:</strong> ${user.matricula}<br><br>
-                  <strong>Estado:</strong> Compra registrada correctamente<br>
-                  <strong>Entrega:</strong> Caja - Recepción Principal
+                <div class="seal">Check</div>
+                <div class="status">TICKET VÁLIDO</div>
+
+                <div class="info-card">
+                  <div class="info-row">
+                    <span class="label">ALUMNO</span>
+                    <span class="value">${user.nombre}</span>
+                  </div>
+                  <div class="info-row">
+                    <span class="label">MATRÍCULA</span>
+                    <span class="value highlight">${user.matricula}</span>
+                  </div>
+                  <div class="info-row">
+                    <span class="label">CÓDIGO</span>
+                    <span class="value highlight">${compra.codigo}</span>
+                  </div>
+                  <div class="info-row">
+                    <span class="label">BOLETOS</span>
+                    <span class="value">${compra.cena} Cena + ${compra.ceremonia} Ceremonia</span>
+                  </div>
+                  <div class="info-row">
+                    <span class="label">TOTAL PAGADO</span>
+                    <span class="value">$${parseInt(compra.total).toLocaleString()} MXN</span>
+                  </div>
+                  <div class="info-row">
+                    <span class="label">FECHA COMPRA</span>
+                    <span class="value">${fechaStr}</span>
+                  </div>
                 </div>
+
+                <div class="official-stamp">
+                  TICKET AUTORIZADO<br>
+                  ENTREGA EN CAJA - RECEPCIÓN PRINCIPAL
+                </div>
+
                 <div class="footer">
-                  ¡Todo en orden! Puede recoger sus boletos
+                  <strong>¡FELICIDADES!</strong><br>
+                  El alumno puede recoger sus boletos físicos
                 </div>
               `;
               encontrado = true;
@@ -214,15 +286,24 @@
         }
 
         if (!encontrado) {
-          resultDiv.innerHTML = `<div class="error">⚠ No se encontró compra con esta matrícula y código.<br><br>Contacta al comité de graduación.</div>`;
+          resultDiv.innerHTML = `
+            <div class="error">
+              TICKET NO VÁLIDO<br><br>
+              No se encontró registro de esta compra<br><br>
+              Contacta al comité organizador
+            </div>
+          `;
         }
 
       } catch (err) {
-        resultDiv.innerHTML = `<div class="error">Error de conexión.<br>Intenta de nuevo más tarde.</div>`;
+        resultDiv.innerHTML = `<div class="error">Error de conexión<br>Intenta más tarde</div>`;
       }
     }
 
-    // Ejecutar al cargar
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('service-worker.js').catch(() => {});
+    }
+
     verificarCompra();
   </script>
 </body>
