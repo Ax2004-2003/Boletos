@@ -358,9 +358,8 @@
 
       await guardarCompra(cena, ceremonia, total, codigo);
 
-      // ESTA ES LA LÍNEA CLAVE: URL COMPLETA
-      const verifyURL = `https://tudominio.com/verificar.html?mat=${userMatricula}&code=${codigo}`;
-      // CAMBIA "https://tudominio.com" por tu enlace real (GitHub Pages, Netlify, 000webhost, etc.)
+      // TU DOMINIO REAL
+      const verifyURL = `https://ax2004-2003.github.io/Boletos/verificar.html?mat=${userMatricula}&code=${codigo}`;
 
       document.getElementById('ticketNombre').textContent = userNombre;
       document.getElementById('ticketMatricula').textContent = userMatricula;
@@ -374,7 +373,6 @@
       document.getElementById('ticket').style.display = 'block';
       document.getElementById('downloadTicket').style.display = 'block';
 
-      // QR con URL COMPLETA
       QRCode.toCanvas(document.getElementById('qrCode'), verifyURL, { 
         width: 180,
         color: { dark: '#000000', light: '#ffffff' }
