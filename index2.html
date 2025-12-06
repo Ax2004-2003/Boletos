@@ -54,6 +54,16 @@
 
     .content { padding: 40px 30px; background: rgba(255,255,255,0.97); color: #1e1b4b; }
 
+    .profile {
+      background: var(--gray);
+      padding: 20px;
+      border-radius: 16px;
+      text-align: center;
+      margin-bottom: 25px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+    }
+    .profile h3 { color: var(--red-main); font-size: 24px; margin-bottom: 10px; }
+
     .inventory {
       display: flex; justify-content: space-around; margin-bottom: 30px; text-align: center;
     }
@@ -76,17 +86,8 @@
       cursor: pointer; margin-top: 15px; transition: all 0.4s;
     }
     button:hover { transform: translateY(-4px); box-shadow: 0 15px 30px rgba(99,102,241,0.4); }
-
-    .total-display {
-      text-align: right;
-      font-size: 22px;
-      font-weight: bold;
-      color: #f59e0b;
-      margin: 15px 0;
-      padding: 10px;
-      background: #fff8e1;
-      border-radius: 12px;
-    }
+    button.delete { background: #ef4444; }
+    button.ticket { background: #10b981; }
 
     .message { margin-top: 20px; padding: 15px; border-radius: 12px; text-align: center; font-weight: 600; display: none; }
     .message.success { background: #d4edda; color: #10b981; }
@@ -108,6 +109,8 @@
 
     @media (max-width: 480px) {
       #ticket { width: 95%; }
+      .qr-container { width: 200px; height: 200px; }
+      #qrCode { width: 160px; height: 160px; }
       select { width: 100%; }
     }
   </style>
@@ -121,20 +124,32 @@
     </div>
 
     <div class="content" id="mainContent">
+      <!-- PERFIL -->
+      <div class="profile">
+        <h3 id="userName">Axel</h3>
+        <p>Mis boletos comprados</p>
+      </div>
+
       <!-- BOLETOS DISPONIBLES -->
       <div class="inventory">
         <div><h3>Boletos Cena</h3><span id="dinnerAvailable">200</span></div>
         <div><h3>Boletos Ceremonia</h3><span id="ceremonyAvailable">200</span></div>
       </div>
 
-      <!-- PAQUETE COMPLETO -->
+      <!-- MIS COMPRAS -->
+      <div id="myPurchases">
+        <div style="background:#fef3cd;padding:20px;border-radius:12px;text-align:center;font-size:18px;">
+          Cargando tus compras...
+        </div>
+      </div>
+
+      <!-- OPCIONES DE COMPRA -->
       <div class="option">
         <h3>Paquete Completo • $3,000 MXN</h3>
         <p>2 boletos de cena + 2 de ceremonia</p>
         <button id="buyPackage">Comprar Paquete</button>
       </div>
 
-      <!-- BOLETOS INDIVIDUALES -->
       <div class="option">
         <h3>Boletos Individuales</h3>
         <p>Cena: $1,000 c/u • Ceremonia: $150 c/u</p>
@@ -148,14 +163,17 @@
           <option value="1">Ceremonia: 1 ($150)</option>
           <option value="2">Ceremonia: 2 ($300)</option>
         </select>
-        <div class="total-display" id="individualTotal">Total: $0 MXN</div>
+        <div style="text-align:right; font-size:20px; font-weight:bold; color:#f59e0b; margin:15px 0;" id="individualTotal">Total: $0 MXN</div>
         <button id="buyIndividual">Comprar Individuales</button>
       </div>
+
+      <button class="ticket" id="goToTicket" style="display:none;">Ir a mi Ticket</button>
+      <button class="delete" id="deleteLast" style="display:none;">Eliminar última compra</button>
 
       <div id="message" class="message"></div>
     </div>
 
-    <!-- TICKET FINAL -->
+    <!-- TICKET -->
     <div id="ticket">
       <div class="ticket-title">GRADUACIÓN 2025</div>
       <div class="qr-container"><canvas id="qrCode"></canvas></div>
@@ -182,9 +200,10 @@
     const userId = localStorage.getItem('currentUserId');
 
     document.getElementById('welcome').textContent = `Hola, ${userNombre.split(' ')[0]}`;
+    document.getElementById('userName').textContent = userNombre;
 
     if (!userId) {
-      alert('Debes iniciar sesión primero');
+      alert('Debes iniciar sesión');
       window.location.href = 'index.html';
     }
 
@@ -192,15 +211,40 @@
     const INVENTORY_URL = DB_URL + "inventory.json";
     const PURCHASES_URL = DB_URL + `users/${userId}/purchases.json`;
 
+    let compras = [];
     let totalCena = 0;
     let totalCeremonia = 0;
 
-    async function loadInventory() {
+    async function loadData() {
       try {
-        const res = await fetch(INVENTORY_URL);
-        const inv = await res.json() || {dinner:200, ceremony:200};
-        document.getElementById('dinnerAvailable').textContent = inv.dinner;
-        document.getElementById('ceremonyAvailable').textContent = inv.ceremony;
+        const [invRes, purRes] = await Promise.all([fetch(INVENTORY_URL), fetch(PURCHASES_URL)]);
+        const inventory = await invRes.json() || {dinner:200, ceremony:200};
+        const data = await purRes.json();
+
+        document.getElementById('dinnerAvailable').textContent = inventory.dinner;
+        document.getElementById('ceremonyAvailable').textContent = inventory.ceremony;
+
+        if (data) {
+          compras = Object.entries(data).map(([id, c]) => ({id, ...c}));
+          totalCena = compras.reduce((s, c) => s + c.cena, 0);
+          totalCeremonia = compras.reduce((s, c) => s + c.ceremonia, 0);
+
+          document.getElementById('myPurchases').innerHTML = `
+            <div style="background:#d4edda;padding:20px;border-radius:12px;text-align:center;">
+              <h3 style="color:#10b981;">¡Ya tienes boletos!</h3>
+              <p><strong>${totalCena} Cena + ${totalCeremonia} Ceremonia</strong></p>
+            </div>
+          `;
+
+          document.getElementById('goToTicket').style.display = 'block';
+          document.getElementById('deleteLast').style.display = 'block';
+        } else {
+          document.getElementById('myPurchases').innerHTML = `
+            <div style="background:#fef3cd;padding:20px;border-radius:12px;text-align:center;">
+              <p>Aún no has comprado boletos</p>
+            </div>
+          `;
+        }
       } catch (err) { console.error(err); }
     }
 
@@ -215,23 +259,41 @@
       const codigo = Math.random().toString(36).substr(2, 9).toUpperCase();
       const compra = { cena, ceremonia, total, codigo, fecha: new Date().toISOString() };
 
-      // Guardar compra
       await fetch(PURCHASES_URL, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(compra) });
 
-      // Actualizar inventario
       const inv = await (await fetch(INVENTORY_URL)).json();
       await fetch(INVENTORY_URL, { method: 'PATCH', body: JSON.stringify({dinner: inv.dinner - cena, ceremony: inv.ceremony - ceremonia}) });
 
-      totalCena += cena;
-      totalCeremonia += ceremonia;
-
-      // Mostrar ticket directamente
-      mostrarTicket(compra);
+      loadData();
+      showMessage('¡Compra agregada!', 'success');
     }
 
+    document.getElementById('buyPackage').onclick = () => comprar(2, 2, 3000);
+    document.getElementById('buyIndividual').onclick = () => {
+      const d = parseInt(document.getElementById('qtyDinner').value) || 0;
+      const c = parseInt(document.getElementById('qtyCeremony').value) || 0;
+      if (d + c === 0) return showMessage('Selecciona al menos un boleto');
+      comprar(d, c, d*1000 + c*150);
+    };
+
+    document.getElementById('goToTicket').onclick = () => {
+      const ultima = compras[compras.length - 1];
+      if (ultima) mostrarTicket(ultima);
+    };
+
+    document.getElementById('deleteLast').onclick = async () => {
+      if (!confirm('¿Eliminar última compra?')) return;
+      const ultima = compras[compras.length - 1];
+      await fetch(DB_URL + `users/${userId}/purchases/${ultima.id}.json`, { method: 'DELETE' });
+      const inv = await (await fetch(INVENTORY_URL)).json();
+      await fetch(INVENTORY_URL, { method: 'PATCH', body: JSON.stringify({dinner: inv.dinner + ultima.cena, ceremony: inv.ceremony + ultima.ceremonia}) });
+      loadData();
+      showMessage('Compra eliminada', 'success');
+    };
+
     function mostrarTicket(compra) {
-      const fecha = new Date().toLocaleDateString('es-MX');
-      const hora = new Date().toLocaleTimeString('es-MX', {hour: '2-digit', minute: '2-digit'});
+      const fecha = new Date(compra.fecha).toLocaleDateString('es-MX');
+      const hora = new Date(compra.fecha).toLocaleTimeString('es-MX', {hour: '2-digit', minute: '2-digit'});
 
       document.getElementById('ticketNombre').textContent = userNombre;
       document.getElementById('ticketMatricula').textContent = userMatricula;
@@ -248,24 +310,12 @@
       QRCode.toCanvas(document.getElementById('qrCode'), url, { width: 180 });
     }
 
-    // Comprar Paquete → directo al ticket
-    document.getElementById('buyPackage').onclick = () => comprar(2, 2, 3000);
-
-    // Comprar Individuales → muestra total y al dar clic → ticket
-    document.getElementById('buyIndividual').onclick = () => {
-      const d = parseInt(document.getElementById('qtyDinner').value) || 0;
-      const c = parseInt(document.getElementById('qtyCeremony').value) || 0;
-      if (d + c === 0) return showMessage('Selecciona al menos un boleto');
-      const total = d*1000 + c*150;
-      comprar(d, c, total);
-    };
-
     document.getElementById('downloadTicket').onclick = () => {
-      html2canvas(document.getElementById('ticket'), { scale: 2 }).then(canvas => {
-        const link = document.createElement('a');
-        link.download = `Ticket_${userMatricula}.png`;
-        link.href = canvas.toDataURL();
-        link.click();
+      html2canvas(document.getElementById('ticket'), { scale: 2 }).then(c => {
+        const a = document.createElement('a');
+        a.download = `Ticket_${userMatricula}.png`;
+        a.href = c.toDataURL();
+        a.click();
       });
     };
 
@@ -281,7 +331,7 @@
       navigator.serviceWorker.register('service-worker.js').catch(() => {});
     }
 
-    loadInventory();
+    loadData();
     calculateTotal();
   </script>
 </body>
