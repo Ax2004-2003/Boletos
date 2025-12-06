@@ -39,7 +39,7 @@
       align-items: center;
     }
 
-    @keyframes gradientBG { 0% { background-position: CENTER; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+    @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
 
     .container {
       max-width: 500px;
@@ -298,7 +298,7 @@
         document.getElementById('dinnerAvailable').textContent = inventory.dinner;
         document.getElementById('ceremonyAvailable').textContent = inventory.ceremony;
       } catch (err) {
-        console.error("Error cargando inventario:", err);
+        console.error("Error:", err);
       }
     }
 
@@ -358,7 +358,9 @@
 
       await guardarCompra(cena, ceremonia, total, codigo);
 
-      const verifyURL = `verificar.html?mat=${userMatricula}&code=${codigo}`;
+      // ESTA ES LA LÍNEA CLAVE: URL COMPLETA
+      const verifyURL = `https://tudominio.com/verificar.html?mat=${userMatricula}&code=${codigo}`;
+      // CAMBIA "https://tudominio.com" por tu enlace real (GitHub Pages, Netlify, 000webhost, etc.)
 
       document.getElementById('ticketNombre').textContent = userNombre;
       document.getElementById('ticketMatricula').textContent = userMatricula;
@@ -372,6 +374,7 @@
       document.getElementById('ticket').style.display = 'block';
       document.getElementById('downloadTicket').style.display = 'block';
 
+      // QR con URL COMPLETA
       QRCode.toCanvas(document.getElementById('qrCode'), verifyURL, { 
         width: 180,
         color: { dark: '#000000', light: '#ffffff' }
@@ -381,10 +384,7 @@
     document.getElementById('buyPackage').addEventListener('click', async () => {
       if (inventory.dinner < 2 || inventory.ceremony < 2) return showMessage('No hay suficientes boletos para el paquete', 'error');
       
-      await fetch(INVENTORY_URL, { 
-        method: 'PATCH', 
-        body: JSON.stringify({dinner: inventory.dinner-2, ceremony: inventory.ceremony-2}) 
-      });
+      await fetch(INVENTORY_URL, { method: 'PATCH', body: JSON.stringify({dinner: inventory.dinner-2, ceremony: inventory.ceremony-2}) });
       inventory.dinner -= 2; inventory.ceremony -= 2;
       loadInventory();
       mostrarTicket(2, 2, 3000);
@@ -398,10 +398,7 @@
       if (inventory.dinner < d || inventory.ceremony < c) return showMessage('No hay suficientes boletos');
 
       const total = d*1000 + c*150;
-      await fetch(INVENTORY_URL, { 
-        method: 'PATCH', 
-        body: JSON.stringify({dinner: inventory.dinner-d, ceremony: inventory.ceremony-c}) 
-      });
+      await fetch(INVENTORY_URL, { method: 'PATCH', body: JSON.stringify({dinner: inventory.dinner-d, ceremony: inventory.ceremony-c}) });
       inventory.dinner -= d; inventory.ceremony -= c;
       loadInventory();
       mostrarTicket(d, c, total);
@@ -411,18 +408,18 @@
     document.getElementById('downloadTicket').addEventListener('click', () => {
       html2canvas(document.getElementById('ticket'), { scale: 2 }).then(canvas => {
         const link = document.createElement('a');
-        link.download = `Ticket_Graduacion_${userMatricula}_${new Date().getTime()}.png`;
+        link.download = `Ticket_Graduacion_${userMatricula}.png`;
         link.href = canvas.toDataURL();
         link.click();
       });
     });
 
-    // Registrar Service Worker (PWA)
+    // PWA
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('service-worker.js')
-          .then(reg => console.log('SW registrado'))
-          .catch(err => console.log('Error SW:', err));
+          .then(() => console.log('SW registrado'))
+          .catch(() => {});
       });
     }
 
