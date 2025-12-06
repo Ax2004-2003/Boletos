@@ -19,9 +19,7 @@
       --green: #10b981;
       --gray: #f1f5f9;
     }
-
     * { margin: 0; padding: 0; box-sizing: border-box; }
-
     body {
       font-family: 'Poppins', sans-serif;
       background: linear-gradient(-45deg, #667eea, #764ba2, #f093fb, #f5576c);
@@ -33,7 +31,6 @@
       justify-content: center;
       align-items: center;
     }
-
     @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
 
     .container {
@@ -52,13 +49,18 @@
       text-align: center;
       padding: 40px 20px;
     }
-
     .header h1 { font-size: clamp(28px, 6vw, 36px); font-weight: 700; margin-bottom: 8px; }
     .header p { font-size: 16px; opacity: 0.9; }
 
     .content { padding: 40px 30px; background: rgba(255,255,255,0.97); color: #1e1b4b; }
 
     h2 { text-align: center; margin-bottom: 20px; font-size: 28px; background: linear-gradient(90deg, #6366f1, #ec4899); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 700; }
+
+    .inventory {
+      display: flex; justify-content: space-around; margin-bottom: 30px; text-align: center;
+    }
+    .inventory div { background: #f1f5f9; padding: 16px; border-radius: 14px; width: 48%; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+    .inventory span { font-size: 26px; font-weight: bold; color: #6366f1; }
 
     .current-purchase {
       background: var(--gray);
@@ -68,7 +70,6 @@
       text-align: center;
       box-shadow: 0 8px 25px rgba(0,0,0,0.1);
     }
-
     .current-purchase h3 { color: var(--red-main); font-size: 22px; margin-bottom: 15px; }
 
     .purchase-item {
@@ -88,12 +89,20 @@
       font-weight: 600;
     }
 
-    .inventory, .option { margin-top: 20px; }
+    .option {
+      background: white;
+      padding: 25px;
+      border-radius: 16px;
+      margin: 20px 0;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+      transition: transform 0.3s;
+    }
+    .option:hover { transform: translateY(-6px); }
 
     button {
       width: 100%; padding: 16px; background: linear-gradient(90deg, #6366f1, #ec4899);
       color: white; border: none; border-radius: 12px; font-size: 18px; font-weight: 600;
-      cursor: pointer; margin-top: 15px; transition: all 0.4 pjes;
+      cursor: pointer; margin-top: 15px; transition: all 0.4s;
     }
     button:hover { transform: translateY(-4px); box-shadow: 0 15px 30px rgba(99,102,241,0.4); }
 
@@ -111,10 +120,15 @@
     .footer-note { background: rgba(0,0,0,0.4); padding: 18px; font-size: 15px; margin-top: 20px; border-top: 2px dashed rgba(255,255,255,0.3); }
     .download-btn { display: block; margin: 30px auto; padding: 16px 40px; background: var(--gold); color: black; border: none; border-radius: 50px; font-weight: bold; font-size: 18px; cursor: pointer; }
 
+    select {
+      width: 48%; padding: 12px; margin: 8px 1%; border-radius: 12px; border: 2px solid #ddd; font-size: 16px;
+    }
+
     @media (max-width: 480px) {
       #ticket { width: 95%; }
       .qr-container { width: 200px; height: 200px; }
       #qrCode { width: 160px; height: 160px; }
+      select { width: 100%; }
     }
   </style>
 </head>
@@ -126,20 +140,28 @@
       <p id="welcome">Cargando...</p>
     </div>
 
-    <div class="content">
-      <h2>Mis Boletos</h2>
+    <div class="content" id="mainContent">
+      <h2>Disponibilidad de Boletos</h2>
+      <div class="inventory">
+        <div><h3>Boletos Cena</h3><span id="dinnerAvailable">200</span></div>
+        <div><h3>Boletos Ceremonia</h3><span id="ceremonyAvailable">200</span></div>
+      </div>
 
       <!-- MIS COMPRAS ACTUALES -->
       <div id="currentPurchases">
-        <div class="current-purchase">
-          <h3>Cargando tus compras...</h3>
-        </div>
+        <div class="current-purchase"><h3>Cargando tus compras...</h3></div>
       </div>
 
-      <!-- COMPRAR MÁS -->
+      <!-- OPCIONES DE COMPRA -->
       <div class="option">
-        <h3>Comprar más boletos</h3>
-        <p>Puedes agregar al paquete que ya tienes</p>
+        <h3>Paquete Completo • $3,000 MXN</h3>
+        <p>2 boletos de cena + 2 de ceremonia</p>
+        <button id="buyPackage">Comprar Paquete</button>
+      </div>
+
+      <div class="option">
+        <h3>Boletos Individuales</h3>
+        <p>Cena: $1,000 c/u • Ceremonia: $150 c/u</p>
         <select id="qtyDinner">
           <option value="0">Cena: 0</option>
           <option value="1">Cena: 1 ($1,000)</option>
@@ -151,13 +173,13 @@
           <option value="2">Ceremonia: 2 ($300)</option>
         </select>
         <div style="text-align:right; font-size:20px; font-weight:bold; color:#f59e0b; margin:15px 0;" id="individualTotal">Total: $0 MXN</div>
-        <button id="buyMore">Agregar a mi compra</button>
+        <button id="buyIndividual">Comprar Individuales</button>
       </div>
 
       <div id="message" class="message"></div>
     </div>
 
-    <!-- TICKET FINAL (actualizado) -->
+    <!-- TICKET FINAL -->
     <div id="ticket">
       <div class="ticket-title">GRADUACIÓN 2025</div>
       <div class="qr-container"><canvas id="qrCode"></canvas></div>
@@ -183,10 +205,10 @@
     const userMatricula = localStorage.getItem('currentUserMatricula') || '000000';
     const userId = localStorage.getItem('currentUserId');
 
-    document.getElementById('welcome').textContent = `Hola, ${userNombre.split " ")[0]}`;
+    document.getElementById('welcome').textContent = `Hola, ${userNombre.split(' ')[0]}`;
 
     if (!userId) {
-      alert('Debes iniciar sesión');
+      alert('Debes iniciar sesión primero');
       window.location.href = 'index.html';
     }
 
@@ -198,15 +220,23 @@
     let totalCeremonia = 0;
     let ultimaCompra = null;
 
-    async function cargarCompras() {
+    // Cargar inventario y compras
+    async function loadData() {
       try {
-        const res = await fetch(PURCHASES_URL);
-        const compras = await res.json();
+        const [invRes, purRes] = await Promise.all([
+          fetch(INVENTORY_URL),
+          fetch(PURCHASES_URL)
+        ]);
+        const inventory = await invRes.json() || {dinner:200, ceremony:200};
+        const compras = await purRes.json();
+
+        document.getElementById('dinnerAvailable').textContent = inventory.dinner;
+        document.getElementById('ceremonyAvailable').textContent = inventory.ceremony;
 
         if (compras) {
           const lista = Object.values(compras);
-          totalCena = lista.reduce((sum, c) => sum + c.cena, 0);
-          totalCeremonia = lista.reduce((sum, c) => sum + c.ceremonia, 0);
+          totalCena = lista.reduce((s, c) => s + (c.cena || 0), 0);
+          totalCeremonia = lista.reduce((s, c) => s + (c.ceremonia || 0), 0);
           ultimaCompra = lista[lista.length - 1];
 
           document.getElementById('currentPurchases').innerHTML = `
@@ -216,7 +246,7 @@
                 <strong>${totalCena} boletos de Cena</strong><br>
                 <strong>${totalCeremonia} boletos de Ceremonia</strong>
               </div>
-              <p>Puedes comprar más si lo deseas</p>
+              <p>¡Ya tienes tu lugar asegurado!</p>
             </div>
           `;
         } else {
@@ -242,30 +272,22 @@
     document.getElementById('qtyDinner').addEventListener('change', calculateTotal);
     document.getElementById('qtyCeremony').addEventListener('change', calculateTotal);
 
-    async function comprar(d, c, total) {
+    async function comprar(cena, ceremonia, total) {
       const codigo = Math.random().toString(36).substr(2, 9).toUpperCase();
-      const compra = { cena: d, ceremonia: c, total, codigo, fecha: new Date().toISOString() };
+      const compra = { cena, ceremonia, total, codigo, fecha: new Date().toISOString() };
 
-      await fetch(PURCHASES_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(compra)
-      });
+      await fetch(PURCHASES_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(compra) });
 
-      // Actualizar inventario
       const invRes = await fetch(INVENTORY_URL);
       const inv = await invRes.json();
-      await fetch(INVENTORY_URL, {
-        method: 'PATCH',
-        body: JSON.stringify({ dinner: inv.dinner - d, ceremony: inv.ceremony - c })
-      });
+      await fetch(INVENTORY_URL, { method: 'PATCH', body: JSON.stringify({ dinner: inv.dinner - cena, ceremony: inv.ceremony - ceremonia }) });
 
-      totalCena += d;
-      totalCeremonia += c;
+      totalCena += cena;
+      totalCeremonia += ceremonia;
       ultimaCompra = compra;
 
       mostrarTicketActualizado();
-      showMessage('¡Compra agregada con éxito!', 'success');
+      showMessage('¡Compra realizada con éxito!', 'success');
     }
 
     function mostrarTicketActualizado() {
@@ -277,9 +299,9 @@
       document.getElementById('ticketFecha').textContent = fecha;
       document.getElementById('ticketHora').textContent = hora;
       document.getElementById('ticketBoletos').textContent = `${totalCena} Cena + ${totalCeremonia} Ceremonia`;
-      document.getElementById('ticketCode').textContent = ultimaCompra?.codigo || 'TEMP';
+      document.getElementById('ticketCode').textContent = ultimaCompra.codigo;
 
-      document.querySelector('.content').style.display = 'none';
+      document.getElementById('mainContent').style.display = 'none';
       document.getElementById('ticket').style.display = 'block';
       document.getElementById('downloadTicket').style.display = 'block';
 
@@ -287,18 +309,19 @@
       QRCode.toCanvas(document.getElementById('qrCode'), verifyURL, { width: 180 });
     }
 
-    document.getElementById('buyMore').addEventListener('click', async () => {
+    document.getElementById('buyPackage').addEventListener('click', () => comprar(2, 2, 3000));
+    document.getElementById('buyIndividual').addEventListener('click', () => {
       const d = parseInt(document.getElementById('qtyDinner').value) || 0;
       const c = parseInt(document.getElementById('qtyCeremony').value) || 0;
       if (d + c === 0) return showMessage('Selecciona al menos un boleto');
       const total = d*1000 + c*150;
-      await comprar(d, c, total);
+      comprar(d, c, total);
     });
 
     document.getElementById('downloadTicket').addEventListener('click', () => {
       html2canvas(document.getElementById('ticket'), { scale: 2 }).then(canvas => {
         const link = document.createElement('a');
-        link.download = `Ticket_Actualizado_${userMatricula}.png`;
+        link.download = `Ticket_Graduacion_${userMatricula}.png`;
         link.href = canvas.toDataURL();
         link.click();
       });
@@ -312,14 +335,13 @@
       setTimeout(() => msg.style.display = 'none', 5000);
     }
 
-    // Cargar compras al iniciar
-    cargarCompras();
-    calculateTotal();
-
     // PWA
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('service-worker.js').catch(() => {});
     }
+
+    loadData();
+    calculateTotal();
   </script>
 </body>
 </html>
