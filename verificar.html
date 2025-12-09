@@ -15,11 +15,8 @@
       --red-main: #c41b2a;
       --gold: #FFD700;
       --green: #10b981;
-      --gray: #f1f5f9;
     }
-
     * { margin: 0; padding: 0; box-sizing: border-box; }
-
     body {
       font-family: 'Poppins', sans-serif;
       background: linear-gradient(135deg, #0f172a, #1e293b);
@@ -30,7 +27,6 @@
       padding: 15px;
       color: white;
     }
-
     .container {
       background: white;
       color: #1e1b4b;
@@ -40,13 +36,11 @@
       overflow: hidden;
       box-shadow: 0 25px 60px rgba(0,0,0,0.7);
     }
-
     .header {
       background: linear-gradient(135deg, var(--red-dark), var(--red-main));
       padding: 40px 20px;
       text-align: center;
     }
-
     .header h1 {
       font-family: 'Bebas Neue', sans-serif;
       font-size: 46px;
@@ -54,111 +48,60 @@
       text-shadow: 0 4px 15px rgba(0,0,0,0.8);
       letter-spacing: 3px;
     }
+    .header p { font-size: 18px; margin-top: 8px; opacity: 0.95; }
 
-    .header p {
-      font-size: 18px;
-      margin-top: 8px;
-      opacity: 0.95;
-    }
-
-    .content {
-      padding: 40px 30px;
-      text-align: center;
-    }
+    .content { padding: 40px 30px; text-align: center; }
 
     .valid {
       background: #ecfdf5;
       color: #065f46;
-      padding: 30px;
+      padding: 35px;
       border-radius: 20px;
-      border: 4px solid var(--green);
+      border: 5px solid var(--green);
       margin-bottom: 20px;
     }
-
     .valid .status {
       font-family: 'Bebas Neue', sans-serif;
-      font-size: 48px;
+      font-size: 50px;
       color: var(--green);
       margin: 15px 0;
     }
-
     .valid .seal {
-      width: 120px;
-      height: 120px;
-      background: var(--green);
-      color: white;
-      border-radius: 50%;
-      margin: 0 auto 20px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 70px;
+      width: 130px; height: 130px; background: var(--green); color: white;
+      border-radius: 50%; margin: 0 auto 20px; display: flex;
+      align-items: center; justify-content: center; font-size: 80px;
       box-shadow: 0 0 0 15px rgba(16,185,129,0.3);
       animation: pulse 2s infinite;
     }
-
-    @keyframes pulse {
-      0% { box-shadow: 0 0 0 0 rgba(16,185,129,0.7); }
-      70% { box-shadow: 0 0 0 25px rgba(16,185,129,0); }
-      100% { box-shadow: 0 0 0 0 rgba(16,185,129,0); }
-    }
+    @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(16,185,129,0.7); } 70% { box-shadow: 0 0 0 30px rgba(16,185,129,0); } 100% { box-shadow: 0 0 0 0 rgba(16,185,129,0); } }
 
     .invalid {
-      background: #fee2e2;
-      color: #991b1b;
-      padding: 30px;
-      border-radius: 20px;
-      border: 4px solid #ef4444;
-      font-size: 20px;
-      font-weight: 600;
+      background: #fee2e2; color: #991b1b; padding: 35px;
+      border-radius: 20px; border: 5px solid #ef4444; font-size: 22px; font-weight: 600;
     }
 
     .info-card {
-      background: #f8f9fa;
-      border-radius: 18px;
-      padding: 25px;
-      margin: 25px 0;
+      background: #f8f9fa; border-radius: 18px; padding: 25px; margin: 25px 0;
       box-shadow: 0 10px 30px rgba(0,0,0,0.1);
     }
-
     .info-row {
-      display: flex;
-      justify-content: space-between;
-      padding: 14px 0;
-      border-bottom: 1px dashed #ddd;
-      font-size: 17px;
+      display: flex; justify-content: space-between; padding: 14px 0;
+      border-bottom: 1px dashed #ddd; font-size: 18px;
     }
-
     .info-row:last-child { border: none; }
-
     .label { font-weight: 600; color: #555; }
     .value { font-weight: 700; color: #1e1b4b; text-align: right; }
-    .highlight { background: var(--gold); color: black; padding: 4px 12px; border-radius: 8px; font-weight: bold; }
+    .highlight { background: var(--gold); color: black; padding: 5px 12px; border-radius: 8px; font-weight: bold; }
 
     .official-stamp {
-      margin: 30px 0;
-      padding: 25px;
-      background: rgba(196, 27, 42, 0.1);
-      border: 3px dashed var(--red-main);
-      border-radius: 16px;
-      font-size: 20px;
-      font-weight: bold;
-      color: var(--red-main);
+      margin: 30px 0; padding: 25px; background: rgba(196,27,42,0.1);
+      border: 3px dashed var(--red-main); border-radius: 16px;
+      font-size: 20px; font-weight: bold; color: var(--red-main);
     }
 
-    .footer {
-      background: #1e1b4b;
-      color: white;
-      padding: 25px;
-      text-align: center;
-      font-size: 16px;
-    }
+    .footer { background: #1e1b4b; color: white; padding: 25px; text-align: center; font-size: 16px; }
 
-    .loader {
-      font-size: 20px;
-      color: var(--gold);
-      padding: 40px;
-    }
+    .loader { font-size: 20px; color: var(--gold); padding: 40px; }
   </style>
 </head>
 <body>
@@ -184,7 +127,7 @@
     const resultDiv = document.getElementById('result');
 
     if (!matricula || !codigo) {
-      resultDiv.innerHTML = `<div class="invalid">QR INVÁLIDO<br><br>Falta matrícula o código</div>`;
+      resultDiv.innerHTML = `<div class="invalid">QR INVÁLIDO<br><br>Faltan datos</div>`;
       return;
     }
 
@@ -192,63 +135,41 @@
       try {
         const res = await fetch(USERS_URL);
         if (!res.ok) throw new Error("Sin conexión");
-
         const users = await res.json();
-        if (!users) {
-          resultDiv.innerHTML = `<div class="invalid">Base de datos no disponible</div>`;
-          return;
-        }
+        if (!users) throw new Error("Base vacía");
 
-        let alumnoEncontrado = null;
+        let alumno = null;
         let compraValida = null;
 
-        // Buscar al alumno por matrícula
-        for (const [userId, userData] of Object.entries(users)) {
-          if (userData.matricula === matricula) {
-            alumnoEncontrado = { id: userId, ...userData };
+        // 1. Buscar al alumno por matrícula
+        for (const [uid, data] of Object.entries(users)) {
+          if (data.matricula === matricula) {
+            alumno = { uid, ...data };
             break;
           }
         }
 
-        if (!alumnoEncontrado) {
-          resultDiv.innerHTML = `
-            <div class="invalid">
-              PERSONA NO REGISTRADA<br><br>
-              No existe ningún alumno con la matrícula:<br>
-              <strong>${matricula}</strong>
-            </div>
-          `;
+        if (!alumno) {
+          resultDiv.innerHTML = `<div class="invalid">ALUMNO NO REGISTRADO<br><br>Matrícula: ${matricula}</div>`;
           return;
         }
 
-        // Verificar si tiene compras
-        if (!alumnoEncontrado.purchases || Object.keys(alumnoEncontrado.purchases).length === 0) {
-          resultDiv.innerHTML = `
-            <div class="invalid">
-              SIN COMPRAS REGISTRADAS<br><br>
-              El alumno <strong>${alumnoEncontrado.nombre}</strong><br>
-              está registrado pero no ha comprado boletos.
-            </div>
-          `;
+        // 2. Revisar sus compras
+        if (!alumno.purchases || Object.keys(alumno.purchases).length === 0) {
+          resultDiv.innerHTML = `<div class="invalid">SIN COMPRAS<br><br>${alumno.nombre} no ha comprado boletos</div>`;
           return;
         }
 
-        // Buscar el código exacto en sus compras
-        const compras = Object.values(alumnoEncontrado.purchases);
+        // 3. Buscar el código exacto
+        const compras = Object.values(alumno.purchases);
         compraValida = compras.find(c => c.codigo === codigo);
 
         if (!compraValida) {
-          resultDiv.innerHTML = `
-            <div class="invalid">
-              CÓDIGO NO VÁLIDO<br><br>
-              El código <strong>${codigo}</strong><br>
-              no corresponde a ninguna compra de este alumno.
-            </div>
-          `;
+          resultDiv.innerHTML = `<div class="invalid">CÓDIGO NO VÁLIDO<br><br>El código ${codigo} no pertenece a este alumno</div>`;
           return;
         }
 
-        // ¡TICKET VÁLIDO!
+        // TICKET 100% VÁLIDO
         const fecha = new Date(compraValida.fecha);
         const fechaStr = fecha.toLocaleDateString('es-MX');
         const horaStr = fecha.toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' });
@@ -261,40 +182,21 @@
           </div>
 
           <div class="info-card">
-            <div class="info-row">
-              <span class="label">ALUMNO</span>
-              <span class="value">${alumnoEncontrado.nombre}</span>
-            </div>
-            <div class="info-row">
-              <span class="label">MATRÍCULA</span>
-              <span class="value highlight">${alumnoEncontrado.matricula}</span>
-            </div>
-            <div class="info-row">
-              <span class="label">CÓDIGO TICKET</span>
-              <span class="value highlight">${compraValida.codigo}</span>
-            </div>
-            <div class="info-row">
-              <span class="label">BOLETOS</span>
-              <span class="value">${compraValida.cena || 0} Cena + ${compraValida.ceremonia || 0} Ceremonia</span>
-            </div>
-            <div class="info-row">
-              <span class="label">TOTAL PAGADO</span>
-              <span class="value">$${parseInt(compraValida.total || 0).toLocaleString()} MXN</span>
-            </div>
-            <div class="info-row">
-              <span class="label">FECHA Y HORA</span>
-              <span class="value">${fechaStr} • ${horaStr}</span>
-            </div>
+            <div class="info-row"><span class="label">ALUMNO</span><span class="value">${alumno.nombre}</span></div>
+            <div class="info-row"><span class="label">MATRÍCULA</span><span class="value highlight">${alumno.matricula}</span></div>
+            <div class="info-row"><span class="label">CÓDIGO</span><span class="value highlight">${compraValida.codigo}</span></div>
+            <div class="info-row"><span class="label">BOLETOS</span><span class="value">${compraValida.cena || 0} Cena + ${compraValida.ceremonia || 0} Ceremonia</span></div>
+            <div class="info-row"><span class="label">TOTAL</span><span class="value">$${parseInt(compraValida.total || 0).toLocaleString()} MXN</span></div>
+            <div class="info-row"><span class="label">FECHA</span><span class="value">${fechaStr} • ${horaStr}</span></div>
           </div>
 
           <div class="official-stamp">
             TICKET OFICIAL AUTORIZADO<br>
-            <strong>ACCESO PERMITIDO</strong><br>
-            Entrega de boletos físicos en Caja
+            <strong>ACCESO PERMITIDO</strong>
           </div>
 
           <div class="footer">
-            <strong>¡FELICIDADES POR TU GRADUACIÓN!</strong><br>
+            <strong>¡FELICIDADES!</strong><br>
             Bienvenid@ a la ceremonia 2025
           </div>
         `;
@@ -305,7 +207,6 @@
       }
     }
 
-    // Iniciar verificación
     verificarTicket();
   </script>
 </body>
