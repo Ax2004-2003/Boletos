@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Verificación Oficial • Graduación 2025</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Bebas+Neue&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --red-dark: #8B0000;
+      --red-main: #c41b2a;
+      --gold: #FFD700;
+      --green: #10b981;
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      font-family:'Poppins',sans-serif;
+      background:linear-gradient(135deg,#0f172a,#1e293b);
+      min-height:100vh;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      padding:15px;
+      color:white;
+    }
+    .container {
+      background:white;
+      color:#1e1b4b;
+      max-width:500px;
+      width:100%;
+      border-radius:24px;
+      overflow:hidden;
+      box-shadow:0 25px 60px rgba(0,0,0,0.7);
+    }
+    .header {
+      background:linear-gradient(135deg,var(--red-dark),var(--red-main));
+      padding:40px 20px;
+      text-align:center;
+    }
+    .header h1 {
+      font-family:'Bebas Neue',sans-serif;
+      font-size:46px;
+      color:var(--gold);
+      text-shadow:0 4px 15px rgba(0,0,0,0.8);
+      letter-spacing:3px;
+    }
+    .content { padding:40px 30px; text-align:center; }
+
+    .valid {
+      background:#ecfdf5; color:#065f46; padding:30px; border-radius:20px;
+      border:4px solid var(--green); margin-bottom:20px;
+    }
+    .valid .status { font-family:'Bebas Neue',sans-serif; font-size:48px; color:var(--green); margin:15px 0; }
+    .valid .seal {
+      width:120px; height:120px; background:var(--green); color:white;
+      border-radius:50%; margin:0 auto 20px; display:flex;
+      align-items:center; justify-content:center; font-size:70px;
+      box-shadow:0 0 0 15px rgba(16,185,129,0.3);
+      animation:pulse 2s infinite;
+    }
+    @keyframes pulse { 
+      0%{box-shadow:0 0 0 0 rgba(16,185,129,0.7)} 
+      70%{box-shadow:0 0 0 25px rgba(16,185,129,0)} 
+      100%{box-shadow:0 0 0 0 rgba(16,185,129,0)} 
+    }
+
+    .invalid, .expired, .error {
+      background:#fee2e2; color:#991b1b; padding:30px; border-radius:20px;
+      border:4px solid #ef4444; font-size:20px; font-weight:600;
+    }
+
+    .info-card {
+      background:#f8f9fa; border-radius:18px; padding:25px; margin:25px 0;
+      box-shadow:0 10px 30px rgba(0,0,0,0.1);
+    }
+    .info-row {
+      display:flex; justify-content:space-between; padding:14px 0;
+      border-bottom:1px dashed #ddd; font-size:17px;
+    }
+    .info-row:last-child { border:none; }
+    .label { font-weight:600; color:#555; }
+    .value { font-weight:700; color:#1e1b4b; text-align:right; }
+    .highlight { background:var(--gold); color:black; padding:4px 12px; border-radius:8px; font-weight:bold; }
+
+    .official-stamp {
+      margin:30px 0; padding:25px; background:rgba(196,27,42,0.1);
+      border:3px dashed var(--red-main); border-radius:16px; font-size:20px;
+      font-weight:bold; color:var(--red-main);
+    }
+    .footer { background:#1e1b4b; color:white; padding:25px; text-align:center; font-size:16px; }
+    .loader { font-size:20px; color:var(--gold); padding:40px; }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div class="header">
+      <h1>GRADUACIÓN 2025</h1>
+      <p>Verificación Oficial de Boletos</p>
+    </div>
+
+    <div class="content" id="result">
+      <div class="loader">Escaneando y verificando ticket...</div>
+    </div>
+  </div>
+
+  <script>
+    // Fecha límite de validez del boleto
+    const FECHA_LIMITE = new Date('2025-12-10T23:59:59');
+    const DB_URL = "https://boletos-66dac-default-rtdb.firebaseio.com/";
+
+    const params = new URLSearchParams(window.location.search);
+    const matricula = params.get('mat');
+    const codigo = params.get('code')?.toUpperCase();
+    const resultDiv = document.getElementById('result');
+
+    // Validación inmediata de parámetros
+    if (!matricula || !codigo) {
+      resultDiv.innerHTML = `<div class="invalid">QR INVÁLIDO<br><br>Faltan datos en el código</div>`;
+    }
+
+    // Fetch con timeout para que nunca se quede colgado
+    async function fetchData() {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 9000);
+
+      try {
+        const response = await fetch(DB_URL, { signal: controller.signal });
+        clearTimeout(timeout);
+        
+        if (!response.ok) throw new Error("Servidor no responde");
+        return await response.json();
+      } catch (err) {
+        clearTimeout(timeout);
+        throw err;
+      }
+    }
+
+    async function verificarTicket() {
+      try {
+        const users = await fetchData();
+
+        let alumno = null;
+        let compraValida = null;
+
+        // Buscar alumno por matrícula
+        for (const [id, data] of Object.entries(users || {})) {
+          if (data.matricula === matricula) {
+            alumno = { id, ...data };
+            break;
+          }
+        }
+
+        if (!alumno) {
+          resultDiv.innerHTML = `<div class="invalid">ALUMNO NO ENCONTRADO<br>Matrícula: <strong>${matricula}</strong></div>`;
+          return;
+        }
+
+        if (!alumno.purchases || Object.keys(alumno.purchases).length === 0) {
+          resultDiv.innerHTML = `<div class="invalid">SIN COMPRAS<br><strong>${alumno.nombre}</strong> no tiene boletos</div>`;
+          return;
+        }
+
+        const compras = Object.values(alumno.purchases);
+        compraValida = compras.find(c => c.codigo === codigo);
+
+        if (!compraValida) {
+          resultDiv.innerHTML = `<div class="invalid">CÓDIGO INVÁLIDO<br>No coincide con ninguna compra</div>`;
+          return;
+        }
+
+        const fechaCompra = new Date(compraValida.fecha);
+        const fechaStr = fechaCompra.toLocaleDateString('es-MX');
+        const horaStr = fechaCompra.toLocaleTimeString('es-MX', {hour:'2-digit', minute:'2-digit'});
+
+        // === BOLETO VENCIDO (después del 10 dic 2025) ===
+        if (new Date() > FECHA_LIMITE) {
+          resultDiv.innerHTML = `
+            <div class="expired">
+              <div style="font-size:80px; margin-bottom:20px;">X</div>
+              <div style="font-size:42px; color:#991b1b;">BOLETO VENCIDO</div>
+              <p>Este boleto ya no es válido</p>
+              <p>Fecha límite: <strong>10/12/2025</strong></p>
+              <p><strong>ACCESO DENEGADO</strong></p>
+            </div>
+            <div class="info-card">
+              <div class="info-row"><span class="label">Alumno</span><span class="value">${alumno.nombre}</span></div>
+              <div class="info-row"><span class="label">Matrícula</span><span class="value highlight">${matricula}</span></div>
+            </div>
+            <div class="official-stamp" style="background:#fee2e2; border-color:#ef4444; color:#991b1b;">
+              EVENTO CONCLUIDO<br><strong>ACCESO NO PERMITIDO</strong>
+            </div>`;
+          return;
+        }
+
+        // === BOLETO VÁLIDO Y VIGENTE ===
+        resultDiv.innerHTML = `
+          <div class="valid">
+            <div class="seal">Check</div>
+            <div class="status">¡ACCESO AUTORIZADO!</div>
+            <p><strong>Boleto auténtico y vigente</strong></p>
+          </div>
+
+          <div class="info-card">
+            <div class="info-row"><span class="label">ALUMNO</span><span class="value">${alumno.nombre}</span></div>
+            <div class="info-row"><span class="label">MATRÍCULA</span><span class="value highlight">${alumno.matricula}</span></div>
+            <div class="info-row"><span class="label">CÓDIGO</span><span class="value highlight">${codigo}</span></div>
+            <div class="info-row"><span class="label">BOLETOS</span><span class="value">${compraValida.cena||0} Cena + ${compraValida.ceremonia||0} Ceremonia</span></div>
+            <div class="info-row"><span class="label">TOTAL</span><span class="value">$${parseInt(compraValida.total||0).toLocaleString()} MXN</span></div>
+            <div class="info-row"><span class="label">FECHA COMPRA</span><span class="value">${fechaStr} • ${horaStr}</span></div>
+          </div>
+
+          <div class="official-stamp">
+            TICKET OFICIAL AUTORIZADO<br>
+            <strong>ACCESO PERMITIDO</strong>
+          </div>
+
+          <div class="footer">
+            <strong>¡FELICIDADES POR TU GRADUACIÓN!</strong>
+          </div>
+        `;
+
+      } catch (err) {
+        resultDiv.innerHTML = `
+          <div class="error">
+            <div style="font-size:70px;">Warning</div>
+            <div style="font-size:28px;">SIN CONEXIÓN</div>
+            <p>No se pudo verificar el boleto</p>
+            <p>Revisa tu internet e intenta de nuevo</p>
+          </div>`;
+      }
+    }
+
+    // Ejecutar inmediatamente
+    verificarTicket();
+  </script>
+</body>
+</html>
