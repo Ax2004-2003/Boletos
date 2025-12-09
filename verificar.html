@@ -173,7 +173,7 @@
         const fechaStr = fechaCompra.toLocaleDateString('es-MX');
         const horaStr = fechaCompra.toLocaleTimeString('es-MX', {hour:'2-digit', minute:'2-digit'});
 
-        // === BOLETO VENCIDO (después del 10 dic 2025) ===
+        // === BOLETO VENCIDO (después del 9 dic 2025) ===
         if (new Date() > FECHA_LIMITE) {
           resultDiv.innerHTML = `
             <div class="expired">
