@@ -6,87 +6,28 @@
   <title>Verificación Oficial • Graduación 2025</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Bebas+Neue&display=swap" rel="stylesheet">
   <style>
-    :root {
-      --red-dark: #8B0000;
-      --red-main: #c41b2a;
-      --gold: #FFD700;
-      --green: #10b981;
-    }
+    :root { --red-dark:#8B0000; --red-main:#c41b2a; --gold:#FFD700; --green:#10b981; }
     * { margin:0; padding:0; box-sizing:border-box; }
-    body {
-      font-family:'Poppins',sans-serif;
-      background:linear-gradient(135deg,#0f172a,#1e293b);
-      min-height:100vh;
-      display:flex;
-      justify-content:center;
-      align-items:center;
-      padding:15px;
-      color:white;
-    }
-    .container {
-      background:white;
-      color:#1e1b4b;
-      max-width:500px;
-      width:100%;
-      border-radius:24px;
-      overflow:hidden;
-      box-shadow:0 25px 60px rgba(0,0,0,0.7);
-    }
-    .header {
-      background:linear-gradient(135deg,var(--red-dark),var(--red-main));
-      padding:40px 20px;
-      text-align:center;
-    }
-    .header h1 {
-      font-family:'Bebas Neue',sans-serif;
-      font-size:46px;
-      color:var(--gold);
-      text-shadow:0 4px 15px rgba(0,0,0,0.8);
-      letter-spacing:3px;
-    }
+    body { font-family:'Poppins',sans-serif; background:linear-gradient(135deg,#0f172a,#1e293b); min-height:100vh; display:flex; justify-content:center; align-items:center; padding:15px; color:white; }
+    .container { background:white; color:#1e1b4b; max-width:500px; width:100%; border-radius:24px; overflow:hidden; box-shadow:0 25px 60px rgba(0,0,0,0.7); }
+    .header { background:linear-gradient(135deg,var(--red-dark),var(--red-main)); padding:40px 20px; text-align:center; }
+    .header h1 { font-family:'Bebas Neue',sans-serif; font-size:46px; color:var(--gold); text-shadow:0 4px 15px rgba(0,0,0,0.8); letter-spacing:3px; }
     .content { padding:40px 30px; text-align:center; }
 
-    .valid {
-      background:#ecfdf5; color:#065f46; padding:30px; border-radius:20px;
-      border:4px solid var(--green); margin-bottom:20px;
-    }
+    .valid { background:#ecfdf5; color:#065f46; padding:30px; border-radius:20px; border:4px solid var(--green); margin-bottom:20px; }
     .valid .status { font-family:'Bebas Neue',sans-serif; font-size:48px; color:var(--green); margin:15px 0; }
-    .valid .seal {
-      width:120px; height:120px; background:var(--green); color:white;
-      border-radius:50%; margin:0 auto 20px; display:flex;
-      align-items:center; justify-content:center; font-size:70px;
-      box-shadow:0 0 0 15px rgba(16,185,129,0.3);
-      animation:pulse 2s infinite;
-    }
-    @keyframes pulse { 
-      0%{box-shadow:0 0 0 0 rgba(16,185,129,0.7)} 
-      70%{box-shadow:0 0 0 25px rgba(16,185,129,0)} 
-      100%{box-shadow:0 0 0 0 rgba(16,185,129,0)} 
-    }
+    .valid .seal { width:120px; height:120px; background:var(--green); color:white; border-radius:50%; margin:0 auto 20px; display:flex; align-items:center; justify-content:center; font-size:70px;
+      box-shadow:0 0 0 0 15px rgba(16,185,129,0.3); animation:pulse 2s infinite; }
+    @keyframes pulse { 0%{box-shadow:0 0 0 0 rgba(16,185,129,0.7)} 70%{box-shadow:0 0 0 25px rgba(16,185,129,0)} 100%{box-shadow:0 0 0 0 rgba(16,185,129,0)} }
 
-    .invalid, .expired, .error {
-      background:#fee2e2; color:#991b1b; padding:30px; border-radius:20px;
-      border:4px solid #ef4444; font-size:20px; font-weight:600;
-    }
-
-    .info-card {
-      background:#f8f9fa; border-radius:18px; padding:25px; margin:25px 0;
-      box-shadow:0 10px 30px rgba(0,0,0,0.1);
-    }
-    .info-row {
-      display:flex; justify-content:space-between; padding:14px 0;
-      border-bottom:1px dashed #ddd; font-size:17px;
-    }
+    .invalid, .expired, .error { background:#fee2e2; color:#991b1b; padding:30px; border-radius:20px; border:4px solid #ef4444; font-size:20px; font-weight:600; }
+    .info-card { background:#f8f9fa; border-radius:18px; padding:25px; margin:25px 0; box-shadow:0 10px 30px rgba(0,0,0,0.1); }
+    .info-row { display:flex; justify-content:space-between; padding:14px 0; border-bottom:1px dashed #ddd; font-size:17px; }
     .info-row:last-child { border:none; }
     .label { font-weight:600; color:#555; }
     .value { font-weight:700; color:#1e1b4b; text-align:right; }
     .highlight { background:var(--gold); color:black; padding:4px 12px; border-radius:8px; font-weight:bold; }
-
-    .official-stamp {
-      margin:30px 0; padding:25px; background:rgba(196,27,42,0.1);
-      border:3px dashed var(--red-main); border-radius:16px; font-size:20px;
-      font-weight:bold; color:var(--red-main);
-    }
+    .official-stamp { margin:30px 0; padding:25px; background:rgba(196,27,42,0.1); border:3px dashed var(--red-main); border-radius:16px; font-size:20px; font-weight:bold; color:var(--red-main); }
     .footer { background:#1e1b4b; color:white; padding:25px; text-align:center; font-size:16px; }
     .loader { font-size:20px; color:var(--gold); padding:40px; }
   </style>
@@ -98,19 +39,14 @@
       <h1>GRADUACIÓN 2025</h1>
       <p>Verificación Oficial de Boletos</p>
     </div>
-
     <div class="content" id="result">
       <div class="loader">Verificando boleto...</div>
     </div>
   </div>
 
   <script>
-    // TU BASE DE DATOS CORRECTA
     const DB_URL = "https://boletos-66dac-default-rtdb.firebaseio.com/users.json";
-
-    // Fecha límite: 09 de diciembre de 2025 (inclusive)
-    const FECHA_LIMITE = new Date('2025-12-08T23:59:59');
-
+    const FECHA_LIMITE = new Date('2025-12-09T23:59:59');
     const params = new URLSearchParams(window.location.search);
     const matricula = params.get('mat');
     const codigo = params.get('code')?.toUpperCase();
@@ -122,15 +58,12 @@
 
     async function verificarTicket() {
       try {
-        // Timeout de 8 segundos máximo
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 8000);
-
         const response = await fetch(DB_URL, { signal: controller.signal });
         clearTimeout(timeoutId);
 
         if (!response.ok) throw new Error("Error del servidor");
-
         const users = await response.json();
 
         let alumno = null;
@@ -149,7 +82,7 @@
         }
 
         if (!alumno.purchases || Object.keys(alumno.purchases).length === 0) {
-          resultDiv.innerHTML = `<div class="invalid">SIN COMPRAS REGISTRADAS<br><strong>${alumno.nombre}</strong></div>`;
+          resultDiv.innerHTML = `<div class="invalid">SIN COMPRAS<br><strong>${alumno.nombre}</strong></div>`;
           return;
         }
 
@@ -157,7 +90,7 @@
         compraValida = compras.find(c => c.codigo === codigo);
 
         if (!compraValida) {
-          resultDiv.innerHTML = `<div class="invalid">CÓDIGO NO VÁLIDO<br>No coincide</div>`;
+          resultDiv.innerHTML = `<div class="invalid">CÓDIGO NO VÁLIDO</div>`;
           return;
         }
 
@@ -165,57 +98,44 @@
         const fechaStr = fechaCompra.toLocaleDateString('es-MX');
         const horaStr = fechaCompra.toLocaleTimeString('es-MX', {hour:'2-digit', minute:'2-digit'});
 
-        // SI YA PASÓ EL 9 DE DICIEMBRE 2025
         if (new Date() > FECHA_LIMITE) {
-          resultDiv.innerHTML = `
-            <div class="expired">
-              <div style="font-size:80px;">Cross</div>
-              <div style="font-size:42px; color:#991b1b;">BOLETO VENCIDO</div>
-              <p>Este boleto expiró el 08/12/2025</p>
-              <p><strong>ACCESO DENEGADO</strong></p>
-            </div>
-            <div class="info-card">
-              <div class="info-row"><span class="label">Alumno</span><span class="value">${alumno.nombre}</span></div>
-              <div class="info-row"><span class="label">Matrícula</span><span class="value highlight">${matricula}</span></div>
-            </div>`;
+          resultDiv.innerHTML = `<div class="expired">BOLETO VENCIDO<br>Expiró el 09/12/2025<br><strong>ACCESO DENEGADO</strong></div>`;
           return;
         }
 
-        // BOLETO VÁLIDO Y VIGENTE
+        // BOLETO VÁLIDO → MOSTRAR VERDE + REDIRECCIÓN EN 15 SEGUNDOS
         resultDiv.innerHTML = `
           <div class="valid">
             <div class="seal">Checkmark</div>
             <div class="status">¡ACCESO AUTORIZADO!</div>
-            <p><strong>Boleto auténtico y vigente</strong></p>
+            <p><strong>${alumno.nombre}</strong></p>
+            <p>Boleto auténtico y vigente</p>
+            <p style="margin-top:20px; color:#065f46;">Redirigiendo a lista de alumnos en <strong>15</strong> segundos...</p>
           </div>
 
           <div class="info-card">
-            <div class="info-row"><span class="label">ALUMNO</span><span class="value">${alumno.nombre}</span></div>
             <div class="info-row"><span class="label">MATRÍCULA</span><span class="value highlight">${matricula}</span></div>
             <div class="info-row"><span class="label">CÓDIGO</span><span class="value highlight">${codigo}</span></div>
             <div class="info-row"><span class="label">BOLETOS</span><span class="value">${compraValida.cena||0} Cena + ${compraValida.ceremonia||0} Ceremonia</span></div>
-            <div class="info-row"><span class="label">TOTAL</span><span class="value">$${parseInt(compraValida.total||0).toLocaleString()} MXN</span></div>
-            <div class="info-row"><span class="label">FECHA COMPRA</span><span class="value">${fechaStr} • ${horaStr}</span></div>
           </div>
 
-          <div class="official-stamp">
-            TICKET OFICIAL AUTORIZADO<br>
-            <strong>ACCESO PERMITIDO</strong>
-          </div>
-
-          <div class="footer">
-            <strong>¡FELICIDADES POR TU GRADUACIÓN!</strong>
-          </div>
+          <div class="official-stamp">ACCESO PERMITIDO</div>
         `;
 
+        // REDIRECCIÓN AUTOMÁTICA DESPUÉS DE 15 SEGUNDOS
+        let segundos = 15;
+        const contador = setInterval(() => {
+          segundos--;
+          if (segundos > 0) {
+            document.querySelector('.valid p strong').textContent = `Redirigiendo en ${segundos} segundos...`;
+          } else {
+            clearInterval(contador);
+            window.location.href = "lista-alumnos.html";
+          }
+        }, 1000);
+
       } catch (error) {
-        resultDiv.innerHTML = `
-          <div class="error">
-            <div style="font-size:70px;">Warning</div>
-            <div style="font-size:28px;">SIN CONEXIÓN</div>
-            <p>No se pudo verificar el boleto</p>
-            <p>Revisa internet e intenta de nuevo</p>
-          </div>`;
+        resultDiv.innerHTML = `<div class="error">SIN CONEXIÓN<br>Revisa tu internet</div>`;
       }
     }
 
