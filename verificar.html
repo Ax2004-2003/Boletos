@@ -58,7 +58,11 @@
       box-shadow:0 0 0 15px rgba(16,185,129,0.3);
       animation:pulse 2s infinite;
     }
-    @keyframes pulse { 0%{box-shadow:0 0 0 0 rgba(16,185,129,0.7)} 70%{box-shadow:0 0 0 25px rgba(16,185,129,0)} 100%{box-shadow:0 0 0 0 rgba(16,185,129,0)} }
+    @keyframes pulse { 
+      0%{box-shadow:0 0 0 0 rgba(16,185,129,0.7)} 
+      70%{box-shadow:0 0 0 25px rgba(16,185,129,0)} 
+      100%{box-shadow:0 0 0 0 rgba(16,185,129,0)} 
+    }
 
     .invalid, .expired, .error {
       background:#fee2e2; color:#991b1b; padding:30px; border-radius:20px;
@@ -101,42 +105,46 @@
   </div>
 
   <script>
-    // FECHA LÍMITE: 09 de diciembre 2025
+    // Fecha límite de validez del boleto
     const FECHA_LIMITE = new Date('2025-12-09T23:59:59');
-    const DB_URL = "https://boletos-66dac-default-rtdb.firebaseio.com/users.json?shallow=false&timeout=8000";
+    const DB_URL = "https://boletos-66dac-default-rtdb.firebaseio.com/users.json";
 
     const params = new URLSearchParams(window.location.search);
     const matricula = params.get('mat');
     const codigo = params.get('code')?.toUpperCase();
     const resultDiv = document.getElementById('result');
 
+    // Validación inmediata de parámetros
     if (!matricula || !codigo) {
-      resultDiv.innerHTML = `<div class="invalid">QR INVÁLIDO<br><br>Falta matrícula o código</div>`;
+      resultDiv.innerHTML = `<div class="invalid">QR INVÁLIDO<br><br>Faltan datos en el código</div>`;
     }
 
-    // Timeout manual por si Firebase se cuelga
-    function fetchConTimeout(url, options = {}, timeout = 8000) {
-      return Promise.race([
-        fetch(url, options),
-        new Promise((_, reject) =>
-          setTimeout(() => reject(new Error('Timeout')), timeout)
-        )
-      ]);
+    // Fetch con timeout para que nunca se quede colgado
+    async function fetchData() {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 9000);
+
+      try {
+        const response = await fetch(DB_URL, { signal: controller.signal });
+        clearTimeout(timeout);
+        
+        if (!response.ok) throw new Error("Servidor no responde");
+        return await response.json();
+      } catch (err) {
+        clearTimeout(timeout);
+        throw err;
+      }
     }
 
     async function verificarTicket() {
       try {
-        const response = await fetchConTimeout(DB_URL);
-        
-        if (!response.ok) throw new Error("Error del servidor");
-
-        const users = await response.json();
-        if (!users) throw new Error("Base de datos vacía");
+        const users = await fetchData();
 
         let alumno = null;
         let compraValida = null;
 
-        for (const [id, data] of Object.entries(users)) {
+        // Buscar alumno por matrícula
+        for (const [id, data] of Object.entries(users || {})) {
           if (data.matricula === matricula) {
             alumno = { id, ...data };
             break;
@@ -149,7 +157,7 @@
         }
 
         if (!alumno.purchases || Object.keys(alumno.purchases).length === 0) {
-          resultDiv.innerHTML = `<div class="invalid">SIN COMPRAS<br>El alumno <strong>${alumno.nombre}</strong> no tiene boletos</div>`;
+          resultDiv.innerHTML = `<div class="invalid">SIN COMPRAS<br><strong>${alumno.nombre}</strong> no tiene boletos</div>`;
           return;
         }
 
@@ -161,19 +169,19 @@
           return;
         }
 
-        const hoy = new Date();
         const fechaCompra = new Date(compraValida.fecha);
         const fechaStr = fechaCompra.toLocaleDateString('es-MX');
         const horaStr = fechaCompra.toLocaleTimeString('es-MX', {hour:'2-digit', minute:'2-digit'});
 
-        // === BOLETO VENCIDO ===
-        if (hoy > FECHA_LIMITE) {
+        // === BOLETO VENCIDO (después del 10 dic 2025) ===
+        if (new Date() > FECHA_LIMITE) {
           resultDiv.innerHTML = `
             <div class="expired">
-              <div style="font-size:80px; margin-bottom:20px;">Cross</div>
+              <div style="font-size:80px; margin-bottom:20px;">X</div>
               <div style="font-size:42px; color:#991b1b;">BOLETO VENCIDO</div>
-              <p>Validez hasta el <strong>09/12/2025</strong></p>
-              <p><strong>Acceso denegado</strong></p>
+              <p>Este boleto ya no es válido</p>
+              <p>Fecha límite: <strong>10/12/2025</strong></p>
+              <p><strong>ACCESO DENEGADO</strong></p>
             </div>
             <div class="info-card">
               <div class="info-row"><span class="label">Alumno</span><span class="value">${alumno.nombre}</span></div>
@@ -188,7 +196,7 @@
         // === BOLETO VÁLIDO Y VIGENTE ===
         resultDiv.innerHTML = `
           <div class="valid">
-            <div class="seal">Checkmark</div>
+            <div class="seal">Check</div>
             <div class="status">¡ACCESO AUTORIZADO!</div>
             <p><strong>Boleto auténtico y vigente</strong></p>
           </div>
@@ -213,13 +221,12 @@
         `;
 
       } catch (err) {
-        console.error(err);
         resultDiv.innerHTML = `
           <div class="error">
             <div style="font-size:70px;">Warning</div>
-            <div style="font-size:28px;">ERROR DE CONEXIÓN</div>
-            <p>No se pudo conectar con la base de datos</p>
-            <p>Revisa tu internet o intenta de nuevo</p>
+            <div style="font-size:28px;">SIN CONEXIÓN</div>
+            <p>No se pudo verificar el boleto</p>
+            <p>Revisa tu internet e intenta de nuevo</p>
           </div>`;
       }
     }
