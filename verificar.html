@@ -68,9 +68,13 @@
       box-shadow:0 0 0 15px rgba(16,185,129,0.3);
       animation:pulse 2s infinite;
     }
-    @keyframes pulse { 0%{box-shadow:0 0 0 0 rgba(16,185,129,0.7)} 70%{box-shadow:0 0 0 25px rgba(16,185,129,0)} 100%{box-shadow:0 0 0 0 rgba(16,185,129,0)} }
+    @keyframes pulse { 
+      0%{box-shadow:0 0 0 0 rgba(16,185,129,0.7)} 
+      70%{box-shadow:0 0 0 25px rgba(16,185,129,0)} 
+      100%{box-shadow:0 0 0 0 rgba(16,185,129,0)} 
+    }
 
-    .invalid {
+    .invalid, .expired {
       background:#fee2e2;
       color:#991b1b;
       padding:30px;
@@ -134,6 +138,9 @@
     const DB_URL = "https://boletos-66dac-default-rtdb.firebaseio.com/";
     const USERS_URL = DB_URL + "users.json";
 
+    // Fecha límite de validez: 09 de diciembre de 2025 (inclusive)
+    const FECHA_LIMITE = new Date('2025-12-09T23:59:59');
+
     const params = new URLSearchParams(window.location.search);
     const matricula = params.get('mat');
     const codigo = params.get('code')?.toUpperCase();
@@ -142,6 +149,12 @@
     if (!matricula || !codigo) {
       resultDiv.innerHTML = `<div class="invalid">QR INVÁLIDO<br><br>Falta matrícula o código</div>`;
       return;
+    }
+
+    // Función para comparar con la fecha actual (usa la fecha real del dispositivo)
+    function esVigente() {
+      const hoy = new Date();
+      return hoy <= FECHA_LIMITE;
     }
 
     async function verificarTicket() {
@@ -170,7 +183,6 @@
           return;
         }
 
-        // Verificar compras del alumno
         if (!alumno.purchases || Object.keys(alumno.purchases).length === 0) {
           resultDiv.innerHTML = `<div class="invalid">SIN COMPRAS<br><br>El alumno <strong>${alumno.nombre}</strong> no ha comprado boletos</div>`;
           return;
@@ -180,20 +192,45 @@
         compraValida = compras.find(c => c.codigo === codigo);
 
         if (!compraValida) {
-          resultDiv.innerHTML = `<div class="invalid">CÓDIGO NO VÁLIDO<br><br>No coincide con ninguna compra del alumno</div>`;
+          resultDiv.innerHTML = `<div class="invalid">CÓDIGO NO VÁLIDO<br><br>No coincide con ninguna compra</div>`;
           return;
         }
 
-        // ¡TICKET VÁLIDO!
-        const fecha = new Date(compraValida.fecha);
-        const fechaStr = fecha.toLocaleDateString('es-MX');
-        const horaStr = fecha.toLocaleTimeString('es-MX', {hour:'2-digit', minute:'2-digit'});
+        const fechaCompra = new Date(compraValida.fecha);
+        const fechaStr = fechaCompra.toLocaleDateString('es-MX');
+        const horaStr = fechaCompra.toLocaleTimeString('es-MX', {hour:'2-digit', minute:'2-digit'});
 
+        // Aquí está la lógica clave de vigencia
+        if (!esVigente()) {
+          // BOLETO VENCIDO
+          resultDiv.innerHTML = `
+            <div class="expired">
+              <div style="font-size:80px; margin-bottom:20px;">✕</div>
+              <div class="status" style="color:#991b1b; font-size:42px;">BOLETO VENCIDO</div>
+              <p>Este boleto dejó de ser válido el <strong>09/12/2025</strong></p>
+              <p><strong>Acceso denegado</strong></p>
+            </div>
+
+            <div class="info-card">
+              <div class="info-row"><span class="label">ALUMNO</span><span class="value">${alumno.nombre}</span></div>
+              <div class="info-row"><span class="label">MATRÍCULA</span><span class="value highlight">${alumno.matricula}</span></div>
+              <div class="info-row"><span class="label">CÓDIGO</span><span class="value highlight">${compraValida.codigo}</span></div>
+            </div>
+
+            <div class="official-stamp" style="background:rgba(239,68,68,0.2); border-color:#ef4444; color:#991b1b;">
+              EVENTO YA CONCLUIDO<br>
+              <strong>ACCESO NO PERMITIDO</strong>
+            </div>
+          `;
+          return;
+        }
+
+        // SI LLEGA AQUÍ: TODO OK Y ESTÁ VIGENTE
         resultDiv.innerHTML = `
           <div class="valid">
             <div class="seal">✓</div>
-            <div class="status">¡TICKET VÁLIDO!</div>
-            <p><strong>Acceso autorizado</strong></p>
+            <div class="status">¡ACCESO AUTORIZADO!</div>
+            <p><strong>Boleto vigente y auténtico</strong></p>
           </div>
 
           <div class="info-card">
@@ -202,7 +239,7 @@
             <div class="info-row"><span class="label">CÓDIGO</span><span class="value highlight">${compraValida.codigo}</span></div>
             <div class="info-row"><span class="label">BOLETOS</span><span class="value">${compraValida.cena||0} Cena + ${compraValida.ceremonia||0} Ceremonia</span></div>
             <div class="info-row"><span class="label">TOTAL</span><span class="value">$${parseInt(compraValida.total||0).toLocaleString()} MXN</span></div>
-            <div class="info-row"><span class="label">FECHA</span><span class="value">${fechaStr} • ${horaStr}</span></div>
+            <div class="info-row"><span class="label">FECHA COMPRA</span><span class="value">${fechaStr} • ${horaStr}</span></div>
           </div>
 
           <div class="official-stamp">
