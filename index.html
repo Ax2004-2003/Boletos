@@ -340,7 +340,7 @@
         </div>
         <div class="input-group">
           <label>Correo institucional</label>
-          <input type="email" id="regEmail" placeholder="ana@universidad.edu.mx" required />
+          <input type="email" id="regEmail" placeholder="tunombre@univermilenium.edu.mx" required />
         </div>
         <div class="input-group">
           <label>Contraseña</label>
@@ -418,6 +418,11 @@
     const loaderReg = document.getElementById("loaderReg");
     const loaderLogin = document.getElementById("loaderLogin");
 
+    // FUNCIÓN PARA VALIDAR CORREO INSTITUCIONAL
+    function esCorreoValido(email) {
+      return email.trim().toLowerCase().endsWith("@univermilenium.edu.mx");
+    }
+
     // MOSTRAR/OCULTAR CONTRASEÑA
     document.getElementById("toggleRegPass").addEventListener("click", function() {
       const input = document.getElementById("regPassword");
@@ -447,7 +452,7 @@
       messageDiv.textContent = text;
       messageDiv.className = "message " + type;
       messageDiv.style.display = "block";
-      setTimeout(() => messageDiv.style.display = "none", 5000);
+      setTimeout(() => messageDiv.style.display = "none", 6000);
     }
 
     async function getUsers() {
@@ -456,7 +461,7 @@
       return await res.json();
     }
 
-    // SOLO NÚMEROS EN MATRÍCULA (EN AMBOS FORMULARIOS)
+    // SOLO NÚMEROS EN MATRÍCULA
     document.getElementById("regMatricula").addEventListener("input", function() {
       this.value = this.value.replace(/[^0-9]/g, "");
     });
@@ -464,7 +469,7 @@
       this.value = this.value.replace(/[^0-9]/g, "");
     });
 
-    // REGISTRO
+    // REGISTRO - VALIDACIÓN DE CORREO INSTITUCIONAL
     registerForm.addEventListener("submit", async e => {
       e.preventDefault();
       loaderReg.style.display = "block";
@@ -472,11 +477,18 @@
       const nombre = document.getElementById("regNombre").value.trim();
       const matricula = document.getElementById("regMatricula").value.trim();
       const carrera = document.getElementById("regCarrera").value;
-      const email = document.getElementById("regEmail").value.trim();
+      const email = document.getElementById("regEmail").value.trim().toLowerCase();
       const password = document.getElementById("regPassword").value;
 
       if (!nombre || !matricula || !carrera || !email || password.length < 6) {
         showMessage("Completa todos los campos correctamente");
+        loaderReg.style.display = "none";
+        return;
+      }
+
+      // VALIDACIÓN DEL DOMINIO
+      if (!esCorreoValido(email)) {
+        showMessage("Solo se permiten correos @univermilenium.edu.mx");
         loaderReg.style.display = "none";
         return;
       }
@@ -506,7 +518,7 @@
       loaderReg.style.display = "none";
     });
 
-    // LOGIN
+    // LOGIN - TAMBIÉN VALIDA EL DOMINIO DEL CORREO GUARDADO
     loginForm.addEventListener("submit", async e => {
       e.preventDefault();
       loaderLogin.style.display = "block";
@@ -522,7 +534,8 @@
           u.matricula === matricula && 
           u.password === password && 
           u.nombre.toLowerCase() === nombre.toLowerCase() &&
-          u.carrera === carrera
+          u.carrera === carrera &&
+          esCorreoValido(u.email) // Extra seguridad: verifica que el correo guardado sea institucional
         ) : null;
 
         if (userEntry) {
@@ -536,7 +549,7 @@
           showMessage(`¡Bienvenid@, ${data.nombre.split(" ")[0]}!`, "success");
           setTimeout(() => window.location.href = "index2.html", 1800);
         } else {
-          showMessage("Datos incorrectos o carrera no coincide");
+          showMessage("Datos incorrectos o correo no institucional");
         }
       } catch (err) {
         showMessage("Error de conexión");
