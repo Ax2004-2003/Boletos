@@ -13,53 +13,37 @@
 
   <style>
     :root {
+      --red-dark: #8B0000;
+      --red-main: #c41b2a;
+      --gold: #FFD700;
+      --green: #10b981;
+      --gray: #f1f5f9;
       --azul-marino: #002856;
       --azul-institucional: #0055A5;
-      --blanco: #ffffff;
-      --negro: #1a1a1a;
-      --gris-claro: #f8f9fc;
-      --verde-exito: #10b981;
-      --rojo-error: #ef4444;
     }
-
     * { margin: 0; padding: 0; box-sizing: border-box; }
-
     body {
       font-family: 'Poppins', sans-serif;
-      background: linear-gradient(-45deg, #001f3f, #002856, #003366, #0055A5);
+      background: linear-gradient(-45deg, #667eea, #764ba2, #f093fb, #f5576c);
       background-size: 400% 400%;
-      animation: gradientBG 18s ease infinite;
+      animation: gradientBG 15s ease infinite;
       min-height: 100vh;
       padding: 20px;
       display: flex;
       justify-content: center;
       align-items: center;
     }
+    @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
 
-    @keyframes gradientBG {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
+    .container { max-width: 500px; width: 100%; background: rgba(255,255,255,0.15); backdrop-filter: blur(20px); border-radius: 28px; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.4); }
+    
+    .header { 
+      background: linear-gradient(135deg, var(--azul-marino), var(--azul-institucional)); 
+      color: white; 
+      text-align: center; 
+      padding: 50px 20px 40px; 
     }
-
-    .container {
-      max-width: 500px;
-      width: 100%;
-      background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(20px);
-      border-radius: 28px;
-      overflow: hidden;
-      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.4);
-      border: 1px solid rgba(0, 85, 165, 0.15);
-    }
-
-    .header {
-      background: linear-gradient(135deg, var(--azul-marino), var(--azul-institucional));
-      color: white;
-      text-align: center;
-      padding: 40px 20px 30px;
-    }
-
+    
     .logo {
       width: 110px;
       height: auto;
@@ -69,229 +53,41 @@
       margin-right: auto;
     }
 
-    .header h1 {
-      font-size: clamp(28px, 6vw, 36px);
-      font-weight: 700;
-      margin-bottom: 8px;
-    }
-
-    .header p {
-      font-size: 17px;
-      opacity: 0.95;
-    }
-
-    .content {
-      padding: 40px 30px;
-      background: white;
-      color: var(--negro);
-    }
-
-    .profile {
-      background: var(--gris-claro);
-      padding: 22px;
-      border-radius: 18px;
-      text-align: center;
-      margin-bottom: 25px;
-      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-      border-left: 5px solid var(--azul-institucional);
-    }
-
-    .profile h3 {
-      color: var(--azul-marino);
-      font-size: 24px;
-      margin-bottom: 8px;
-    }
-
-    .inventory {
-      display: flex;
-      justify-content: space-around;
-      margin-bottom: 30px;
-      text-align: center;
-      gap: 15px;
-    }
-
-    .inventory div {
-      background: white;
-      padding: 18px;
-      border-radius: 16px;
-      flex: 1;
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
-      border: 2px solid #e0e7ff;
-    }
-
-    .inventory h3 {
-      font-size: 14px;
-      color: var(--negro);
-      margin-bottom: 8px;
-    }
-
-    .inventory span {
-      font-size: 28px;
-      font-weight: bold;
-      color: var(--azul-institucional);
-    }
-
-    .option {
-      background: white;
-      padding: 28px;
-      border-radius: 18px;
-      margin: 22px 0;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
-      border: 1px solid #e0e7ff;
-      transition: all 0.3s ease;
-    }
-
-    .option:hover {
-      transform: translateY(-8px);
-      box-shadow: 0 15px 40px rgba(0, 85, 165, 0.2);
-    }
-
-    .option h3 {
-      color: var(--azul-marino);
-      margin-bottom: 10px;
-      font-size: 20px;
-    }
-
-    button {
-      width: 100%;
-      padding: 16px;
-      background: linear-gradient(90deg, var(--azul-marino), var(--azul-institucional));
-      color: white;
-      border: none;
-      border-radius: 14px;
-      font-size: 18px;
-      font-weight: 600;
-      cursor: pointer;
-      margin-top: 15px;
-      transition: all 0.4s;
-      box-shadow: 0 10px 25px rgba(0, 85, 165, 0.3);
-    }
-
-    button:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 18px 40px rgba(0, 85, 165, 0.4);
-    }
-
-    button.delete { background: var(--rojo-error); }
-    button.ticket { background: var(--verde-exito); }
-
-    .message {
-      margin-top: 20px;
-      padding: 16px;
-      border-radius: 14px;
-      text-align: center;
-      font-weight: 600;
-      font-size: 15px;
-      display: none;
-    }
-
-    .message.success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
-    .message.error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+    .header h1 { font-size: clamp(28px, 6vw, 36px); font-weight: 700; margin-bottom: 8px; }
+    .content { padding: 40px 30px; background: rgba(255,255,255,0.97); color: #1e1b4b; }
+    .profile { background: var(--gray); padding: 20px; border-radius: 16px; text-align: center; margin-bottom: 25px; box-shadow: 0 8px 25px rgba(0,0,0,0.1); }
+    .profile h3 { color: var(--red-main); font-size: 24px; margin-bottom: 10px; }
+    .inventory { display: flex; justify-content: space-around; margin-bottom: 30px; text-align: center; }
+    .inventory div { background: #f1f5f9; padding: 16px; border-radius: 14px; width: 48%; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+    .inventory span { font-size: 26px; font-weight: bold; color: #6366f1; }
+    .option { background: white; padding: 25px; border-radius: 16px; margin: 20px 0; box-shadow: 0 8px 25px rgba(0,0,0,0.12); transition: transform 0.3s; }
+    .option:hover { transform: translateY(-6px); }
+    button { width: 100%; padding: 16px; background: linear-gradient(90deg, #6366f1, #ec4899); color: white; border: none; border-radius: 12px; font-size: 18px; font-weight: 600; cursor: pointer; margin-top: 15px; transition: all 0.4s; }
+    button:hover { transform: translateY(-4px); box-shadow: 0 15px 30px rgba(99,102,241,0.4); }
+    button.delete { background: #ef4444; }
+    button.ticket { background: #10b981; }
+    .message { margin-top: 20px; padding: 15px; border-radius: 12px; text-align: center; font-weight: 600; display: none; }
+    .message.success { background: #d4edda; color: #10b981; }
+    .message.error { background: #f8d7da; color: #ef4444; }
 
     select {
-      width: 48%;
-      padding: 14px;
-      margin: 10px 1%;
-      border-radius: 12px;
-      border: 2px solid #d0e4ff;
-      font-size: 16px;
-      background: white;
-      transition: all 0.3s;
+      width: 48%; padding: 14px; margin: 8px 1%; border-radius: 12px; border: 2px solid #ddd; font-size: 16px; background: white;
     }
+    #individualTotal { text-align: right; font-size: 24px; font-weight: bold; color: #f59e0b; margin: 20px 0; }
 
-    select:focus {
-      border-color: var(--azul-institucional);
-      box-shadow: 0 0 0 4px rgba(0, 85, 165, 0.15);
-    }
-
-    #individualTotal {
-      text-align: right;
-      font-size: 24px;
-      font-weight: bold;
-      color: var(--azul-marino);
-      margin: 20px 0;
-    }
-
-    #ticket {
-      display: none;
-      margin: 30px auto;
-      width: 380px;
-      background: linear-gradient(145deg, var(--azul-marino), var(--azul-institucional));
-      color: white;
-      border-radius: 24px;
-      overflow: hidden;
-      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6);
-      font-family: 'Bebas Neue', sans-serif;
-      text-align: center;
-    }
-
-    .ticket-title {
-      background: rgba(0, 0, 0, 0.4);
-      padding: 20px;
-      font-size: 34px;
-      color: white;
-      letter-spacing: 2px;
-    }
-
-    .qr-container {
-      background: white;
-      margin: 25px auto;
-      padding: 20px;
-      width: 220px;
-      height: 220px;
-      border-radius: 18px;
-    }
-
-    #qrCode {
-      width: 180px;
-      height: 180px;
-      margin: 0 auto;
-    }
-
-    .ticket-code {
-      font-size: 36px;
-      color: white;
-      letter-spacing: 6px;
-      margin: 20px 0;
-      font-weight: bold;
-    }
-
-    .info-row {
-      display: flex;
-      justify-content: space-between;
-      padding: 10px 30px;
-      border-bottom: 1px dashed rgba(255,255,255,0.3);
-      font-size: 17px;
-    }
-
-    .info-row:last-child { border: none; }
-
-    .footer-note {
-      background: rgba(0, 0, 0, 0.4);
-      padding: 20px;
-      font-size: 15px;
-      margin-top: 20px;
-      border-top: 2px dashed rgba(255,255,255,0.3);
-    }
+    #ticket { display: none; margin: 30px auto; width: 380px; background: linear-gradient(145deg, #8B0000, #c41b2a); color: white; border-radius: 24px; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.6); font-family: 'Bebas Neue', sans-serif; text-align: center; }
+    .ticket-title { background: rgba(0,0,0,0.5); padding: 18px; font-size: 32px; color: #ff6b6b; }
+    .qr-container { background: white; margin: 25px auto; padding: 20px; width: 220px; height: 220px; border-radius: 18px; }
+    #qrCode { width: 180px; height: 180px; margin: 0 auto; }
+    .ticket-code { font-size: 36px; color: var(--gold); letter-spacing: 6px; margin: 20px 0; }
+    .info-row { display: flex; justify-content: space-between; padding: 8px 30px; border-bottom: 1px dashed rgba(255,255,255,0.4); font-size: 17px; }
+    .footer-note { background: rgba(0,0,0,0.4); padding: 18px; font-size: 15px; margin-top: 20px; border-top: 2px dashed rgba(255,255,255,0.3); }
 
     .download-btn, #backButton {
-      display: block;
-      margin: 20px auto;
-      padding: 16px 40px;
-      background: white;
-      color: var(--azul-marino);
-      border: 2px solid var(--azul-marino);
-      border-radius: 50px;
-      font-weight: bold;
-      font-size: 18px;
-      cursor: pointer;
-      transition: all 0.3s;
+      display: block; margin: 20px auto; padding: 16px 40px; background: var(--gold); color: black; border: none; border-radius: 50px; font-weight: bold; font-size: 18px; cursor: pointer; width: fit-content;
     }
-
-    .download-btn:hover, #backButton:hover {
-      background: var(--azul-institucional);
-      color: white;
-    }
+    #backButton { background: white; color: #c41b2a; border: 2px solid #c41b2a; }
+    #backButton:hover { background: #c41b2a; color: white; }
 
     @media (max-width: 480px) {
       select { width: 100%; margin: 10px 0; }
@@ -312,19 +108,13 @@
 
     <div class="content" id="mainContent">
       <div class="profile">
-        <h3 id="userName">Alumno</h3>
+        <h3 id="userName">Axel</h3>
         <p>Mis boletos comprados</p>
       </div>
 
       <div class="inventory">
-        <div>
-          <h3>Boletos Cena</h3>
-          <span id="dinnerAvailable">200</span>
-        </div>
-        <div>
-          <h3>Boletos Ceremonia</h3>
-          <span id="ceremonyAvailable">200</span>
-        </div>
+        <div><h3>Boletos Cena</h3><span id="dinnerAvailable">200</span></div>
+        <div><h3>Boletos Ceremonia</h3><span id="ceremonyAvailable">200</span></div>
       </div>
 
       <div id="myPurchases">
@@ -396,6 +186,7 @@
     </div>
   </div>
 
+  <!-- TU SCRIPT 100% ORIGINAL SIN CAMBIOS -->
   <script>
     const userNombre = localStorage.getItem('currentUserNombre') || 'Alumno';
     const userMatricula = localStorage.getItem('currentUserMatricula') || '000000';
