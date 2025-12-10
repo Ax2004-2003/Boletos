@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Lista de Alumnos • Graduación 2025</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Bebas+Neue&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --red-dark: #8B0000;
+      --red-main: #c41b2a;
+      --gold: #FFD700;
+      --primary: #6366f1;
+      --gray: #f1f5f9;
+      --text: #1e1b4b;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #0f172a, #1e293b);
+      color: white;
+      min-height: 100vh;
+      padding: 20px;
+    }
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      background: rgba(255,255,255,0.1);
+      backdrop-filter: blur(20px);
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+    }
+    .header {
+      background: linear-gradient(135deg, var(--red-dark), var(--red-main));
+      padding: 40px;
+      text-align: center;
+    }
+    .header h1 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 48px;
+      color: var(--gold);
+      text-shadow: 0 4px 20px rgba(0,0,0,0.8);
+    }
+    .header p {
+      font-size: 18px;
+      margin-top: 10px;
+      opacity: 0.95;
+    }
+
+    .content {
+      padding: 40px;
+    }
+
+    .controls {
+      margin-bottom: 30px;
+      text-align: center;
+    }
+
+    select {
+      padding: 14px 20px;
+      font-size: 18px;
+      border-radius: 12px;
+      border: none;
+      background: white;
+      color: var(--text);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+      min-width: 300px;
+      cursor: pointer;
+    }
+
+    select:focus { outline: none; box-shadow: 0 0 0 4px rgba(99,102,241,0.3); }
+
+    h3 {
+      text-align: center;
+      margin: 30px 0 20px;
+      font-size: 26px;
+      color: var(--gold);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      color: var(--text);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+
+    th {
+      background: var(--red-main);
+      color: white;
+      padding: 18px;
+      text-align: left;
+      font-weight: 600;
+      font-size: 16px;
+    }
+
+    td {
+      padding: 16px 18px;
+      border-bottom: 1px solid #eee;
+    }
+
+    tr:hover {
+      background: #f8f9fa;
+    }
+
+    }
+
+    .total {
+      text-align: center;
+      margin-top: 30px;
+      font-size: 20px;
+      color: var(--gold);
+      font-weight: bold;
+    }
+
+    .no-data {
+      text-align: center;
+      padding: 60px;
+      color: #999;
+      font-size: 20px;
+    }
+
+    .loader {
+      text-align: center;
+      padding: 60px;
+      font-size: 22px;
+      color: var(--gold);
+    }
+
+    footer {
+      text-align: center;
+      padding: 30px;
+      color: rgba(255,255,255,0.7);
+      font-size: 14px;
+      margin-top: 40px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div class="header">
+      <h1>LISTA DE ALUMNOS REGISTRADOS</h1>
+      <p>Graduación 2025 • Universidad del Milenio</p>
+    </div>
+
+    <div class="content">
+      <div class="controls">
+        <label for="carreraSelect" style="display:block; margin-bottom:10px; font-size:18px;">
+          Filtrar por carrera:
+        </label>
+        <select id="carreraSelect">
+          <option value="">Todas las carreras</option>
+          <option value="Ingeniería en Sistemas">Ingeniería en Sistemas</option>
+          <option value="Ingeniería Industrial">Ingeniería Industrial</option>
+          <option value="Ingeniería Civil">Ingeniería Civil</option>
+          <option value="Arquitectura">Arquitectura</option>
+          <option value="Derecho">Derecho</option>
+          <option value="Medicina">Medicina</option>
+          <option value="Psicología">Psicología</option>
+          <option value="Administración">Administración</option>
+          <option value="Contaduría">Contaduría</option>
+          <option value="Otra">Otra</option>
+        </select>
+      </div>
+
+      <h3 id="tituloTabla">Todos los alumnos registrados</h3>
+
+      <div id="loader" class="loader">Cargando lista de alumnos...</div>
+
+      <table id="tablaAlumnos" style="display:none;">
+        <thead>
+          <tr>
+            <th>Matrícula</th>
+            <th>Nombre completo</th>
+            <th>Carrera</th>
+            <th>Correo institucional</th>
+          </tr>
+        </thead>
+        <tbody id="tablaBody">
+          <!-- Se llena con JS -->
+        </tbody>
+      </table>
+
+      <div class="total" id="totalAlumnos">Total: 0 alumnos</div>
+    </div>
+
+    <footer>
+      Sistema de Boletos • Graduación 2025<br>
+      Desarrollado con amor para la mejor generación
+    </footer>
+  </div>
+
+  <script>
+    const DB_URL = "https://boletos-66dac-default-rtdb.firebaseio.com/users.json";
+    const selectCarrera = document.getElementById("carreraSelect");
+    const tablaBody = document.getElementById("tablaBody");
+    const tablaAlumnos = document.getElementById("tablaAlumnos");
+    const loader = document.getElementById("loader");
+    const tituloTabla = document.getElementById("tituloTabla");
+    const totalAlumnos = document.getElementById("totalAlumnos");
+
+    let todosLosAlumnos = [];
+
+    // Cargar todos los alumnos
+    async function cargarAlumnos() {
+      try {
+        const res = await fetch(DB_URL);
+        const data = await res.json();
+
+        if (!data) {
+          loader.textContent = "No hay alumnos registrados aún";
+          return;
+        }
+
+        todosLosAlumnos = Object.entries(data).map(([id, info]) => ({
+          id,
+          matricula: info.matricula || "Sin matrícula",
+          nombre: info.nombre || "Sin nombre",
+          carrera: info.carrera || "No especificada",
+          email: info.email || "Sin correo"
+        }))).sort((a, b) => a.nombre.localeCompare(b.nombre));
+
+        mostrarAlumnos(todosLosAlumnos);
+        loader.style.display = "none";
+        tablaAlumnos.style.display = "table";
+
+      } catch (err) {
+        loader.textContent = "Error al cargar datos";
+        console.error(err);
+      }
+    }
+
+    // Mostrar alumnos filtrados
+    function mostrarAlumnos(alumnos) {
+      tablaBody.innerHTML = "";
+
+      if (alumnos.length === 0) {
+        tablaBody.innerHTML = `<tr><td colspan="4" style="text-align:center; padding:40px; color:#999;">No hay alumnos con esta carrera</td></tr>`;
+        totalAlumnos.textContent = "Total: 0 alumnos";
+        return;
+      }
+
+      alumnos.forEach(alumno => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td><strong>${alumno.matricula}</strong></td>
+          <td>${alumno.nombre}</td>
+          <td>${alumno.carrera}</td>
+          <td>${alumno.email}</td>
+        `;
+        tablaBody.appendChild(tr);
+      });
+
+      const carreraSeleccionada = selectCarrera.value || "todos";
+      tituloTabla.textContent = carreraSeleccionada === "" 
+        ? "Todos los alumnos registrados" 
+        : `Alumnos de: ${carreraSeleccionada}`;
+
+      totalAlumnos.textContent = `Total: ${alumnos.length} alumno${alumnos.length !== 1 ? 's' : ''}`;
+    }
+
+    }
+
+    // Filtrar por carrera
+    selectCarrera.addEventListener("change", () => {
+      const carrera = selectCarrera.value;
+      if (carrera === "") {
+        mostrarAlumnos(todosLosAlumnos);
+      } else {
+        const filtrados = todosLosAlumnos.filter(a => a.carrera === carrera);
+        mostrarAlumnos(filtrados);
+      }
+    });
+
+    // Cargar al iniciar
+    cargarAlumnos();
+  </script>
+</body>
+</html>
