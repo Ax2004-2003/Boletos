@@ -1,11 +1,11 @@
 {
   "name": "Boletos Graduación 2025",
   "short_name": "Graduación 2025",
-  "description": "Sistema de reservación y verificación de boletos para la graduación",
+  "description": "Sistema oficial de reservación de boletos – Universidad UniverMilenium",
   "start_url": "index.html",
   "display": "standalone",
-  "background_color": "#8B0000",
-  "theme_color": "#c41b2a",
+  "background_color": "#003087",
+  "theme_color": "#003087",
   "orientation": "portrait-primary",
   "icons": [
     {
