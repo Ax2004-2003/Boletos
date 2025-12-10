@@ -8,7 +8,7 @@
   <!-- PWA Meta Tags -->
   <link rel="manifest" href="manifest.json">
   <link rel="apple-touch-icon" href="1.png">
-  <meta name="theme-color" content="#002856">
+  <meta name="theme-color" content="#c41b2a">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
@@ -17,10 +17,10 @@
   
   <style>
     :root {
-      --primary: #002856;
-      --primary-dark: #001f3f;
-      --secondary: #0055A5;
-      --accent: #ffffff;
+      --primary: #6366f1;
+      --primary-dark: #4f46e5;
+      --secondary: #ec4899;
+      --accent: #f59e0b;
       --success: #10b981;
       --error: #ef4444;
       --text: #1f2937;
@@ -37,7 +37,7 @@
 
     body {
       font-family: 'Poppins', sans-serif;
-      background: linear-gradient(-45deg, #001f3f, #002856, #003366, #0055A5);
+      background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
       background-size: 400% 400%;
       animation: gradientBG 15s ease infinite;
       min-height: 100vh;
@@ -63,7 +63,7 @@
 
     .particle {
       position: absolute;
-      background: rgba(255,255,255,0.18);
+      background: rgba(255,255,255,0.12);
       border-radius: 50%;
       animation: float 18s infinite linear;
     }
@@ -82,7 +82,7 @@
       border: 1px solid rgba(255, 255, 255, 0.25);
       width: 100%;
       max-width: 500px;
-      min-height: 680px;
+      min-height: 620px;
       border-radius: 28px;
       overflow: hidden;
       box-shadow: 0 25px 60px rgba(0,0,0,0.35);
@@ -101,15 +101,6 @@
       padding: 50px 30px 40px;
       text-align: center;
       color: white;
-    }
-
-    .logo {
-      width: 110px;
-      height: auto;
-      margin-bottom: 18px;
-      display: block;
-      margin-left: auto;
-      margin-right: auto;
     }
 
     .header h1 {
@@ -168,7 +159,7 @@
     input, select {
       width: 100%;
       padding: 16px 18px;
-      border: 2px solid #d0e4ff;
+      border: 2px solid #e2e8f0;
       border-radius: 16px;
       font-size: clamp(15px, 4vw, 17px);
       background: white;
@@ -178,11 +169,12 @@
 
     input:focus, select:focus {
       outline: none;
-      border-color: var(--secondary);
-      box-shadow: 0 0 0 5px rgba(0, 85, 165, 0.25);
+      border-color: var(--primary);
+      box-shadow: 0 0 0 5px rgba(99, 102, 241, 0.25);
       transform: translateY(-3px);
     }
 
+    /* Para el ojo de contraseña */
     input[type="password"] {
       padding-right: 50px;
     }
@@ -199,7 +191,7 @@
     }
 
     .password-toggle:hover {
-      color: var(--secondary);
+      color: var(--primary);
     }
 
     button {
@@ -216,7 +208,7 @@
       transition: all 0.4s;
       position: relative;
       overflow: hidden;
-      box-shadow: 0 12px 35px rgba(0, 85, 165, 0.45);
+      box-shadow: 0 12px 35px rgba(99, 102, 241, 0.45);
     }
 
     button::before {
@@ -229,7 +221,7 @@
     }
 
     button:hover::before { left: 100%; }
-    button:hover { transform: translateY(-5px); box-shadow: 0 18px 40px rgba(0, 85, 165, 0.55); }
+    button:hover { transform: translateY(-5px); box-shadow: 0 18px 40px rgba(99, 102, 241, 0.55); }
 
     .switch {
       text-align: center;
@@ -239,7 +231,7 @@
     }
 
     .switch a {
-      color: var(--secondary);
+      color: var(--primary);
       text-decoration: none;
       font-weight: 700;
       position: relative;
@@ -252,7 +244,7 @@
       left: 0;
       width: 0;
       height: 3px;
-      background: var(--secondary);
+      background: var(--primary);
       transition: width 0.4s;
       border-radius: 2px;
     }
@@ -289,7 +281,7 @@
       width: 32px;
       height: 32px;
       border: 4px solid #f0f0f0;
-      border-top: 4px solid var(--secondary);
+      border-top: 4px solid var(--primary);
       border-radius: 50%;
       display: inline-block;
       animation: spin 0.8s linear infinite;
@@ -304,7 +296,6 @@
       font-size: clamp(12px, 3vw, 14px);
       font-weight: 300;
       backdrop-filter: blur(10px);
-      background: rgba(0, 40, 100, 0.7);
     }
   </style>
 </head>
@@ -314,8 +305,6 @@
 
   <div class="container">
     <div class="header">
-      <!-- TU IMAGEN LOCAL -->
-      <img src="uni.png" alt="Universidad Univer Milenium" class="logo">
       <h1>Boletos Graduación</h1>
       <p>Sistema oficial 2025</p>
     </div>
@@ -403,11 +392,11 @@
       <div id="message" class="message"></div>
     </div>
 
-    <footer>© 2025 Graduación • Universidad Univer Milenium</footer>
+    <footer>© 2025 Graduación • Todos los derechos reservados</footer>
   </div>
 
-  <!-- TU SCRIPT ORIGINAL COMPLETO (100% SIN CAMBIOS) -->
   <script>
+    // Generar partículas
     const particlesContainer = document.getElementById('particles');
     const particleCount = window.innerWidth < 500 ? 40 : 70;
     for (let i = 0; i < particleCount; i++) {
@@ -429,10 +418,12 @@
     const loaderReg = document.getElementById("loaderReg");
     const loaderLogin = document.getElementById("loaderLogin");
 
+    // FUNCIÓN PARA VALIDAR CORREO INSTITUCIONAL
     function esCorreoValido(email) {
       return email.trim().toLowerCase().endsWith("@univermilenium.edu.mx");
     }
 
+    // MOSTRAR/OCULTAR CONTRASEÑA
     document.getElementById("toggleRegPass").addEventListener("click", function() {
       const input = document.getElementById("regPassword");
       input.type = input.type === "password" ? "text" : "password";
@@ -470,6 +461,7 @@
       return await res.json();
     }
 
+    // SOLO NÚMEROS EN MATRÍCULA
     document.getElementById("regMatricula").addEventListener("input", function() {
       this.value = this.value.replace(/[^0-9]/g, "");
     });
@@ -477,6 +469,7 @@
       this.value = this.value.replace(/[^0-9]/g, "");
     });
 
+    // REGISTRO - VALIDACIÓN DE CORREO INSTITUCIONAL
     registerForm.addEventListener("submit", async e => {
       e.preventDefault();
       loaderReg.style.display = "block";
@@ -493,6 +486,7 @@
         return;
       }
 
+      // VALIDACIÓN DEL DOMINIO
       if (!esCorreoValido(email)) {
         showMessage("Solo se permiten correos @univermilenium.edu.mx");
         loaderReg.style.display = "none";
@@ -524,6 +518,7 @@
       loaderReg.style.display = "none";
     });
 
+    // LOGIN - TAMBIÉN VALIDA EL DOMINIO DEL CORREO GUARDADO
     loginForm.addEventListener("submit", async e => {
       e.preventDefault();
       loaderLogin.style.display = "block";
@@ -540,7 +535,7 @@
           u.password === password && 
           u.nombre.toLowerCase() === nombre.toLowerCase() &&
           u.carrera === carrera &&
-          esCorreoValido(u.email)
+          esCorreoValido(u.email) // Extra seguridad: verifica que el correo guardado sea institucional
         ) : null;
 
         if (userEntry) {
@@ -562,6 +557,7 @@
       loaderLogin.style.display = "none";
     });
 
+    // Registrar Service Worker (PWA)
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('service-worker.js')
@@ -571,4 +567,4 @@
     }
   </script>
 </body>
-</html>
+            </html>
