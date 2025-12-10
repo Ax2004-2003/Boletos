@@ -17,10 +17,11 @@
   
   <style>
     :root {
-      --azul-univer: #003087;
+      --azul: #003087;
       --azul-claro: #005eb8;
       --blanco: #ffffff;
       --negro: #000000;
+      --gris-claro: #f8f9fa;
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -29,18 +30,19 @@
       height: 100%;
       width: 100%;
       overflow-x: hidden;
-      font-family: 'Poppins', sans-serif;
     }
 
     body {
-      background: linear-gradient(135deg, #000000, #002654, #003087);
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #000000, #001f4d, #003087);
       background-size: 300% 300%;
-      animation: gradientBG 20s ease infinite;
+      animation: gradientBG 18s ease infinite;
       min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
       padding: 20px 15px;
+      position: relative;
       color: var(--blanco);
     }
 
@@ -50,101 +52,487 @@
       100% { background-position: 0% 50%; }
     }
 
+    .particles {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .particle {
+      position: absolute;
+      background: rgba(255,255,255,0.15);
+      border-radius: 50%;
+      animation: float 18s infinite linear infinite;
+    }
+
+    @keyframes float {
+      0% { transform: translateY(100vh) scale(0.4); opacity: 0; }
+      10% { opacity: 0.8; }
+      90% { opacity: 0.8; }
+      100% { transform: translateY(-120px) scale(1); opacity: 0; }
+    }
+
     .container {
-      background: rgba(255, 255, 255, 0.12);
+      background: rgba(255, 255, 255, 0.15);
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
       border: 1px solid rgba(255, 255, 255, 0.3);
       width: 100%;
-      max-width: 520px;
+      max-width: 500px;
+      min-height: 680px;
       border-radius: 28px;
       overflow: hidden;
-      box-shadow: 0 30px 80px rgba(0,0,0,0.7);
-      animation: appear 1.4s ease-out;
+      box-shadow: 0 25px 60px rgba(0,0,0,0.6);
+      position: relative;
+      z-index: 10;
+      animation: appear 1.2s ease-out;
     }
 
     @keyframes appear {
-      from { opacity: 0; transform: scale(0.9) translateY(50px); }
+      from { opacity: 0; transform: scale(0.85) translateY(60px); }
       to { opacity: 1; transform: scale(1) translateY(0); }
     }
 
     .header {
-      background: linear-gradient(to bottom, var(--azul-univer), var(--azul-claro));
-      padding: 50px 30px 35px;
+      background: linear-gradient(135deg, var(--azul), var(--azul-claro));
+      padding: 60px 30px 40px;
       text-align: center;
-      position: relative;
+      color: white;
     }
 
     .logo {
       width: 140px;
       height: auto;
-      margin-bottom: 18px;
-      filter: drop-shadow(0 4px 12px rgba(0,0,0,0.6));
+      margin-bottom: 20px;
+      filter: drop-shadow(0 4px 12px rgba(0,0,0,0.5));
     }
 
     .header h1 {
-      font-size: clamp(26px, 6vw, 36px);
+      font-size: clamp(28px, 6vw, 38px);
       font-weight: 700;
-      color: var(--blanco);
-      margin: 0;
-      text-shadow: 0 3px 10px rgba(0,0,0,0.6);
+      margin-bottom: 8px;
+      text-shadow: 0 4px 15px rgba(0,0,0,0.5);
     }
 
     .header p {
-      font-size: 17px;
+      font-size: clamp(15px, 4vw, 18px);
       opacity: 0.95;
       font-weight: 400;
-      margin-top: 8px;
     }
 
     .form-container {
-      padding: 40px 35px;
+      padding: clamp(30px, 8vw, 50px) clamp(25px, 7vw, 40px);
       background: var(--blanco);
-      border-bottom-left-radius: 28px;
-      border-bottom-right-radius: 28px;
+      color: var(--negro);
     }
 
-    /* ... (el resto del CSS es idéntico al anterior, solo copié lo necesario para no alargar) ... */
+    .form {
+      display: none;
+      animation: fadeIn 0.7s ease-in-out;
+    }
 
-    h2 { color: var(--azul-univer); text-align: center; margin-bottom: 35px; font-size: clamp(24px, 6vw, 30px); font-weight: 700; }
-    label { color: #333; font-weight: 600; margin-bottom: 8px; display: block; }
-    input, select { width: 100%; padding: 16px 18px; border: 2px solid #ddd; border-radius: 16px; font-size: 16px; background: #fafafa; transition: 0.4s; }
-    input:focus, select:focus { border-color: var(--azul-univer); background: white; box-shadow: 0 0 0 4px rgba(0,48,135,0.2); }
+    .form.active { display: block; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(25px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 35px;
+      font-size: clamp(24px, 6vw, 30px);
+      color: var(--azul);
+      font-weight: 700;
+    }
+
+    .input-group { 
+      margin-bottom: 22px; 
+      position: relative;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      color: #333;
+      font-weight: 600;
+      font-size: clamp(14px, 3.8vw, 16px);
+    }
+
+    input, select {
+      width: 100%;
+      padding: 16px 18px;
+      border: 2px solid #e2e8f0;
+      border-radius: 16px;
+      font-size: clamp(15px, 4vw, 17px);
+      background: #fafafa;
+      transition: all 0.4s ease;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+    }
+
+    input:focus, select:focus {
+      outline: none;
+      border-color: var(--azul);
+      box-shadow: 0 0 0 5px rgba(0, 48, 135, 0.25);
+      transform: translateY(-3px);
+    }
+
+    input[type="password"] {
+      padding-right: 50px;
+    }
+
+    .password-toggle {
+      position: absolute;
+      right: 15px;
+      top: 48px;
+      cursor: pointer;
+      color: #666;
+      font-size: 20px;
+      transition: color 0.3s;
+    }
+
+    .password-toggle:hover {
+      color: var(--azul);
+    }
+
     button {
-      width: 100%; padding: 18px; background: linear-gradient(90deg, var(--azul-univer), var(--azul-claro));
-      color: white; border: none; border-radius: 16px; font-size: 18px; font-weight: 600;
-      cursor: pointer; margin-top: 10px; box-shadow: 0 10px 30px rgba(0,48,135,0.4);
-      transition: 0.4s;
+      width: 100%;
+      padding: 17px;
+      background: linear-gradient(90deg, var(--azul), var(--azul-claro));
+      color: white;
+      border: none;
+      border-radius: 16px;
+      font-size: clamp(16px, 4.5vw, 19px);
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 15px;
+      transition: all 0.4s;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 12px 35px rgba(0, 48, 135, 0.45);
     }
-    button:hover { transform: translateY(-4px); box-shadow: 0 15px 40px rgba(0,48,135,0.5); }
-    footer { text-align: center; padding: 20px; background: rgba(0,0,0,0.5); color: rgba(255,255,255,0.9); font-size: 13px; }
 
-    /* (el resto de estilos que ya tenías siguen funcionando igual) */
+    button::before {
+      content: '';
+      position: absolute;
+      top: 0; left: -100%;
+      width: 100%; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+      transition: 0.7s;
+    }
+
+    button:hover::before { left: 100%; }
+    button:hover { transform: translateY(-5px); box-shadow: 0 18px 40px rgba(0, 48, 135, 0.55); }
+
+    .switch {
+      text-align: center;
+      margin-top: 30px;
+      color: #555;
+      font-size: clamp(14px, 3.7vw, 15px);
+    }
+
+    .switch a {
+      color: var(--azul);
+      text-decoration: none;
+      font-weight: 700;
+    }
+
+    .switch a:hover {
+      text-decoration: underline;
+    }
+
+    .message {
+      margin-top: 20px;
+      padding: 16px 20px;
+      border-radius: 16px;
+      text-align: center;
+      font-weight: 600;
+      font-size: clamp(14px, 3.8vw, 15px);
+      display: none;
+    }
+
+    .message.success { background: #e8f5e9; color: #2e7d32; }
+    .message.error { background: #ffebee; color: #c62828; }
+
+    .loader::after {
+      border: 4px solid #f0f0f0;
+      border-top: 4px solid var(--azul);
+    }
+
+    footer {
+      text-align: center;
+      padding: 25px;
+      color: rgba(255,255,255,0.9);
+      font-size: clamp(12px, 3vw, 14px);
+      font-weight: 300;
+      background: rgba(0,0,0,0.4);
+      backdrop-filter: blur(10px);
+    }
   </style>
 </head>
 <body>
 
+  <div class="particles" id="particles"></div>
+
   <div class="container">
     <div class="header">
-      <!-- AQUÍ ESTÁ TU LOGO LOCAL -->
+      <!-- TU LOGO LOCAL -->
       <img src="uni.png" alt="Universidad UniverMilenium" class="logo">
       <h1>Boletos Graduación</h1>
-      <p>Sistema oficial • Promoción 2025</p>
+      <p>Sistema oficial 2025</p>
     </div>
 
-    <!-- Todo el resto del HTML es exactamente el mismo que tenías -->
     <div class="form-container">
-      <!-- Formularios de registro y login (sin cambios) -->
-      <!-- ... (tu código original) ... -->
+
+      <!-- Registro -->
+      <form id="registerForm" class="form active">
+        <h2>Crear Cuenta</h2>
+        <div class="input-group">
+          <label>Nombre completo</label>
+          <input type="text" id="regNombre" placeholder="Ana Laura García López" required />
+        </div>
+        <div class="input-group">
+          <label>Matrícula (solo números)</label>
+          <input type="text" id="regMatricula" placeholder="2021005678" inputmode="numeric" required />
+        </div>
+        <div class="input-group">
+          <label>Carrera</label>
+          <select id="regCarrera" required>
+            <option value="">Selecciona tu carrera</option>
+            <option value="Ingeniería en Sistemas">Ingeniería en Sistemas</option>
+            <option value="Ingeniería Industrial">Ingeniería Industrial</option>
+            <option value="Ingeniería Civil">Ingeniería Civil</option>
+            <option value="Arquitectura">Arquitectura</option>
+            <option value="Derecho">Derecho</option>
+            <option value="Medicina">Medicina</option>
+            <option value="Psicología">Psicología</option>
+            <option value="Administración">Administración</option>
+            <option value="Contaduría">Contaduría</option>
+            <option value="Otra">Otra</option>
+          </select>
+        </div>
+        <div class="input-group">
+          <label>Correo institucional</label>
+          <input type="email" id="regEmail" placeholder="tunombre@univermilenium.edu.mx" required />
+        </div>
+        <div class="input-group">
+          <label>Contraseña</label>
+          <input type="password" id="regPassword" placeholder="Mínimo 6 caracteres" required />
+          <span class="password-toggle" id="toggleRegPass">Mostrar</span>
+        </div>
+        <button type="submit">Registrarse</button>
+        <div class="loader" id="loaderReg"></div>
+        <p class="switch">¿Ya tienes cuenta? <a href="#" id="toLogin">Iniciar sesión</a></p>
+      </form>
+
+      <!-- Login -->
+      <form id="loginForm" class="form">
+        <h2>¡Hola de nuevo!</h2>
+        <div class="input-group">
+          <label>Nombre completo</label>
+          <input type="text" id="loginNombre" placeholder="Ana Laura García López" required />
+        </div>
+        <div class="input-group">
+          <label>Matrícula (solo números)</label>
+          <input type="text" id="loginMatricula" placeholder="2021005678" inputmode="numeric" required />
+        </div>
+        <div class="input-group">
+          <label>Carrera</label>
+          <select id="loginCarrera" required>
+            <option value="">Selecciona tu carrera</option>
+            <option value="Ingeniería en Sistemas">Ingeniería en Sistemas</option>
+            <option value="Ingeniería Industrial">Ingeniería Industrial</option>
+            <option value="Ingeniería Civil">Ingeniería Civil</option>
+            <option value="Arquitectura">Arquitectura</option>
+            <option value="Derecho">Derecho</option>
+            <option value="Medicina">Medicina</option>
+            <option value="Psicología">Psicología</option>
+            <option value="Administración">Administración</option>
+            <option value="Contaduría">Contaduría</option>
+            <option value="Otra">Otra</option>
+          </select>
+        </div>
+        <div class="input-group">
+          <label>Contraseña</label>
+          <input type="password" id="loginPassword" required />
+          <span class="password-toggle" id="toggleLoginPass">Mostrar</span>
+        </div>
+        <button type="submit">Iniciar Sesión</button>
+        <div class="loader" id="loaderLogin"></div>
+        <p class="switch">¿No tienes cuenta? <a href="#" id="toRegister">Regístrate aquí</a></p>
+      </form>
+
+      <div id="message" class="message"></div>
     </div>
 
     <footer>© 2025 Universidad UniverMilenium • Todos los derechos reservados</footer>
   </div>
 
-  <!-- Tu JavaScript original va aquí tal cual (sin tocar nada) -->
+  <!-- TU JAVASCRIPT 100% INTACTO -->
   <script>
-    // Pega aquí todo tu script original (partículas, Firebase, validaciones, etc.)
-    // Está 100% funcional, no lo modifiqué
+    // Generar partículas
+    const particlesContainer = document.getElementById('particles');
+    const particleCount = window.innerWidth < 500 ? 40 : 70;
+    for (let i = 0; i < particleCount; i++) {
+      const p = document.createElement('div');
+      p.classList.add('particle');
+      const size = Math.random() * 10 + 4;
+      p.style.width = p.style.height = size + 'px';
+      p.style.left = Math.random() * 100 + '%';
+      p.style.animationDelay = Math.random() * 18 + 's';
+      p.style.animationDuration = Math.random() * 25 + 15 + 's';
+      particlesContainer.appendChild(p);
+    }
+
+    const DB_URL = "https://boletos-66dac-default-rtdb.firebaseio.com/users.json";
+
+    const registerForm = document.getElementById("registerForm");
+    const loginForm = document.getElementById("loginForm");
+    const messageDiv = document.getElementById("message");
+    const loaderReg = document.getElementById("loaderReg");
+    const loaderLogin = document.getElementById("loaderLogin");
+
+    function esCorreoValido(email) {
+      return email.trim().toLowerCase().endsWith("@univermilenium.edu.mx");
+    }
+
+    document.getElementById("toggleRegPass").addEventListener("click", function() {
+      const input = document.getElementById("regPassword");
+      input.type = input.type === "password" ? "text" : "password";
+      this.textContent = input.type === "password" ? "Mostrar" : "Ocultar";
+    });
+
+    document.getElementById("toggleLoginPass").addEventListener("click", function() {
+      const input = document.getElementById("loginPassword");
+      input.type = input.type === "password" ? "text" : "password";
+      this.textContent = input.type === "password" ? "Mostrar" : "Ocultar";
+    });
+
+    document.getElementById("toLogin").addEventListener("click", e => {
+      e.preventDefault();
+      registerForm.classList.remove("active");
+      setTimeout(() => loginForm.classList.add("active"), 300);
+    });
+
+    document.getElementById("toRegister").addEventListener("click", e => {
+      e.preventDefault();
+      loginForm.classList.remove("active");
+      setTimeout(() => registerForm.classList.add("active"), 300);
+    });
+
+    function showMessage(text, type = "error") {
+      messageDiv.textContent = text;
+      messageDiv.className = "message " + type;
+      messageDiv.style.display = "block";
+      setTimeout(() => messageDiv.style.display = "none", 6000);
+    }
+
+    async function getUsers() {
+      const res = await fetch(DB_URL);
+      if (!res.ok) return null;
+      return await res.json();
+    }
+
+    document.getElementById("regMatricula").addEventListener("input", function() {
+      this.value = this.value.replace(/[^0-9]/g, "");
+    });
+    document.getElementById("loginMatricula").addEventListener("input", function() {
+      this.value = this.value.replace(/[^0-9]/g, "");
+    });
+
+    registerForm.addEventListener("submit", async e => {
+      e.preventDefault();
+      loaderReg.style.display = "block";
+
+      const nombre = document.getElementById("regNombre").value.trim();
+      const matricula = document.getElementById("regMatricula").value.trim();
+      const carrera = document.getElementById("regCarrera").value;
+      const email = document.getElementById("regEmail").value.trim().toLowerCase();
+      const password = document.getElementById("regPassword").value;
+
+      if (!nombre || !matricula || !carrera || !email || password.length < 6) {
+        showMessage("Completa todos los campos correctamente");
+        loaderReg.style.display = "none";
+        return;
+      }
+
+      if (!esCorreoValido(email)) {
+        showMessage("Solo se permiten correos @univermilenium.edu.mx");
+        loaderReg.style.display = "none";
+        return;
+      }
+
+      try {
+        const users = await getUsers();
+        if (users && Object.values(users).some(u => u.matricula === matricula)) {
+          showMessage("Esta matrícula ya está registrada");
+          loaderReg.style.display = "none";
+          return;
+        }
+
+        await fetch(DB_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ nombre, matricula, carrera, email, password, registradoEn: new Date().toISOString() })
+        });
+
+        showMessage("¡Registro exitoso! Ahora inicia sesión", "success");
+        setTimeout(() => {
+          loginForm.classList.add("active");
+          registerForm.classList.remove("active");
+        }, 1500);
+      } catch (err) {
+        showMessage("Error de conexión");
+      }
+      loaderReg.style.display = "none";
+    });
+
+    loginForm.addEventListener("submit", async e => {
+      e.preventDefault();
+      loaderLogin.style.display = "block";
+
+      const nombre = document.getElementById("loginNombre").value.trim();
+      const matricula = document.getElementById("loginMatricula").value.trim();
+      const carrera = document.getElementById("loginCarrera").value;
+      const password = document.getElementById("loginPassword").value;
+
+      try {
+        const users = await getUsers();
+        const userEntry = users ? Object.entries(users).find(([_, u]) =>
+          u.matricula === matricula && 
+          u.password === password && 
+          u.nombre.toLowerCase() === nombre.toLowerCase() &&
+          u.carrera === carrera &&
+          esCorreoValido(u.email)
+        ) : null;
+
+        if (userEntry) {
+          const [id, data] = userEntry;
+          localStorage.setItem("currentUserId", id);
+          localStorage.setItem("currentUserNombre", data.nombre);
+          localStorage.setItem("currentUserMatricula", data.matricula);
+          localStorage.setItem("currentUserCarrera", data.carrera);
+          localStorage.setItem("currentUserEmail", data.email || "");
+
+          showMessage(`¡Bienvenid@, ${data.nombre.split(" ")[0]}!`, "success");
+          setTimeout(() => window.location.href = "index2.html", 1800);
+        } else {
+          showMessage("Datos incorrectos o correo no institucional");
+        }
+      } catch (err) {
+        showMessage("Error de conexión");
+      }
+      loaderLogin.style.display = "none";
+    });
+
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('service-worker.js')
+          .then(reg => console.log('SW registrado'))
+          .catch(err => console.log('Error SW:', err));
+      });
+    }
   </script>
 </body>
 </html>
