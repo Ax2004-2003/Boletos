@@ -5,216 +5,45 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Verificación Oficial • Graduación 2025</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Bebas+Neue&display=swap" rel="stylesheet">
-  
   <style>
-    :root {
-      --azul-marino: #002856;
-      --azul-institucional: #0055A5;
-      --blanco: #ffffff;
-      --negro: #1a1a1a;
-      --verde: #10b981;
-      --rojo: #ef4444;
-      --gris-claro: #f8f9fa;
-    }
-
+    :root { --red-dark:#8B0000; --red-main:#c41b2a; --gold:#FFD700; --green:#10b981; }
     * { margin:0; padding:0; box-sizing:border-box; }
-    
-    body {
-      font-family:'Poppins',sans-serif;
-      background: linear-gradient(135deg, #001233, #002856, #001f3f);
-      min-height:100vh;
-      display:flex;
-      justify-content:center;
-      align-items:center;
-      padding:15px;
-      color: white;
-    }
+    body { font-family:'Poppins',sans-serif; background:linear-gradient(135deg,#0f172a,#1e293b); min-height:100vh; display:flex; justify-content:center; align-items:center; padding:15px; color:white; }
+    .container { background:white; color:#1e1b4b; max-width:500px; width:100%; border-radius:24px; overflow:hidden; box-shadow:0 25px 60px rgba(0,0,0,0.7); }
+    .header { background:linear-gradient(135deg,var(--red-dark),var(--red-main)); padding:40px 20px; text-align:center; }
+    .header h1 { font-family:'Bebas Neue',sans-serif; font-size:46px; color:var(--gold); text-shadow:0 4px 15px rgba(0,0,0,0.8); letter-spacing:3px; }
+    .content { padding:40px 30px; text-align:center; }
 
-    .container {
-      background: white;
-      color: var(--negro);
-      max-width:500px;
-      width:100%;
-      border-radius:28px;
-      overflow:hidden;
-      box-shadow:0 30px 80px rgba(0,0,0,0.6);
-      border: 3px solid var(--azul-institucional);
-    }
+    .valid { background:#ecfdf5; color:#065f46; padding:30px; border-radius:20px; border:4px solid var(--green); margin-bottom:20px; }
+    .valid .status { font-family:'Bebas Neue',sans-serif; font-size:48px; color:var(--green); margin:15px 0; }
+    .valid .seal { width:120px; height:120px; background:var(--green); color:white; border-radius:50%; margin:0 auto 20px; display:flex; align-items:center; justify-content:center; font-size:70px;
+      box-shadow:0 0 0 0 15px rgba(16,185,129,0.3); animation:pulse 2s infinite; }
+    @keyframes pulse { 0%{box-shadow:0 0 0 0 rgba(16,185,129,0.7)} 70%{box-shadow:0 0 0 25px rgba(16,185,129,0)} 100%{box-shadow:0 0 0 0 rgba(16,185,129,0)} }
 
-    .header {
-      background: linear-gradient(135deg, var(--azul-marino), var(--azul-institucional));
-      padding:50px 20px 40px;
-      text-align:center;
-      position: relative;
-    }
-
-    .logo {
-      width: 110px;
-      height: auto;
-      margin-bottom: 15px;
-      display: block;
-      margin-left: auto;
-      margin-right: auto;
-    }
-
-    .header h1 {
-      font-family:'Bebas Neue',sans-serif;
-      font-size:48px;
-      color: white;
-      text-shadow:0 4px 15px rgba(0,0,0,0.7);
-      letter-spacing:3px;
-      margin: 10px 0;
-    }
-
-    .header p {
-      font-size: 18px;
-      color: rgba(255,255,255,0.95);
-      font-weight: 500;
-    }
-
-    .content {
-      padding:40px 30px;
-      text-align:center;
-    }
-
-    .valid {
-      background:#ecfdf5;
-      color:#065f46;
-      padding:35px;
-      border-radius:24px;
-      border:5px solid var(--verde);
-      margin-bottom:25px;
-      box-shadow: 0 10px 30px rgba(16,185,129,0.15);
-    }
-
-    .valid .status {
-      font-family:'Bebas Neue',sans-serif;
-      font-size:52px;
-      color:var(--verde);
-      margin:15px 0;
-      text-shadow: 0 3px 10px rgba(0,0,0,0.2);
-    }
-
-    .valid .seal {
-      width:130px;
-      height:130px;
-      background:var(--verde);
-      color:white;
-      border-radius:50%;
-      margin:0 auto 25px;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      font-size:80px;
-      box-shadow:0 0 0 0 rgba(16,185,129,0.4);
-      animation:pulse 2s infinite;
-    }
-
-    @keyframes pulse {
-      0% { box-shadow:0 0 0 0 rgba(16,185,129,0.7); }
-      70% { box-shadow:0 0 0 30px rgba(16,185,129,0); }
-      100% { box-shadow:0 0 0 0 rgba(16,185,129,0); }
-    }
-
-    .invalid, .expired, .error {
-      background:#fee2e2;
-      color:#991b1b;
-      padding:35px;
-      border-radius:24px;
-      border:5px solid var(--rojo);
-      font-size:22px;
-      font-weight:700;
-      box-shadow: 0 10px 30px rgba(239,68,68,0.15);
-    }
-
-    .info-card {
-      background:var(--gris-claro);
-      border-radius:20px;
-      padding:28px;
-      margin:30px 0;
-      box-shadow:0 12px 35px rgba(0,0,0,0.1);
-      border-left: 6px solid var(--azul-institucional);
-    }
-
-    .info-row {
-      display:flex;
-      justify-content:space-between;
-      padding:16px 0;
-      border-bottom:1px dashed #ccc;
-      font-size:18px;
-    }
-
+    .invalid, .expired, .error { background:#fee2e2; color:#991b1b; padding:30px; border-radius:20px; border:4px solid #ef4444; font-size:20px; font-weight:600; }
+    .info-card { background:#f8f9fa; border-radius:18px; padding:25px; margin:25px 0; box-shadow:0 10px 30px rgba(0,0,0,0.1); }
+    .info-row { display:flex; justify-content:space-between; padding:14px 0; border-bottom:1px dashed #ddd; font-size:17px; }
     .info-row:last-child { border:none; }
-
-    .label {
-      font-weight:600;
-      color:#444;
-    }
-
-    .value {
-      font-weight:700;
-      color:var(--azul-marino);
-      text-align:right;
-    }
-
-    .highlight {
-      background: var(--azul-institucional);
-      color: white;
-      padding:6px 14px;
-      border-radius:10px;
-      font-weight:bold;
-    }
-
-    .official-stamp {
-      margin:35px 0;
-      padding:28px;
-      background:rgba(0,85,165,0.1);
-      border:4px dashed var(--azul-institucional);
-      border-radius:18px;
-      font-size:24px;
-      font-weight:bold;
-      color:var(--azul-marino);
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
-
-    .loader {
-      font-size:22px;
-      color:var(--azul-institucional);
-      padding:50px;
-      font-weight: 600;
-    }
-
-    .loader::after {
-      content: '';
-      display: block;
-      width: 40px;
-      height: 40px;
-      margin: 20px auto;
-      border: 5px solid #f0f0f0;
-      border-top: 5px solid var(--azul-institucional);
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-    }
-
-    @keyframes spin { to { transform: rotate(360deg); } }
+    .label { font-weight:600; color:#555; }
+    .value { font-weight:700; color:#1e1b4b; text-align:right; }
+    .highlight { background:var(--gold); color:black; padding:4px 12px; border-radius:8px; font-weight:bold; }
+    .official-stamp { margin:30px 0; padding:25px; background:rgba(196,27,42,0.1); border:3px dashed var(--red-main); border-radius:16px; font-size:20px; font-weight:bold; color:var(--red-main); }
+    .footer { background:#1e1b4b; color:white; padding:25px; text-align:center; font-size:16px; }
+    .loader { font-size:20px; color:var(--gold); padding:40px; }
   </style>
 </head>
 <body>
 
   <div class="container">
     <div class="header">
-      <img src="uni.png" alt="Universidad Univer Milenium" class="logo">
       <h1>GRADUACIÓN 2025</h1>
       <p>Verificación Oficial de Boletos</p>
     </div>
-
     <div class="content" id="result">
       <div class="loader">Verificando boleto...</div>
     </div>
   </div>
 
-  <!-- TU SCRIPT 100% ORIGINAL (SIN TOCAR NADA) -->
   <script>
     const DB_URL = "https://boletos-66dac-default-rtdb.firebaseio.com/users.json";
     const FECHA_LIMITE = new Date('2025-12-10T23:59:59');
@@ -270,28 +99,30 @@
         const horaStr = fechaCompra.toLocaleTimeString('es-MX', {hour:'2-digit', minute:'2-digit'});
 
         if (new Date() > FECHA_LIMITE) {
-          resultDiv.innerHTML = `<div class="expired">BOLETO VENCIDO<br>Expiró el 10/12/2025<br><strong>ACCESO DENEGADO</strong></div>`;
+          resultDiv.innerHTML = `<div class="expired">BOLETO VENCIDO<br>Expiró el 09/12/2025<br><strong>ACCESO DENEGADO</strong></div>`;
           return;
         }
 
+        // BOLETO VÁLIDO → MOSTRAR VERDE + REDIRECCIÓN EN 15 SEGUNDOS
         resultDiv.innerHTML = `
           <div class="valid">
             <div class="seal">Checkmark</div>
             <div class="status">¡ACCESO AUTORIZADO!</div>
             <p><strong>${alumno.nombre}</strong></p>
             <p>Boleto auténtico y vigente</p>
-            <p style="margin-top:20px; color:#065f46;">Redirigiendo en <strong>15</strong> segundos...</p>
+            <p style="margin-top:20px; color:#065f46;">Redirigiendo a lista de alumnos en <strong>15</strong> segundos...</p>
           </div>
 
           <div class="info-card">
             <div class="info-row"><span class="label">MATRÍCULA</span><span class="value highlight">${matricula}</span></div>
             <div class="info-row"><span class="label">CÓDIGO</span><span class="value highlight">${codigo}</span></div>
-            <div class="info-row"><span class="label">BOLETOS</span><span class="value">\( {compraValida.cena||0} Cena + \){compraValida.ceremonia||0} Ceremonia</span></div>
+            <div class="info-row"><span class="label">BOLETOS</span><span class="value">${compraValida.cena||0} Cena + ${compraValida.ceremonia||0} Ceremonia</span></div>
           </div>
 
           <div class="official-stamp">ACCESO PERMITIDO</div>
         `;
 
+        // REDIRECCIÓN AUTOMÁTICA DESPUÉS DE 15 SEGUNDOS
         let segundos = 15;
         const contador = setInterval(() => {
           segundos--;
