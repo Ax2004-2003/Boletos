@@ -6,137 +6,140 @@
   <title>Lista de Alumnos • Graduación 2025</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Bebas+Neue&display=swap" rel="stylesheet">
   
+  <!-- Librería para exportar a Excel (gratis y sin servidor) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
   <style>
     :root {
       --red-dark: #8B0000;
       --red-main: #c41b2a;
       --gold: #FFD700;
       --primary: #6366f1;
-      --gray: #f1f5f9;
       --text: #1e1b4b;
     }
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    * { margin:0; padding:0; box-sizing:border-box; }
     body {
-      font-family: 'Poppins', sans-serif;
-      background: linear-gradient(135deg, #0f172a, #1e293b);
-      color: white;
-      min-height: 100vh;
-      padding: 20px;
+      font-family:'Poppins',sans-serif;
+      background:linear-gradient(135deg,#0f172a,#1e293b);
+      color:white;
+      min-height:100vh;
+      padding:20px;
     }
     .container {
-      max-width: 1100px;
-      margin: 0 auto;
-      background: rgba(255,255,255,0.1);
-      backdrop-filter: blur(20px);
-      border-radius: 20px;
-      overflow: hidden;
-      box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+      max-width:1200px;
+      margin:0 auto;
+      background:rgba(255,255,255,0.1);
+      backdrop-filter:blur(20px);
+      border-radius:24px;
+      overflow:hidden;
+      box-shadow:0 25px 60px rgba(0,0,0,0.6);
     }
     .header {
-      background: linear-gradient(135deg, var(--red-dark), var(--red-main));
-      padding: 40px;
-      text-align: center;
+      background:linear-gradient(135deg,var(--red-dark),var(--red-main));
+      padding:50px 20px;
+      text-align:center;
     }
     .header h1 {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 48px;
-      color: var(--gold);
-      text-shadow: 0 4px 20px rgba(0,0,0,0.8);
+      font-family:'Bebas Neue',sans-serif;
+      font-size:52px;
+      color:var(--gold);
+      text-shadow:0 4px 20px rgba(0,0,0,0.8);
+      letter-spacing:3px;
     }
-    .header p {
-      font-size: 18px;
-      margin-top: 10px;
-      opacity: 0.95;
-    }
+    .header p { font-size:19px; margin-top:10px; opacity:0.95; }
 
-    .content {
-      padding: 40px;
-    }
+    .content { padding:40px; }
 
     .controls {
-      margin-bottom: 30px;
-      text-align: center;
+      display:flex; justify-content:space-between; align-items:center;
+      flex-wrap:wrap; gap:20px;
+      margin-bottom:40px;
     }
-
     select {
-      padding: 14px 20px;
-      font-size: 18px;
-      border-radius: 12px;
-      border: none;
-      background: white;
-      color: var(--text);
-      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
-      min-width: 300px;
-      cursor: pointer;
+      padding:16px 28px;
+      font-size:18px;
+      border-radius:16px;
+      border:none;
+      background:white;
+      color:var(--text);
+      box-shadow:0 10px 30px rgba(0,0,0,0.3);
+      min-width:380px;
+      cursor:pointer;
+      font-weight:500;
     }
+    select:focus { outline:none; box-shadow:0 0 0 5px rgba(99,102,241,0.4); }
 
-    select:focus { outline: none; box-shadow: 0 0 0 4px rgba(99,102,241,0.3); }
+    .btn-excel {
+      padding:16px 32px;
+      background:var(--gold);
+      color:black;
+      border:none;
+      border-radius:16px;
+      font-size:18px;
+      font-weight:bold;
+      cursor:pointer;
+      box-shadow:0 10px 30px rgba(255,215,0,0.4);
+      transition:all 0.3s;
+    }
+    .btn-excel:hover {
+      transform:translateY(-4px);
+      box-shadow:0 15px 35px rgba(255,215,0,0.6);
+    }
 
     h3 {
-      text-align: center;
-      margin: 30px 0 20px;
-      font-size: 26px;
-      color: var(--gold);
+      text-align:center;
+      margin:30px 0 25px;
+      font-size:30px;
+      color:var(--gold);
+      font-weight:bold;
     }
 
     table {
-      width: 100%;
-      border-collapse: collapse;
-      background: white;
-      color: var(--text);
-      border-radius: 16px;
-      overflow: hidden;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      width:100%;
+      border-collapse:collapse;
+      background:white;
+      color:var(--text);
+      border-radius:18px;
+      overflow:hidden;
+      box-shadow:0 15px 40px rgba(0,0,0,0.4);
+      margin:20px 0;
     }
-
     th {
-      background: var(--red-main);
-      color: white;
-      padding: 18px;
-      text-align: left;
-      font-weight: 600;
-      font-size: 16px;
+      background:var(--red-main);
+      color:white;
+      padding:20px;
+      text-align:left;
+      font-size:17px;
+      font-weight:600;
     }
-
     td {
-      padding: 16px 18px;
-      border-bottom: 1px solid #eee;
+      padding:18px 20px;
+      border-bottom:1px solid #eee;
+      font-size:16px;
     }
-
-    tr:hover {
-      background: #f8f9fa;
-    }
-
-    }
+    tr:hover { background:#f8f9fa; }
 
     .total {
-      text-align: center;
-      margin-top: 30px;
-      font-size: 20px;
-      color: var(--gold);
-      font-weight: bold;
+      text-align:center;
+      margin-top:35px;
+      font-size:24px;
+      color:var(--gold);
+      font-weight:bold;
     }
 
-    .no-data {
-      text-align: center;
-      padding: 60px;
-      color: #999;
-      font-size: 20px;
-    }
-
-    .loader {
-      text-align: center;
-      padding: 60px;
-      font-size: 22px;
-      color: var(--gold);
-    }
+    .no-data { text-align:center; padding:80px 20px; color:#aaa; font-size:22px; }
+    .loader { text-align:center; padding:80px; font-size:26px; color:var(--gold); }
 
     footer {
-      text-align: center;
-      padding: 30px;
-      color: rgba(255,255,255,0.7);
-      font-size: 14px;
-      margin-top: 40px;
+      text-align:center;
+      padding:40px;
+      color:rgba(255,255,255,0.8);
+      font-size:15px;
+    }
+
+    @media (max-width:768px) {
+      .controls { flex-direction:column; }
+      select, .btn-excel { min-width:100%; }
     }
   </style>
 </head>
@@ -144,33 +147,34 @@
 
   <div class="container">
     <div class="header">
-      <h1>LISTA DE ALUMNOS REGISTRADOS</h1>
+      <h1>LISTA DE ALUMNOS</h1>
       <p>Graduación 2025 • Universidad del Milenio</p>
     </div>
 
     <div class="content">
       <div class="controls">
-        <label for="carreraSelect" style="display:block; margin-bottom:10px; font-size:18px;">
-          Filtrar por carrera:
-        </label>
         <select id="carreraSelect">
           <option value="">Todas las carreras</option>
-          <option value="Ingeniería en Sistemas">Ingeniería en Sistemas</option>
-          <option value="Ingeniería Industrial">Ingeniería Industrial</option>
-          <option value="Ingeniería Civil">Ingeniería Civil</option>
-          <option value="Arquitectura">Arquitectura</option>
-          <option value="Derecho">Derecho</option>
-          <option value="Medicina">Medicina</option>
-          <option value="Psicología">Psicología</option>
-          <option value="Administración">Administración</option>
-          <option value="Contaduría">Contaduría</option>
-          <option value="Otra">Otra</option>
+          <option>Ingeniería en Sistemas</option>
+          <option>Ingeniería Industrial</option>
+          <option>Ingeniería Civil</option>
+          <option>Arquitectura</option>
+          <option>Derecho</option>
+          <option>Medicina</option>
+          <option>Psicología</option>
+          <option>Administración</option>
+          <option>Contaduría</option>
+          <option>Otra</option>
         </select>
+
+        <button class="btn-excel" id="exportarExcel">
+          Descargar Excel
+        </button>
       </div>
 
       <h3 id="tituloTabla">Todos los alumnos registrados</h3>
 
-      <div id="loader" class="loader">Cargando lista de alumnos...</div>
+      <div id="loader" class="loader">Cargando alumnos registrados...</div>
 
       <table id="tablaAlumnos" style="display:none;">
         <thead>
@@ -181,9 +185,7 @@
             <th>Correo institucional</th>
           </tr>
         </thead>
-        <tbody id="tablaBody">
-          <!-- Se llena con JS -->
-        </tbody>
+        <tbody id="tablaBody"></tbody>
       </table>
 
       <div class="total" id="totalAlumnos">Total: 0 alumnos</div>
@@ -197,87 +199,93 @@
 
   <script>
     const DB_URL = "https://boletos-66dac-default-rtdb.firebaseio.com/users.json";
-    const selectCarrera = document.getElementById("carreraSelect");
+    const select = document.getElementById("carreraSelect");
     const tablaBody = document.getElementById("tablaBody");
-    const tablaAlumnos = document.getElementById("tablaAlumnos");
+    const tabla = document.getElementById("tablaAlumnos");
     const loader = document.getElementById("loader");
-    const tituloTabla = document.getElementById("tituloTabla");
-    const totalAlumnos = document.getElementById("totalAlumnos");
+    const titulo = document.getElementById("tituloTabla");
+    const total = document.getElementById("totalAlumnos");
+    const btnExcel = document.getElementById("exportarExcel");
 
-    let todosLosAlumnos = [];
+    let alumnos = [];
+    let alumnosMostrados = [];
 
-    // Cargar todos los alumnos
     async function cargarAlumnos() {
       try {
         const res = await fetch(DB_URL);
         const data = await res.json();
 
-        if (!data) {
-          loader.textContent = "No hay alumnos registrados aún";
+        if (!data || Object.keys(data).length === 0) {
+          loader.innerHTML = "No hay alumnos registrados todavía";
           return;
         }
 
-        todosLosAlumnos = Object.entries(data).map(([id, info]) => ({
-          id,
-          matricula: info.matricula || "Sin matrícula",
-          nombre: info.nombre || "Sin nombre",
-          carrera: info.carrera || "No especificada",
-          email: info.email || "Sin correo"
-        }))).sort((a, b) => a.nombre.localeCompare(b.nombre));
+        alumnos = Object.values(data).map(u => ({
+          matricula: u.matricula || "—",
+          nombre: u.nombre || "Sin nombre",
+          carrera: u.carrera || "No especificada",
+          email: u.email || "Sin correo"
+        })).sort((a,b) => a.nombre.localeCompare(b.nombre));
 
-        mostrarAlumnos(todosLosAlumnos);
+        filtrarAlumnos();
         loader.style.display = "none";
-        tablaAlumnos.style.display = "table";
+        tabla.style.display = "table";
 
       } catch (err) {
-        loader.textContent = "Error al cargar datos";
+        loader.innerHTML = "Error al conectar con la base de datos";
         console.error(err);
       }
     }
 
-    // Mostrar alumnos filtrados
-    function mostrarAlumnos(alumnos) {
-      tablaBody.innerHTML = "";
+    function filtrarAlumnos() {
+      const carrera = select.value;
+      alumnosMostrados = carrera ? alumnos.filter(a => a.carrera === carrera) : alumnos;
 
-      if (alumnos.length === 0) {
-        tablaBody.innerHTML = `<tr><td colspan="4" style="text-align:center; padding:40px; color:#999;">No hay alumnos con esta carrera</td></tr>`;
-        totalAlumnos.textContent = "Total: 0 alumnos";
+      titulo.textContent = carrera ? `Alumnos de: ${carrera}` : "Todos los alumnos registrados";
+
+      tablaBody.innerHTML = "";
+      if (alumnosMostrados.length === 0) {
+        tablaBody.innerHTML = `<tr><td colspan="4" class="no-data">No hay alumnos en esta carrera</td></tr>`;
+      } else {
+        alumnosMostrados.forEach(a => {
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td data-label="Matrícula"><strong>${a.matricula}</strong></td>
+            <td data-label="Nombre">${a.nombre}</td>
+            <td data-label="Carrera">${a.carrera}</td>
+            <td data-label="Correo">${a.email}</td>
+          `;
+          tablaBody.appendChild(tr);
+        });
+      }
+
+      total.textContent = `Total: ${alumnosMostrados.length} alumno${alumnosMostrados.length !== 1 ? 's' : ''}`;
+    }
+
+    // EXPORTAR A EXCEL
+    btnExcel.addEventListener("click", () => {
+      if (alumnosMostrados.length === 0) {
+        alert("No hay datos para exportar");
         return;
       }
 
-      alumnos.forEach(alumno => {
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-          <td><strong>${alumno.matricula}</strong></td>
-          <td>${alumno.nombre}</td>
-          <td>${alumno.carrera}</td>
-          <td>${alumno.email}</td>
-        `;
-        tablaBody.appendChild(tr);
-      });
+      const datosExcel = alumnosMostrados.map(a => ({
+        Matrícula: a.matricula,
+        Nombre: a.nombre,
+        Carrera: a.carrera,
+        "Correo institucional": a.email
+      }));
 
-      const carreraSeleccionada = selectCarrera.value || "todos";
-      tituloTabla.textContent = carreraSeleccionada === "" 
-        ? "Todos los alumnos registrados" 
-        : `Alumnos de: ${carreraSeleccionada}`;
+      const ws = XLSX.utils.json_to_sheet(datosExcel);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, "Alumnos");
 
-      totalAlumnos.textContent = `Total: ${alumnos.length} alumno${alumnos.length !== 1 ? 's' : ''}`;
-    }
-
-    }
-
-    // Filtrar por carrera
-    selectCarrera.addEventListener("change", () => {
-      const carrera = selectCarrera.value;
-      if (carrera === "") {
-        mostrarAlumnos(todosLosAlumnos);
-      } else {
-        const filtrados = todosLosAlumnos.filter(a => a.carrera === carrera);
-        mostrarAlumnos(filtrados);
-      }
+      const carrera = select.value ? select.value.replace(/ /g, "_") : "Todos";
+      const fecha = new Date().toISOString().slice(0,10);
+      XLSX.writeFile(wb, `Alumnos_${carrera}_${fecha}.xlsx`);
     });
 
-    // Cargar al iniciar
+    select.addEventListener("change", filtrarAlumnos);
     cargarAlumnos();
   </script>
 </body>
