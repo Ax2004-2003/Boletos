@@ -32,7 +32,7 @@
       font-family: 'Poppins', sans-serif;
     }
 
-    /* FONDO ANIMADO ÉPICO */
+    /* FONDO ANIMADO ÉPICO 1 */
     body {
       background: linear-gradient(135deg, #000000, #001133, #002254);
       min-height: 100vh;
@@ -129,7 +129,7 @@
       100% { transform: translateY(-100px) scale(1); opacity: 0; }
     }
 
-    /* Contenedor principal */
+    /* Contenedor principal 1 */
     .container {
       background: rgba(255, 255, 255, 0.15);
       backdrop-filter: blur(20px);
@@ -184,7 +184,6 @@
       font-weight: 400;
     }
 
-    /* Resto del estilo igual (no toqué nada más) */
     .form-container {
       padding: clamp(30px, 8vw, 50px) clamp(25px, 7vw, 40px);
       background: var(--blanco);
@@ -252,7 +251,7 @@
 </head>
 <body>
 
-  <!-- FONDO ANIMADO INCREÍBLE -->
+  <!-- FONDO ANIMADO -->
   <div class="waves"></div>
   <div class="stars">
     <div class="star"></div>
@@ -288,13 +287,13 @@
           <select id="regCarrera" required>
             <option value="">Selecciona tu carrera</option>
             <option value="Ingeniería en Sistemas">Ingeniería en Sistemas</option>
-            <option value="Ingeniería Industrial">Ingeniería Industrial</option>
-            <option value="Ingeniería Civil">Ingeniería Civil</option>
-            <option value="Arquitectura">Arquitectura</option>
+            <option value="Ingeniería Industrial">Pedagogía</option>
+            <option value="Ingeniería Civil">Administración de Empresas</option>
+            <option value="Arquitectura">Comunicación</option>
             <option value="Derecho">Derecho</option>
-            <option value="Medicina">Medicina</option>
+            <option value="Medicina">Comercio Internacional y Aduanas</option>
             <option value="Psicología">Psicología</option>
-            <option value="Administración">Administración</option>
+            <option value="Administración">Mercadoctenia</option>
             <option value="Contaduría">Contaduría</option>
             <option value="Otra">Otra</option>
           </select>
@@ -317,13 +316,13 @@
       <form id="loginForm" class="form">
         <h2>¡Hola de nuevo!</h2>
         <!-- Todos los campos iguales... -->
-        <!-- (no los repito para no alargar, pero están exactamente como los tenías) -->
+        <!-- (no los repito para no alargar, pero están exactamente como la primer base) -->
       </form>
 
       <div id="message" class="message"></div>
     </div>
 
-    <footer>© 2025 Universidad UniverMilenium • Todos los derechos reservados</footer>
+   <center></center> <footer>© 2025 Universidad UniverMilenium • Todos los derechos reservados</footer></center>
   </div>
 
   <!-- TU JAVASCRIPT 100% INTACTO (partículas mejoradas incluidas) -->
@@ -356,7 +355,6 @@
       return email.trim().toLowerCase().endsWith("@univermilenium.edu.mx");
     }
 
-    // ... (todo tu código JS original sigue 100% igual, sin tocar ni una línea) ...
     // Registrarse, login, service worker, etc.
 
     if ('serviceWorker' in navigator) {
