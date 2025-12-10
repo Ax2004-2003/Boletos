@@ -6,106 +6,362 @@
   <title>Mis Boletos • Graduación 2025</title>
   <link rel="manifest" href="manifest.json">
   <link rel="apple-touch-icon" href="icon-192.png">
-  <meta name="theme-color" content="#001f3f">
+  <meta name="theme-color" content="#c41b2a">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Bebas+Neue&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.0/build/qrcode.min.js"></script>
   <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
 
   <style>
     :root {
-      --azul: #001f3f;
-      --azul-claro: #003366;
-      --blanco: #ffffff;
-      --gris-claro: #f8f9fa;
-      --verde: #28a745;
-      --rojo: #dc3545;
+      --red-dark: #8B0000;
+      --red-main: #c41b2a;
+      --gold: #FFD700;
+      --green: #10b981;
+      --gray: #f1f5f9;
     }
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       font-family: 'Poppins', sans-serif;
-      background: var(--azul);
+      background: linear-gradient(-45deg, #667eea, #764ba2, #f093fb, #f5576c);
+      background-size: 400% 400%;
+      animation: gradientBG 15s ease infinite;
       min-height: 100vh;
-      padding: 20px 15px;
+      padding: 20px;
       display: flex;
       justify-content: center;
-      color: #333;
+      align-items: center;
+    }
+    @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+
+    .container { max-width: 500px; width: 100%; background: rgba(255,255,255,0.15); backdrop-filter: blur(20px); border-radius: 28px; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.4); }
+    .header { background: linear-gradient(135deg, #6366f1, #ec4899); color: white; text-align: center; padding: 40px 20px; }
+    .header h1 { font-size: clamp(28px, 6vw, 36px); font-weight: 700; margin-bottom: 8px; }
+    .content { padding: 40px 30px; background: rgba(255,255,255,0.97); color: #1e1b4b; }
+    .profile { background: var(--gray); padding: 20px; border-radius: 16px; text-align: center; margin-bottom: 25px; box-shadow: 0 8px 25px rgba(0,0,0,0.1); }
+    .profile h3 { color: var(--red-main); font-size: 24px; margin-bottom: 10px; }
+    .inventory { display: flex; justify-content: space-around; margin-bottom: 30px; text-align: center; }
+    .inventory div { background: #f1f5f9; padding: 16px; border-radius: 14px; width: 48%; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+    .inventory span { font-size: 26px; font-weight: bold; color: #6366f1; }
+    .option { background: white; padding: 25px; border-radius: 16px; margin: 20px 0; box-shadow: 0 8px 25px rgba(0,0,0,0.12); transition: transform 0.3s; }
+    .option:hover { transform: translateY(-6px); }
+    button { width: 100%; padding: 16px; background: linear-gradient(90deg, #6366f1, #ec4899); color: white; border: none; border-radius: 12px; font-size: 18px; font-weight: 600; cursor: pointer; margin-top: 15px; transition: all 0.4s; }
+    button:hover { transform: translateY(-4px); box-shadow: 0 15px 30px rgba(99,102,241,0.4); }
+    button.delete { background: #ef4444; }
+    button.ticket { background: #10b981; }
+    .message { margin-top: 20px; padding: 15px; border-radius: 12px; text-align: center; font-weight: 600; display: none; }
+    .message.success { background: #d4edda; color: #10b981; }
+    .message.error { background: #f8d7da; color: #ef4444; }
+
+    select {
+      width: 48%; padding: 14px; margin: 8px 1%; border-radius: 12px; border: 2px solid #ddd; font-size: 16px; background: white;
+    }
+    #individualTotal { text-align: right; font-size: 24px; font-weight: bold; color: #f59e0b; margin: 20px 0; }
+
+    #ticket { display: none; margin: 30px auto; width: 380px; background: linear-gradient(145deg, #8B0000, #c41b2a); color: white; border-radius: 24px; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.6); font-family: 'Bebas Neue', sans-serif; text-align: center; }
+    .ticket-title { background: rgba(0,0,0,0.5); padding: 18px; font-size: 32px; color: #ff6b6b; }
+    .qr-container { background: white; margin: 25px auto; padding: 20px; width: 220px; height: 220px; border-radius: 18px; }
+    #qrCode { width: 180px; height: 180px; margin: 0 auto; }
+    .ticket-code { font-size: 36px; color: var(--gold); letter-spacing: 6px; margin: 20px 0; }
+    .info-row { display: flex; justify-content: space-between; padding: 8px 30px; border-bottom: 1px dashed rgba(255,255,255,0.4); font-size: 17px; }
+    .footer-note { background: rgba(0,0,0,0.4); padding: 18px; font-size: 15px; margin-top: 20px; border-top: 2px dashed rgba(255,255,255,0.3); }
+
+    .download-btn, #backButton {
+      display: block; margin: 20px auto; padding: 16px 40px; background: var(--gold); color: black; border: none; border-radius: 50px; font-weight: bold; font-size: 18px; cursor: pointer; width: fit-content;
+    }
+    #backButton { background: white; color: #c41b2a; border: 2px solid #c41b2a; }
+    #backButton:hover { background: #c41b2a; color: white; }
+
+    @media (max-width: 480px) {
+      select { width: 100%; margin: 10px 0; }
+      #ticket { width: 95%; }
+      .qr-container { width: 200px; height: 200px; }
+      #qrCode { width: 160px; height: 160px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div class="header">
+      <h1>Graduación 2025</h1>
+      <p id="welcome">Cargando...</p>
+    </div>
+
+    <div class="content" id="mainContent">
+      <div class="profile">
+        <h3 id="userName">Axel</h3>
+        <p>Mis boletos comprados</p>
+      </div>
+
+      <div class="inventory">
+        <div><h3>Boletos Cena</h3><span id="dinnerAvailable">200</span></div>
+        <div><h3>Boletos Ceremonia</h3><span id="ceremonyAvailable">200</span></div>
+      </div>
+
+      <div id="myPurchases">
+        <div style="background:#fef3cd;padding:20px;border-radius:12px;text-align:center;">
+          <p>Cargando tus compras...</p>
+        </div>
+      </div>
+
+      <div class="option">
+        <h3>Paquete Completo • $3,000 MXN</h3>
+        <p>2 boletos de cena + 2 de ceremonia</p>
+        <button id="buyPackage">Comprar Paquete</button>
+      </div>
+
+      <div class="option">
+        <h3>Boletos Individuales</h3>
+        <p>Cena: <strong>$1,000</strong> c/u • Ceremonia: <strong>$150</strong> c/u</p>
+        
+        <select id="qtyDinner">
+          <option value="0">Cena: 0</option>
+          <option value="1">Cena: 1 ($1,000)</option>
+          <option value="2">Cena: 2 ($2,000)</option>
+          <option value="3">Cena: 3 ($3,000)</option>
+          <option value="4">Cena: 4 ($4,000)</option>
+          <option value="5">Cena: 5 ($5,000)</option>
+          <option value="6">Cena: 6 ($6,000)</option>
+          <option value="7">Cena: 7 ($7,000)</option>
+          <option value="8">Cena: 8 ($8,000)</option>
+          <option value="9">Cena: 9 ($9,000)</option>
+          <option value="10">Cena: 10 ($10,000)</option>
+        </select>
+        
+        <select id="qtyCeremony">
+          <option value="0">Ceremonia: 0</option>
+          <option value="1">Ceremonia: 1 ($150)</option>
+          <option value="2">Ceremonia: 2 ($300)</option>
+          <option value="3">Ceremonia: 3 ($450)</option>
+          <option value="4">Ceremonia: 4 ($600)</option>
+          <option value="5">Ceremonia: 5 ($750)</option>
+        </select>
+
+        <div id="individualTotal">Total: $0 MXN</div>
+        <button id="buyIndividual">Comprar Individuales</button>
+      </div>
+
+      <button class="ticket" id="goToTicket" style="display:none;">Ir a mi Ticket</button>
+      <button class="delete" id="deleteLast" style="display:none;">Eliminar última compra</button>
+
+      <div id="message" class="message"></div>
+    </div>
+
+    <div id="ticket">
+      <div class="ticket-title">GRADUACIÓN 2025</div>
+      <div class="qr-container"><canvas id="qrCode"></canvas></div>
+      <div class="ticket-code" id="ticketCode">XXXXXXXXX</div>
+      <div class="ticket-info">
+        <div class="info-row"><span class="label">ALUMNO</span><span class="value" id="ticketNombre"></span></div>
+        <div class="info-row"><span class="label">MATRÍCULA</span><span class="value" id="ticketMatricula"></span></div>
+        <div class="info-row"><span class="label">FECHA COMPRA</span><span class="value" id="ticketFecha"></span></div>
+        <div class="info-row"><span class="label">HORA COMPRA</span><span class="value" id="ticketHora"></span></div>
+        <div class="info-row"><span class="label">BOLETOS TOTALES</span><span class="value" id="ticketBoletos"></span></div>
+      </div>
+      <div class="footer-note">
+        ¡Felicidades por tu graduación!<br>
+        Presenta este ticket en <strong>Caja</strong> para recoger tus boletos físicos
+      </div>
+      <button class="download-btn" id="downloadTicket">Descargar Ticket</button>
+      <button id="backButton">Regresar</button>
+    </div>
+  </div>
+
+  <script>
+    const userNombre = localStorage.getItem('currentUserNombre') || 'Alumno';
+    const userMatricula = localStorage.getItem('currentUserMatricula') || '000000';
+    const userId = localStorage.getItem('currentUserId');
+
+    document.getElementById('welcome').textContent = `Hola, ${userNombre.split(' ')[0]}`;
+    document.getElementById('userName').textContent = userNombre;
+
+    if (!userId) {
+      alert('Debes iniciar sesión');
+      window.location.href = 'index.html';
     }
 
-    .container {
-      max-width: 480px;
-      width: 100%;
-      background: var(--blanco);
-      border-radius: 30px;
-      overflow: hidden;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    const DB_URL = "https://boletos-66dac-default-rtdb.firebaseio.com/";
+    const INVENTORY_URL = DB_URL + "inventory.json";
+    const PURCHASES_URL = DB_URL + `users/${userId}/purchases.json`; // Esta es la clave
+
+    let compras = [];
+    let totalCena = 0;
+    let totalCeremonia = 0;
+
+    function calculateTotal() {
+      const cena = parseInt(document.getElementById('qtyDinner').value) || 0;
+      const ceremonia = parseInt(document.getElementById('qtyCeremony').value) || 0;
+      const total = cena * 1000 + ceremonia * 150;
+      document.getElementById('individualTotal').textContent = `Total: $${total.toLocaleString('es-MX')} MXN`;
     }
 
-    /* HEADER */
-    .header {
-      background: var(--azul);
-      color: white;
-      text-align: center;
-      padding: 25px 20px;
-    }
-    .header img {
-      width: 80px;
-      margin-bottom: 10px;
-    }
-    .header h1 {
-      font-size: 28px;
-      font-weight: 700;
-      margin-bottom: 5px;
-    }
-    .header p {
-      font-size: 16px;
-      opacity: 0.9;
+    document.getElementById('qtyDinner').addEventListener('change', calculateTotal);
+    document.getElementById('qtyCeremony').addEventListener('change', calculateTotal);
+
+    async function loadData() {
+      try {
+        const [invRes, purRes] = await Promise.all([
+          fetch(INVENTORY_URL),
+          fetch(PURCHASES_URL)
+        ]);
+
+        const inventory = await invRes.json() || {dinner: 200, ceremony: 200};
+        const data = await purRes.json();
+
+        document.getElementById('dinnerAvailable').textContent = inventory.dinner || 200;
+        document.getElementById('ceremonyAvailable').textContent = inventory.ceremony || 200;
+
+        // Limpiar variables
+        compras = [];
+        totalCena = 0;
+        totalCeremonia = 0;
+
+        if (data && typeof data === 'object') {
+          compras = Object.entries(data).map(([id, c]) => ({id, ...c}));
+          totalCena = compras.reduce((sum, c) => sum + (c.cena || 0), 0);
+          totalCeremonia = compras.reduce((sum, c) => sum + (c.ceremonia || 0), 0);
+
+          document.getElementById('myPurchases').innerHTML = `
+            <div style="background:#d4edda;padding:20px;border-radius:12px;text-align:center;">
+              <h3 style="color:#10b981;">¡Ya tienes boletos!</h3>
+              <p><strong>${totalCena} Cena + ${totalCeremonia} Ceremonia</strong></p>
+            </div>
+          `;
+
+          document.getElementById('goToTicket').style.display = 'block';
+          document.getElementById('deleteLast').style.display = 'block';
+        } else {
+          document.getElementById('myPurchases').innerHTML = `
+            <div style="background:#fef3cd;padding:20px;border-radius:12px;text-align:center;">
+              <p>Aún no has comprado boletos</p>
+            </div>
+          `;
+          document.getElementById('goToTicket').style.display = 'none';
+          document.getElementById('deleteLast').style.display = 'none';
+        }
+      } catch (err) {
+        console.error("Error cargando datos:", err);
+        showMessage("Error de conexión. Intenta de nuevo.", "error");
+      }
     }
 
-    /* CONTENIDO */
-    .content {
-      padding: 25px;
+    async function comprar(cena, ceremonia, total) {
+      try {
+        const codigo = Math.random().toString(36).substr(2, 9).toUpperCase();
+        const compra = { cena, ceremonia, total, codigo, fecha: new Date().toISOString() };
+
+        // Guardar compra
+        const res = await fetch(PURCHASES_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(compra)
+        });
+
+        if (!res.ok) throw new Error("Error al guardar compra");
+
+        // Actualizar inventario
+        const inv = await (await fetch(INVENTORY_URL)).json() || {dinner: 200, ceremony: 200};
+        await fetch(INVENTORY_URL, {
+          method: 'PATCH',
+          body: JSON.stringify({
+            dinner: (inv.dinner || 200) - cena,
+            ceremony: (inv.ceremony || 200) - ceremonia
+          })
+        });
+
+        // Recargar todo
+        await loadData();
+        showMessage('¡Compra realizada con éxito!', 'success');
+
+        document.getElementById('qtyDinner').value = 0;
+        document.getElementById('qtyCeremony').value = 0;
+        calculateTotal();
+
+      } catch (err) {
+        console.error(err);
+        showMessage('Error al procesar la compra. Intenta de nuevo.', 'error');
+      }
     }
 
-    .profile {
-      background: #e3f2fd;
-      border-radius: 20px;
-      padding: 18px;
-      text-align: center;
-      margin-bottom: 20px;
-      border: 1px solid #bbdefb;
-    }
-    .profile h3 {
-      color: var(--azul);
-      font-size: 22px;
-      margin-bottom: 4px;
-    }
-    .profile p {
-      color: #555;
-      font-size: 14px;
+    document.getElementById('buyPackage').onclick = () => comprar(2, 2, 3000);
+    document.getElementById('buyIndividual').onclick = () => {
+      const d = parseInt(document.getElementById('qtyDinner').value) || 0;
+      const c = parseInt(document.getElementById('qtyCeremony').value) || 0;
+      if (d + c === 0) return showMessage('Selecciona al menos un boleto', 'error');
+      comprar(d, c, d*1000 + c*150);
+    };
+
+    document.getElementById('goToTicket').onclick = () => {
+      if (compras.length > 0) mostrarTicket(compras[compras.length - 1]);
+    };
+
+    document.getElementById('backButton').onclick = () => {
+      document.getElementById('ticket').style.display = 'none';
+      document.getElementById('mainContent').style.display = 'block';
+      document.getElementById('downloadTicket').style.display = 'none';
+      document.getElementById('backButton').style.display = 'none';
+    };
+
+    document.getElementById('deleteLast').onclick = async () => {
+      if (!confirm('¿Eliminar última compra?')) return;
+      const ultima = compras[compras.length - 1];
+      await fetch(DB_URL + `users/${userId}/purchases/${ultima.id}.json`, { method: 'DELETE' });
+      const inv = await (await fetch(INVENTORY_URL)).json();
+      await fetch(INVENTORY_URL, { method: 'PATCH', body: JSON.stringify({
+        dinner: inv.dinner + ultima.cena,
+        ceremony: inv.ceremony + ultima.ceremonia
+      })});
+      await loadData();
+      showMessage('Compra eliminada', 'success');
+    };
+
+    function mostrarTicket(compra) {
+      const fecha = new Date(compra.fecha).toLocaleDateString('es-MX');
+      const hora = new Date(compra.fecha).toLocaleTimeString('es-MX', {hour: '2-digit', minute: '2-digit'});
+
+      document.getElementById('ticketNombre').textContent = userNombre;
+      document.getElementById('ticketMatricula').textContent = userMatricula;
+      document.getElementById('ticketFecha').textContent = fecha;
+      document.getElementById('ticketHora').textContent = hora;
+      document.getElementById('ticketBoletos').textContent = `${totalCena} Cena + ${totalCeremonia} Ceremonia`;
+      document.getElementById('ticketCode').textContent = compra.codigo;
+
+      document.getElementById('mainContent').style.display = 'none';
+      document.getElementById('ticket').style.display = 'block';
+      document.getElementById('downloadTicket').style.display = 'block';
+      document.getElementById('backButton').style.display = 'block';
+
+      const url = `https://ax2004-2003.github.io/Boletos/verificar.html?mat=${userMatricula}&code=${compra.codigo}`;
+      QRCode.toCanvas(document.getElementById('qrCode'), url, { width: 180 });
     }
 
-    .inventory {
-      display: flex;
-      justify-content: space-between;
-      gap: 15px;
-      margin-bottom: 20px;
+    document.getElementById('downloadTicket').onclick = () => {
+      html2canvas(document.getElementById('ticket'), { scale: 2 }).then(c => {
+        const a = document.createElement('a');
+        a.download = `Ticket_${userMatricula}.png`;
+        a.href = c.toDataURL();
+        a.click();
+      });
+    };
+
+    function showMessage(text, type = 'error') {
+      const msg = document.getElementById('message');
+      msg.textContent = text;
+      msg.className = `message ${type}`;
+      msg.style.display = 'block';
+      setTimeout(() => msg.style.display = 'none', 4000);
     }
-    .inventory > div {
-      flex: 1;
-      background: var(--gris-claro);
-      padding: 15px;
-      border-radius: 16px;
-      text-align: center;
-      font-weight: 600;
+
+    // INICIALIZACIÓN
+    calculateTotal();
+    loadData();
+
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('service-worker.js').catch(() => {});
     }
-    .inventory h3 {
-      font-size: 14px;
-      color: #555;
-      margin-bottom: 8px;
-    }
-    .inventory span {
-      font-size: 28px;
-      color: var(--azul);
+  </script>
+</body>
+</html>      color: var(--azul);
       font-weight: bold;
     }
 
