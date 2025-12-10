@@ -17,11 +17,14 @@
   
   <style>
     :root {
-      --azul-marino: #002856;
-      --azul-institucional: #0055A5;
-      --blanco: #ffffff;
-      --negro: #1a1a1a;
-      --gris-claro: #f5f7fa;
+      --primary: #002856;
+      --primary-dark: #001f3f;
+      --secondary: #0055A5;
+      --accent: #ffffff;
+      --success: #10b981;
+      --error: #ef4444;
+      --text: #1f2937;
+      --light: #f8fafc;
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -30,13 +33,13 @@
       height: 100%;
       width: 100%;
       overflow-x: hidden;
-      font-family: 'Poppins', sans-serif;
     }
 
     body {
-      background: linear-gradient(135deg, var(--azul-marino), #001f3f, var(--azul-institucional));
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(-45deg, #001f3f, #002856, #003366, #0055A5);
       background-size: 400% 400%;
-      animation: gradientBG 20s ease infinite;
+      animation: gradientBG 15s ease infinite;
       min-height: 100vh;
       display: flex;
       align-items: center;
@@ -60,7 +63,7 @@
 
     .particle {
       position: absolute;
-      background: rgba(255,255,255,0.15);
+      background: rgba(255,255,255,0.18);
       border-radius: 50%;
       animation: float 18s infinite linear;
     }
@@ -73,61 +76,56 @@
     }
 
     .container {
-      background: rgba(255, 255, 255, 0.95);
+      background: rgba(255, 255, 255, 0.18);
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
-      border: 1px solid rgba(0, 85, 165, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.25);
       width: 100%;
       max-width: 500px;
       min-height: 680px;
       border-radius: 28px;
       overflow: hidden;
-      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.4);
+      box-shadow: 0 25px 60px rgba(0,0,0,0.35);
       position: relative;
       z-index: 10;
       animation: appear 1.2s ease-out;
     }
 
     @keyframes appear {
-      from { opacity: 0; transform: scale(0.9) translateY(60px); }
+      from { opacity: 0; transform: scale(0.85) translateY(60px); }
       to { opacity: 1; transform: scale(1) translateY(0); }
     }
 
     .header {
-      background: var(--azul-marino);
-      padding: 40px 30px 30px;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      padding: 50px 30px 40px;
       text-align: center;
       color: white;
     }
 
-    .logo-container {
-      margin-bottom: 20px;
-    }
-
-    .logo-container img {
-      width: 120px;
+    .logo {
+      width: 110px;
       height: auto;
-      filter: brightness(0) invert(1);
       margin-bottom: 15px;
+      filter: brightness(0) invert(1);
     }
 
     .header h1 {
-      font-size: clamp(26px, 6vw, 34px);
+      font-size: clamp(28px, 6vw, 38px);
       font-weight: 700;
-      color: white;
       margin-bottom: 8px;
-      text-shadow: 0 3px 10px rgba(0,0,0,0.4);
+      text-shadow: 0 4px 15px rgba(0,0,0,0.4);
     }
 
     .header p {
-      font-size: 16px;
+      font-size: clamp(14px, 3.5vw, 17px);
       opacity: 0.95;
-      font-weight: 400;
+      font-weight: 300;
     }
 
     .form-container {
       padding: clamp(30px, 8vw, 50px) clamp(25px, 7vw, 40px);
-      background: white;
+      background: rgba(255,255,255,0.97);
     }
 
     .form {
@@ -146,7 +144,9 @@
       text-align: center;
       margin-bottom: 35px;
       font-size: clamp(24px, 6vw, 30px);
-      color: var(--azul-marino);
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
       font-weight: 700;
     }
 
@@ -158,26 +158,26 @@
     label {
       display: block;
       margin-bottom: 8px;
-      color: var(--negro);
+      color: #444;
       font-weight: 600;
-      font-size: 15px;
+      font-size: clamp(14px, 3.8vw, 16px);
     }
 
     input, select {
       width: 100%;
       padding: 16px 18px;
-      border: 2px solid #d0e0ff;
+      border: 2px solid #d0e4ff;
       border-radius: 16px;
-      font-size: 16px;
+      font-size: clamp(15px, 4vw, 17px);
       background: white;
       transition: all 0.4s ease;
-      box-shadow: 0 4px 15px rgba(0, 40, 100, 0.08);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.06);
     }
 
     input:focus, select:focus {
       outline: none;
-      border-color: var(--azul-institucional);
-      box-shadow: 0 0 0 5px rgba(0, 85, 165, 0.2);
+      border-color: var(--secondary);
+      box-shadow: 0 0 0 5px rgba(0, 85, 165, 0.25);
       transform: translateY(-3px);
     }
 
@@ -190,51 +190,72 @@
       right: 15px;
       top: 48px;
       cursor: pointer;
-      color: #666;
+      color: #888;
       font-size: 20px;
       transition: color 0.3s;
+      user-select: none;
     }
 
     .password-toggle:hover {
-      color: var(--azul-institucional);
+      color: var(--secondary);
     }
 
     button {
       width: 100%;
-      padding: 18px;
-      background: linear-gradient(90deg, var(--azul-marino), var(--azul-institucional));
+      padding: 17px;
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
       color: white;
       border: none;
       border-radius: 16px;
-      font-size: 18px;
+      font-size: clamp(16px, 4.5vw, 19px);
       font-weight: 600;
       cursor: pointer;
       margin-top: 15px;
       transition: all 0.4s;
-      box-shadow: 0 12px 35px rgba(0, 40, 100, 0.4);
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 12px 35px rgba(0, 85, 165, 0.45);
     }
 
-    button:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 18px 45px rgba(0, 40, 100, 0.5);
+    button::before {
+      content: '';
+      position: absolute;
+      top: 0; left: -100%;
+      width: 100%; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+      transition: 0.7s;
     }
+
+    button:hover::before { left: 100%; }
+    button:hover { transform: translateY(-5px); box-shadow: 0 18px 40px rgba(0, 85, 165, 0.55); }
 
     .switch {
       text-align: center;
       margin-top: 30px;
-      color: #555;
-      font-size: 15px;
+      color: #666;
+      font-size: clamp(14px, 3.7vw, 15px);
     }
 
     .switch a {
-      color: var(--azul-institucional);
+      color: var(--secondary);
       text-decoration: none;
       font-weight: 700;
+      position: relative;
     }
 
-    .switch a:hover {
-      text-decoration: underline;
+    .switch a::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 0;
+      height: 3px;
+      background: var(--secondary);
+      transition: width 0.4s;
+      border-radius: 2px;
     }
+
+    .switch a:hover::after { width: 100%; }
 
     .message {
       margin-top: 20px;
@@ -242,21 +263,18 @@
       border-radius: 16px;
       text-align: center;
       font-weight: 600;
-      font-size: 15px;
+      font-size: clamp(14px, 3.8vw, 15px);
       display: none;
+      animation: slideDown 0.5s ease;
     }
 
-    .message.success {
-      background: #d4edda;
-      color: #155724;
-      border: 1px solid #c3e6cb;
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
-    .message.error {
-      background: #f8d7da;
-      color: #721c24;
-      border: 1px solid #f5c6cb;
-    }
+    .message.success { background: linear-gradient(90deg, #d4edda, #a3e4d7); color: var(--success); }
+    .message.error { background: linear-gradient(90deg, #f8d7da, #f5b7b1); color: var(--error); }
 
     .loader {
       display: none;
@@ -269,7 +287,7 @@
       width: 32px;
       height: 32px;
       border: 4px solid #f0f0f0;
-      border-top: 4px solid var(--azul-institucional);
+      border-top: 4px solid var(--secondary);
       border-radius: 50%;
       display: inline-block;
       animation: spin 0.8s linear infinite;
@@ -280,11 +298,11 @@
     footer {
       text-align: center;
       padding: 25px;
-      color: white;
-      font-size: 14px;
+      color: rgba(255,255,255,0.9);
+      font-size: clamp(12px, 3vw, 14px);
       font-weight: 300;
-      background: rgba(0, 40, 100, 0.8);
       backdrop-filter: blur(10px);
+      background: rgba(0, 40, 100, 0.7);
     }
   </style>
 </head>
@@ -294,17 +312,15 @@
 
   <div class="container">
     <div class="header">
-      <div class="logo-container">
-        <!-- Logo oficial Univer Milenium en SVG (100% blanco) -->
-        <svg width="120" height="140" viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
-          <path fill="#ffffff" d="M60 10 L10 90 L60 130 L110 90 Z"/>
-          <path fill="#002856" d="M60 20 L20 90 L60 120 L100 90 Z"/>
-          <path fill="#ffffff" d="M60 35 C45 55, 40 75, 50 95 C60 115, 75 110, 80 90 C85 70, 80 50, 60 35 Z 
-                                   M60 45 C70 60, 72 80, 65 95 C58 110, 48 105, 50 90 C52 75, 55 60, 60 45 Z"/>
-        </svg>
-      </div>
+      <!-- LOGO OFICIAL DE UNIVER MILENIUM (SVG) -->
+      <svg class="logo" width="120" height="140" viewBox="0 0 120 140" xmlns="http://www.w3.org/2000/svg">
+        <path fill="#ffffff" d="M60 10 L10 90 L60 130 L110 90 Z"/>
+        <path fill="#002856" d="M60 20 L20 90 L60 120 L100 90 Z"/>
+        <path fill="#ffffff" d="M60 35 C45 55, 40 75, 50 95 C60 115, 75 110, 80 90 C85 70, 80 50, 60 35 Z 
+                                 M60 45 C70 60, 72 80, 65 95 C58 110, 48 105, 50 90 C52 75, 55 60, 60 45 Z"/>
+      </svg>
       <h1>Boletos Graduación</h1>
-      <p>Sistema Oficial • 2025</p>
+      <p>Sistema oficial 2025</p>
     </div>
 
     <div class="form-container">
@@ -325,13 +341,13 @@
           <select id="regCarrera" required>
             <option value="">Selecciona tu carrera</option>
             <option value="Ingeniería en Sistemas">Ingeniería en Sistemas</option>
-            <option value="Ingeniería Industrial">Ingeniería Industrial</option>
-            <option value="Ingeniería Civil">Ingeniería Civil</option>
-            <option value="Arquitectura">Arquitectura</option>
+            <option value="Administración de Empresas">Ingeniería Industrial</option>
+            <option value="Pedagogía">Ingeniería Civil</option>
+            <option value="Comunicación">Arquitectura</option>
             <option value="Derecho">Derecho</option>
-            <option value="Medicina">Medicina</option>
+            <option value="Contabilidad">Medicina</option>
             <option value="Psicología">Psicología</option>
-            <option value="Administración">Administración</option>
+            <option value="Comercio Internacional y Aduanas">Administración</option>
             <option value="Contaduría">Contaduría</option>
             <option value="Otra">Otra</option>
           </select>
@@ -390,14 +406,11 @@
       <div id="message" class="message"></div>
     </div>
 
-    <footer>© 2025 Universidad Unver Milenium • Todos los derechos reservados</footer>
+    <footer>© 2025 Graduación • Universidad Unver Milenium</footer>
   </div>
 
+  <!-- TU SCRIPT ORIGINAL COMPLETO (SIN CAMBIAR NADA) -->
   <script>
-    // [Todo tu JavaScript original sigue 100% funcional]
-    // (Partículas, validación de correo, login/registro, etc.)
-    // Lo dejo igual para no alargar, pero todo funciona perfecto
-
     const particlesContainer = document.getElementById('particles');
     const particleCount = window.innerWidth < 500 ? 40 : 70;
     for (let i = 0; i < particleCount; i++) {
@@ -412,6 +425,7 @@
     }
 
     const DB_URL = "https://boletos-66dac-default-rtdb.firebaseio.com/users.json";
+
     const registerForm = document.getElementById("registerForm");
     const loginForm = document.getElementById("loginForm");
     const messageDiv = document.getElementById("message");
@@ -551,468 +565,6 @@
       loaderLogin.style.display = "none";
     });
 
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('service-worker.js')
-          .then(reg => console.log('SW registrado'))
-          .catch(err => console.log('Error SW:', err));
-      });
-    }
-  </script>
-</body>
-</html>      font-weight: 700;
-      margin-bottom: 8px;
-      text-shadow: 0 4px 15px rgba(0,0,0,0.4);
-    }
-
-    .header p {
-      font-size: clamp(14px, 3.5vw, 17px);
-      opacity: 0.95;
-      font-weight: 300;
-    }
-
-    .form-container {
-      padding: clamp(30px, 8vw, 50px) clamp(25px, 7vw, 40px);
-      background: rgba(255,255,255,0.97);
-    }
-
-    .form {
-      display: none;
-      animation: fadeIn 0.7s ease-in-out;
-    }
-
-    .form.active { display: block; }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(25px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    h2 {
-      text-align: center;
-      margin-bottom: 35px;
-      font-size: clamp(24px, 6vw, 30px);
-      background: linear-gradient(90deg, var(--primary), var(--secondary));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      font-weight: 700;
-    }
-
-    .input-group { 
-      margin-bottom: 22px; 
-      position: relative;
-    }
-
-    label {
-      display: block;
-      margin-bottom: 8px;
-      color: #444;
-      font-weight: 600;
-      font-size: clamp(14px, 3.8vw, 16px);
-    }
-
-    input, select {
-      width: 100%;
-      padding: 16px 18px;
-      border: 2px solid #e2e8f0;
-      border-radius: 16px;
-      font-size: clamp(15px, 4vw, 17px);
-      background: white;
-      transition: all 0.4s ease;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.06);
-    }
-
-    input:focus, select:focus {
-      outline: none;
-      border-color: var(--primary);
-      box-shadow: 0 0 0 5px rgba(99, 102, 241, 0.25);
-      transform: translateY(-3px);
-    }
-
-    /* Para el ojo de contraseña */
-    input[type="password"] {
-      padding-right: 50px;
-    }
-
-    .password-toggle {
-      position: absolute;
-      right: 15px;
-      top: 48px;
-      cursor: pointer;
-      color: #888;
-      font-size: 20px;
-      transition: color 0.3s;
-      user-select: none;
-    }
-
-    .password-toggle:hover {
-      color: var(--primary);
-    }
-
-    button {
-      width: 100%;
-      padding: 17px;
-      background: linear-gradient(90deg, var(--primary), var(--secondary));
-      color: white;
-      border: none;
-      border-radius: 16px;
-      font-size: clamp(16px, 4.5vw, 19px);
-      font-weight: 600;
-      cursor: pointer;
-      margin-top: 15px;
-      transition: all 0.4s;
-      position: relative;
-      overflow: hidden;
-      box-shadow: 0 12px 35px rgba(99, 102, 241, 0.45);
-    }
-
-    button::before {
-      content: '';
-      position: absolute;
-      top: 0; left: -100%;
-      width: 100%; height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-      transition: 0.7s;
-    }
-
-    button:hover::before { left: 100%; }
-    button:hover { transform: translateY(-5px); box-shadow: 0 18px 40px rgba(99, 102, 241, 0.55); }
-
-    .switch {
-      text-align: center;
-      margin-top: 30px;
-      color: #666;
-      font-size: clamp(14px, 3.7vw, 15px);
-    }
-
-    .switch a {
-      color: var(--primary);
-      text-decoration: none;
-      font-weight: 700;
-      position: relative;
-    }
-
-    .switch a::after {
-      content: '';
-      position: absolute;
-      bottom: -4px;
-      left: 0;
-      width: 0;
-      height: 3px;
-      background: var(--primary);
-      transition: width 0.4s;
-      border-radius: 2px;
-    }
-
-    .switch a:hover::after { width: 100%; }
-
-    .message {
-      margin-top: 20px;
-      padding: 16px 20px;
-      border-radius: 16px;
-      text-align: center;
-      font-weight: 600;
-      font-size: clamp(14px, 3.8vw, 15px);
-      display: none;
-      animation: slideDown 0.5s ease;
-    }
-
-    @keyframes slideDown {
-      from { opacity: 0; transform: translateY(-20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .message.success { background: linear-gradient(90deg, #d4edda, #a3e4d7); color: var(--success); }
-    .message.error { background: linear-gradient(90deg, #f8d7da, #f5b7b1); color: var(--error); }
-
-    .loader {
-      display: none;
-      text-align: center;
-      margin-top: 20px;
-    }
-
-    .loader::after {
-      content: '';
-      width: 32px;
-      height: 32px;
-      border: 4px solid #f0f0f0;
-      border-top: 4px solid var(--primary);
-      border-radius: 50%;
-      display: inline-block;
-      animation: spin 0.8s linear infinite;
-    }
-
-    @keyframes spin { to { transform: rotate(360deg); } }
-
-    footer {
-      text-align: center;
-      padding: 25px;
-      color: rgba(255,255,255,0.9);
-      font-size: clamp(12px, 3vw, 14px);
-      font-weight: 300;
-      backdrop-filter: blur(10px);
-    }
-  </style>
-</head>
-<body>
-
-  <div class="particles" id="particles"></div>
-
-  <div class="container">
-    <div class="header">
-      <h1>Boletos Graduación</h1>
-      <p>Sistema oficial 2025</p>
-    </div>
-
-    <div class="form-container">
-
-      <!-- Registro -->
-      <form id="registerForm" class="form active">
-        <h2>Crear Cuenta</h2>
-        <div class="input-group">
-          <label>Nombre completo</label>
-          <input type="text" id="regNombre" placeholder="Ana Laura García López" required />
-        </div>
-        <div class="input-group">
-          <label>Matrícula (solo números)</label>
-          <input type="text" id="regMatricula" placeholder="2021005678" inputmode="numeric" required />
-        </div>
-        <div class="input-group">
-          <label>Carrera</label>
-          <select id="regCarrera" required>
-            <option value="">Selecciona tu carrera</option>
-            <option value="Ingeniería en Sistemas">Ingeniería en Sistemas</option>
-            <option value="Administración de Empresas">Ingeniería Industrial</option>
-            <option value="Pedagogía">Ingeniería Civil</option>
-            <option value="Comunicación">Arquitectura</option>
-            <option value="Derecho">Derecho</option>
-            <option value="Contabilidad">Medicina</option>
-            <option value="Psicología">Psicología</option>
-            <option value="Comercio Internacional y Aduanas">Administración</option>
-            <option value="Contaduría">Contaduría</option>
-            <option value="Otra">Otra</option>
-          </select>
-        </div>
-        <div class="input-group">
-          <label>Correo institucional</label>
-          <input type="email" id="regEmail" placeholder="tunombre@univermilenium.edu.mx" required />
-        </div>
-        <div class="input-group">
-          <label>Contraseña</label>
-          <input type="password" id="regPassword" placeholder="Mínimo 6 caracteres" required />
-          <span class="password-toggle" id="toggleRegPass">Mostrar</span>
-        </div>
-        <button type="submit">Registrarse</button>
-        <div class="loader" id="loaderReg"></div>
-        <p class="switch">¿Ya tienes cuenta? <a href="#" id="toLogin">Iniciar sesión</a></p>
-      </form>
-
-      <!-- Login -->
-      <form id="loginForm" class="form">
-        <h2>¡Hola de nuevo!</h2>
-        <div class="input-group">
-          <label>Nombre completo</label>
-          <input type="text" id="loginNombre" placeholder="Ana Laura García López" required />
-        </div>
-        <div class="input-group">
-          <label>Matrícula (solo números)</label>
-          <input type="text" id="loginMatricula" placeholder="2021005678" inputmode="numeric" required />
-        </div>
-        <div class="input-group">
-          <label>Carrera</label>
-          <select id="loginCarrera" required>
-            <option value="">Selecciona tu carrera</option>
-            <option value="Ingeniería en Sistemas">Ingeniería en Sistemas</option>
-            <option value="Ingeniería Industrial">Ingeniería Industrial</option>
-            <option value="Ingeniería Civil">Ingeniería Civil</option>
-            <option value="Arquitectura">Arquitectura</option>
-            <option value="Derecho">Derecho</option>
-            <option value="Medicina">Medicina</option>
-            <option value="Psicología">Psicología</option>
-            <option value="Administración">Administración</option>
-            <option value="Contaduría">Contaduría</option>
-            <option value="Otra">Otra</option>
-          </select>
-        </div>
-        <div class="input-group">
-          <label>Contraseña</label>
-          <input type="password" id="loginPassword" required />
-          <span class="password-toggle" id="toggleLoginPass">Mostrar</span>
-        </div>
-        <button type="submit">Iniciar Sesión</button>
-        <div class="loader" id="loaderLogin"></div>
-        <p class="switch">¿No tienes cuenta? <a href="#" id="toRegister">Regístrate aquí</a></p>
-      </form>
-
-      <div id="message" class="message"></div>
-    </div>
-
-    <footer>© 2025 Graduación • Todos los derechos reservados</footer>
-  </div>
-
-  <script>
-    // Generar partículas
-    const particlesContainer = document.getElementById('particles');
-    const particleCount = window.innerWidth < 500 ? 40 : 70;
-    for (let i = 0; i < particleCount; i++) {
-      const p = document.createElement('div');
-      p.classList.add('particle');
-      const size = Math.random() * 10 + 4;
-      p.style.width = p.style.height = size + 'px';
-      p.style.left = Math.random() * 100 + '%';
-      p.style.animationDelay = Math.random() * 18 + 's';
-      p.style.animationDuration = Math.random() * 25 + 15 + 's';
-      particlesContainer.appendChild(p);
-    }
-
-    const DB_URL = "https://boletos-66dac-default-rtdb.firebaseio.com/users.json";
-
-    const registerForm = document.getElementById("registerForm");
-    const loginForm = document.getElementById("loginForm");
-    const messageDiv = document.getElementById("message");
-    const loaderReg = document.getElementById("loaderReg");
-    const loaderLogin = document.getElementById("loaderLogin");
-
-    // FUNCIÓN PARA VALIDAR CORREO INSTITUCIONAL
-    function esCorreoValido(email) {
-      return email.trim().toLowerCase().endsWith("@univermilenium.edu.mx");
-    }
-
-    // MOSTRAR/OCULTAR CONTRASEÑA
-    document.getElementById("toggleRegPass").addEventListener("click", function() {
-      const input = document.getElementById("regPassword");
-      input.type = input.type === "password" ? "text" : "password";
-      this.textContent = input.type === "password" ? "Mostrar" : "Ocultar";
-    });
-
-    document.getElementById("toggleLoginPass").addEventListener("click", function() {
-      const input = document.getElementById("loginPassword");
-      input.type = input.type === "password" ? "text" : "password";
-      this.textContent = input.type === "password" ? "Mostrar" : "Ocultar";
-    });
-
-    document.getElementById("toLogin").addEventListener("click", e => {
-      e.preventDefault();
-      registerForm.classList.remove("active");
-      setTimeout(() => loginForm.classList.add("active"), 300);
-    });
-
-    document.getElementById("toRegister").addEventListener("click", e => {
-      e.preventDefault();
-      loginForm.classList.remove("active");
-      setTimeout(() => registerForm.classList.add("active"), 300);
-    });
-
-    function showMessage(text, type = "error") {
-      messageDiv.textContent = text;
-      messageDiv.className = "message " + type;
-      messageDiv.style.display = "block";
-      setTimeout(() => messageDiv.style.display = "none", 6000);
-    }
-
-    async function getUsers() {
-      const res = await fetch(DB_URL);
-      if (!res.ok) return null;
-      return await res.json();
-    }
-
-    // SOLO NÚMEROS EN MATRÍCULA
-    document.getElementById("regMatricula").addEventListener("input", function() {
-      this.value = this.value.replace(/[^0-9]/g, "");
-    });
-    document.getElementById("loginMatricula").addEventListener("input", function() {
-      this.value = this.value.replace(/[^0-9]/g, "");
-    });
-
-    // REGISTRO - VALIDACIÓN DE CORREO INSTITUCIONAL
-    registerForm.addEventListener("submit", async e => {
-      e.preventDefault();
-      loaderReg.style.display = "block";
-
-      const nombre = document.getElementById("regNombre").value.trim();
-      const matricula = document.getElementById("regMatricula").value.trim();
-      const carrera = document.getElementById("regCarrera").value;
-      const email = document.getElementById("regEmail").value.trim().toLowerCase();
-      const password = document.getElementById("regPassword").value;
-
-      if (!nombre || !matricula || !carrera || !email || password.length < 6) {
-        showMessage("Completa todos los campos correctamente");
-        loaderReg.style.display = "none";
-        return;
-      }
-
-      // VALIDACIÓN DEL DOMINIO
-      if (!esCorreoValido(email)) {
-        showMessage("Solo se permiten correos @univermilenium.edu.mx");
-        loaderReg.style.display = "none";
-        return;
-      }
-
-      try {
-        const users = await getUsers();
-        if (users && Object.values(users).some(u => u.matricula === matricula)) {
-          showMessage("Esta matrícula ya está registrada");
-          loaderReg.style.display = "none";
-          return;
-        }
-
-        await fetch(DB_URL, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ nombre, matricula, carrera, email, password, registradoEn: new Date().toISOString() })
-        });
-
-        showMessage("¡Registro exitoso! Ahora inicia sesión", "success");
-        setTimeout(() => {
-          loginForm.classList.add("active");
-          registerForm.classList.remove("active");
-        }, 1500);
-      } catch (err) {
-        showMessage("Error de conexión");
-      }
-      loaderReg.style.display = "none";
-    });
-
-    // LOGIN - TAMBIÉN VALIDA EL DOMINIO DEL CORREO GUARDADO
-    loginForm.addEventListener("submit", async e => {
-      e.preventDefault();
-      loaderLogin.style.display = "block";
-
-      const nombre = document.getElementById("loginNombre").value.trim();
-      const matricula = document.getElementById("loginMatricula").value.trim();
-      const carrera = document.getElementById("loginCarrera").value;
-      const password = document.getElementById("loginPassword").value;
-
-      try {
-        const users = await getUsers();
-        const userEntry = users ? Object.entries(users).find(([_, u]) =>
-          u.matricula === matricula && 
-          u.password === password && 
-          u.nombre.toLowerCase() === nombre.toLowerCase() &&
-          u.carrera === carrera &&
-          esCorreoValido(u.email) // Extra seguridad: verifica que el correo guardado sea institucional
-        ) : null;
-
-        if (userEntry) {
-          const [id, data] = userEntry;
-          localStorage.setItem("currentUserId", id);
-          localStorage.setItem("currentUserNombre", data.nombre);
-          localStorage.setItem("currentUserMatricula", data.matricula);
-          localStorage.setItem("currentUserCarrera", data.carrera);
-          localStorage.setItem("currentUserEmail", data.email || "");
-
-          showMessage(`¡Bienvenid@, ${data.nombre.split(" ")[0]}!`, "success");
-          setTimeout(() => window.location.href = "index2.html", 1800);
-        } else {
-          showMessage("Datos incorrectos o correo no institucional");
-        }
-      } catch (err) {
-        showMessage("Error de conexión");
-      }
-      loaderLogin.style.display = "none";
-    });
-
-    // Registrar Service Worker (PWA)
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('service-worker.js')
