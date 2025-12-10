@@ -13,244 +13,265 @@
 
   <style>
     :root {
-      --azul-univer: #001f3f;     /* Azul marino del logo */
+      --azul: #001f3f;
       --azul-claro: #003366;
       --blanco: #ffffff;
-      --negro: #000000;
       --gris-claro: #f8f9fa;
+      --verde: #28a745;
+      --rojo: #dc3545;
     }
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       font-family: 'Poppins', sans-serif;
-      background: linear-gradient(-45deg, #001f3f, #003366, #002244, #001122);
-      background-size: 400% 400%;
-      animation: gradientBG 20s ease infinite;
+      background: var(--azul);
       min-height: 100vh;
-      padding: 20px;
+      padding: 20px 15px;
       display: flex;
       justify-content: center;
-      align-items: center;
-      color: var(--blanco);
-    }
-    @keyframes gradientBG { 
-      0% { background-position: 0% 50%; } 
-      50% { background-position: 100% 50%; } 
-      100% { background-position: 0% 50%; } 
+      color: #333;
     }
 
-    .container { 
-      max-width: 500px; 
-      width: 100%; 
-      background: rgba(255,255,255,0.12); 
-      backdrop-filter: blur(20px); 
-      border-radius: 28px; 
-      overflow: hidden; 
-      box-shadow: 0 20px 60px rgba(0,0,0,0.6); 
+    .container {
+      max-width: 480px;
+      width: 100%;
+      background: var(--blanco);
+      border-radius: 30px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
     }
 
-    .header { 
-      background: var(--azul-univer); 
-      color: white; 
-      text-align: center; 
-      padding: 30px 20px 40px; 
-      position: relative;
+    /* HEADER */
+    .header {
+      background: var(--azul);
+      color: white;
+      text-align: center;
+      padding: 25px 20px;
     }
-    .header .logo {
-      width: 110px;
+    .header img {
+      width: 80px;
+      margin-bottom: 10px;
+    }
+    .header h1 {
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 5px;
+    }
+    .header p {
+      font-size: 16px;
+      opacity: 0.9;
+    }
+
+    /* CONTENIDO */
+    .content {
+      padding: 25px;
+    }
+
+    .profile {
+      background: #e3f2fd;
+      border-radius: 20px;
+      padding: 18px;
+      text-align: center;
+      margin-bottom: 20px;
+      border: 1px solid #bbdefb;
+    }
+    .profile h3 {
+      color: var(--azul);
+      font-size: 22px;
+      margin-bottom: 4px;
+    }
+    .profile p {
+      color: #555;
+      font-size: 14px;
+    }
+
+    .inventory {
+      display: flex;
+      justify-content: space-between;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+    .inventory > div {
+      flex: 1;
+      background: var(--gris-claro);
+      padding: 15px;
+      border-radius: 16px;
+      text-align: center;
+      font-weight: 600;
+    }
+    .inventory h3 {
+      font-size: 14px;
+      color: #555;
+      margin-bottom: 8px;
+    }
+    .inventory span {
+      font-size: 28px;
+      color: var(--azul);
+      font-weight: bold;
+    }
+
+    .status-box {
+      background: #d4edda;
+      color: #155724;
+      padding: 16px;
+      border-radius: 16px;
+      text-align: center;
+      font-weight: 600;
+      margin-bottom: 20px;
+    }
+
+    .option {
+      background: var(--blanco);
+      border: 1px solid #ddd;
+      border-radius: 20px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    }
+    .option h3 {
+      color: var(--azul);
+      font-size: 18px;
+      margin-bottom: 8px;
+    }
+    .option p {
+      color: #666;
+      font-size: 14px;
       margin-bottom: 15px;
     }
-    .header h1 { 
-      font-size: clamp(28px, 6vw, 38px); 
-      font-weight: 700; 
-      margin-bottom: 8px; 
+
+    button {
+      width: 100%;
+      padding: 16px;
+      border: none;
+      border-radius: 50px;
+      font-size: 17px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    button:main {
+      background: var(--azul);
       color: white;
     }
-
-    .content { 
-      padding: 40px 30px; 
-      background: rgba(255,255,255,0.98); 
-      color: var(--azul-univer); 
-      border-radius: 0 0 28px 28px;
+    button:main:hover {
+      background: #002244;
+      transform: translateY(-2px);
     }
-
-    .profile { 
-      background: var(--gris-claro); 
-      padding: 20px; 
-      border-radius: 16px; 
-      text-align: center; 
-      margin-bottom: 25px; 
-      box-shadow: 0 8px 25px rgba(0,0,0,0.1); 
+    button.ticket {
+      background: var(--verde);
+      color: white;
+      margin-top: 15px;
     }
-    .profile h3 { 
-      color: var(--azul-univer); 
-      font-size: 26px; 
-      margin-bottom: 8px; 
+    button.delete {
+      background: var(--rojo);
+      color: white;
+      margin-top: 10px;
     }
-
-    .inventory { 
-      display: flex; 
-      justify-content: space-around; 
-      margin-bottom: 30px; 
-      text-align: center; 
-    }
-    .inventory div { 
-      background: white; 
-      padding: 16px; 
-      border-radius: 14px; 
-      width: 48%; 
-      box-shadow: 0 4px 15px rgba(0,0,0,0.1); 
-    }
-    .inventory span { 
-      font-size: 28px; 
-      font-weight: bold; 
-      color: var(--azul-univer); 
-    }
-
-    .option { 
-      background: white; 
-      padding: 25px; 
-      border-radius: 16px; 
-      margin: 20px 0; 
-      box-shadow: 0 8px 25px rgba(0,0,0,0.12); 
-      transition: transform 0.3s; 
-    }
-    .option:hover { transform: translateY(-6px); }
-
-    button { 
-      width: 100%; 
-      padding: 16px; 
-      background: var(--azul-univer); 
-      color: white; 
-      border: none; 
-      border-radius: 12px; 
-      font-size: 18px; 
-      font-weight: 600; 
-      cursor: pointer; 
-      margin-top: 15px; 
-      transition: all 0.4s; 
-    }
-    button:hover { 
-      background: #002244; 
-      transform: translateY(-4px); 
-      box-shadow: 0 15px 30px rgba(0,31,63,0.4); 
-    }
-    button.delete { background: #dc3545; }
-    button.ticket { background: #001f3f; }
 
     select {
-      width: 48%; 
-      padding: 14px; 
-      margin: 8px 1%; 
-      border-radius: 12px; 
-      border: 2px solid #ddd; 
-      font-size: 16px; 
+      width: 100%;
+      padding: 14px;
+      margin: 10px 0;
+      border-radius: 16px;
+      border: 1px solid #ddd;
+      font-size: 16px;
       background: white;
     }
-    #individualTotal { 
-      text-align: right; 
-      font-size: 26px; 
-      font-weight: bold; 
-      color: var(--azul-univer); 
-      margin: 20px 0; 
+
+    #individualTotal {
+      text-align: right;
+      font-size: 24px;
+      font-weight: bold;
+      color: var(--azul);
+      margin: 15px 0;
     }
 
-    .message { 
-      margin-top: 20px; 
-      padding: 15px; 
-      border-radius: 12px; 
-      text-align: center; 
-      font-weight: 600; 
-      display: none; 
+    .message {
+      margin-top: 15px;
+      padding: 12px;
+      border-radius: 12px;
+      text-align: center;
+      display: none;
     }
     .message.success { background: #d4edda; color: #155724; }
     .message.error { background: #f8d7da; color: #721c24; }
 
     /* TICKET */
-    #ticket { 
-      display: none; 
-      margin: 30px auto; 
-      width: 380px; 
-      background: white; 
-      color: var(--azul-univer); 
-      border-radius: 24px; 
-      overflow: hidden; 
-      box-shadow: 0 20px 50px rgba(0,0,0,0.6); 
-      font-family: 'Bebas Neue', sans-serif; 
-      text-align: center; 
-      position: relative;
+    #ticket {
+      display: none;
+      margin: 20px auto;
+      width: 380px;
+      background: white;
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+      text-align: center;
+      font-family: 'Bebas Neue', sans-serif;
     }
     .ticket-header {
-      background: var(--azul-univer);
+      background: var(--azul);
       padding: 20px;
       color: white;
     }
     .ticket-header img {
-      width: 90px;
-      margin-bottom: 10px;
+      width: 70px;
+      margin-bottom: 8px;
     }
-    .ticket-title { 
-      font-size: 34px; 
+    .ticket-title {
+      font-size: 32px;
+    }
+    .qr-container {
+      background: white;
+      margin: 25px auto;
+      padding: 15px;
+      width: 210px;
+      height: 210px;
+      border-radius: 18px;
+      border: 4px solid var(--azul);
+    }
+    .ticket-code {
+      font-size: 34px;
+      color: var(--azul);
+      letter-spacing: 5px;
+      margin: 15px 0;
+    }
+    .info-row {
+      padding: 10px 25px;
+      display: flex;
+      justify-content: space-between;
+      border-bottom: 1px dashed #ccc;
+      font-size: 16px;
+    }
+    .footer-note {
+      background: var(--azul);
       color: white;
+      padding: 18px;
+      font-size: 15px;
     }
-    .qr-container { 
-      background: white; 
-      margin: 25px auto; 
-      padding: 20px; 
-      width: 220px; 
-      height: 220px; 
-      border-radius: 18px; 
-      border: 3px solid var(--azul-univer);
-    }
-    .ticket-code { 
-      font-size: 36px; 
-      color: var(--azul-univer); 
-      letter-spacing: 6px; 
-      margin: 20px 0; 
+    .download-btn {
+      margin: 20px auto;
+      padding: 14px 40px;
+      background: var(--azul);
+      color: white;
+      border: none;
+      border-radius: 50px;
       font-weight: bold;
     }
-    .info-row { 
-      display: flex; 
-      justify-content: space-between; 
-      padding: 10px 30px; 
-      border-bottom: 1px dashed #ccc; 
-      font-size: 17px; 
+    #backButton {
+      background: white;
+      color: var(--azul);
+      border: 2px solid var(--azul);
+      margin: 10px auto;
+      padding: 14px 40px;
+      border-radius: 50px;
     }
-    .footer-note { 
-      background: var(--azul-univer); 
-      color: white; 
-      padding: 20px; 
-      font-size: 15px; 
-      margin-top: 20px;
-    }
-
-    .download-btn, #backButton {
-      display: block; 
-      margin: 20px auto; 
-      padding: 16px 40px; 
-      background: var(--azul-univer); 
-      color: white; 
-      border: none; 
-      border-radius: 50px; 
-      font-weight: bold; 
-      font-size: 18px; 
-      cursor: pointer; 
-      width: fit-content;
-    }
-    #backButton { 
-      background: white; 
-      color: var(--azul-univer); 
-      border: 2px solid var(--azul-univer); 
-    }
-    #backButton:hover { 
-      background: var(--azul-univer); 
-      color: white; 
+    #backButton:hover {
+      background: var(--azul);
+      color: white;
     }
 
     @media (max-width: 480px) {
-      select { width: 100%; margin: 10px 0; }
+      .container { border-radius: 24px; }
       #ticket { width: 95%; }
-      .qr-container { width: 200px; height: 200px; }
-      #qrCode { width: 160px; height: 160px; }
     }
   </style>
 </head>
@@ -259,7 +280,7 @@
   <div class="container">
     <!-- HEADER CON LOGO -->
     <div class="header">
-      <img src="https://i.ibb.co/5Kp0sG6/univer-milenium-logo.png" alt="Universidad UNIVER MILENIUM" class="logo">
+      <img src="https://i.ibb.co/5Kp0sG6/univer-milenium-logo.png" alt="UNIVER MILENIUM">
       <h1>Graduación 2025</h1>
       <p id="welcome">Cargando...</p>
     </div>
@@ -275,11 +296,7 @@
         <div><h3>Boletos Ceremonia</h3><span id="ceremonyAvailable">200</span></div>
       </div>
 
-      <div id="myPurchases">
-        <div style="background:#e9ecef;padding:20px;border-radius:12px;text-align:center;">
-          <p>Cargando tus compras...</p>
-        </div>
-      </div>
+      <div id="myPurchases"></div>
 
       <div class="option">
         <h3>Paquete Completo • $3,000 MXN</h3>
@@ -290,7 +307,6 @@
       <div class="option">
         <h3>Boletos Individuales</h3>
         <p>Cena: <strong>$1,000</strong> c/u • Ceremonia: <strong>$150</strong> c/u</p>
-        
         <select id="qtyDinner">
           <option value="0">Cena: 0</option>
           <option value="1">Cena: 1 ($1,000)</option>
@@ -304,7 +320,6 @@
           <option value="9">Cena: 9 ($9,000)</option>
           <option value="10">Cena: 10 ($10,000)</option>
         </select>
-        
         <select id="qtyCeremony">
           <option value="0">Ceremonia: 0</option>
           <option value="1">Ceremonia: 1 ($150)</option>
@@ -313,7 +328,6 @@
           <option value="4">Ceremonia: 4 ($600)</option>
           <option value="5">Ceremonia: 5 ($750)</option>
         </select>
-
         <div id="individualTotal">Total: $0 MXN</div>
         <button id="buyIndividual">Comprar Individuales</button>
       </div>
@@ -324,10 +338,10 @@
       <div id="message" class="message"></div>
     </div>
 
-    <!-- TICKET CON LOGO -->
+    <!-- TICKET -->
     <div id="ticket">
       <div class="ticket-header">
-        <img src="https://i.ibb.co/5Kp0sG6/univer-milenium-logo.png" alt="UNIVER MILENIUM" style="width:90px;">
+        <img src="https://i.ibb.co/5Kp0sG6/univer-milenium-logo.png" alt="UNIVER MILENIUM">
         <div class="ticket-title">GRADUACIÓN 2025</div>
       </div>
       <div class="qr-container"><canvas id="qrCode"></canvas></div>
@@ -348,7 +362,7 @@
     </div>
   </div>
 
-  <!-- TODO EL JAVASCRIPT SIN CAMBIOS -->
+  <!-- TU JAVASCRIPT 100% SIN CAMBIOS -->
   <script>
     const userNombre = localStorage.getItem('currentUserNombre') || 'Alumno';
     const userMatricula = localStorage.getItem('currentUserMatricula') || '000000';
@@ -364,7 +378,7 @@
 
     const DB_URL = "https://boletos-66dac-default-rtdb.firebaseio.com/";
     const INVENTORY_URL = DB_URL + "inventory.json";
-    const PURCHASES_URL = DB_URL + `users/${userId}/purchases.json`;
+    const PURCHASES_URL = DB_URL + `users/${userId}/purchases.json`; // Esta es la clave
 
     let compras = [];
     let totalCena = 0;
@@ -393,6 +407,7 @@
         document.getElementById('dinnerAvailable').textContent = inventory.dinner || 200;
         document.getElementById('ceremonyAvailable').textContent = inventory.ceremony || 200;
 
+        // Limpiar variables
         compras = [];
         totalCena = 0;
         totalCeremonia = 0;
@@ -403,9 +418,9 @@
           totalCeremonia = compras.reduce((sum, c) => sum + (c.ceremonia || 0), 0);
 
           document.getElementById('myPurchases').innerHTML = `
-            <div style="background:#d4edda;padding:20px;border-radius:12px;text-align:center;">
-              <h3 style="color:#155724;">¡Ya tienes boletos!</h3>
-              <p><strong>\( {totalCena} Cena + \){totalCeremonia} Ceremonia</strong></p>
+            <div class="status-box">
+              ¡Ya tienes boletos!<br>
+              <strong>\( {totalCena} Cena + \){totalCeremonia} Ceremonia</strong>
             </div>
           `;
 
@@ -413,8 +428,8 @@
           document.getElementById('deleteLast').style.display = 'block';
         } else {
           document.getElementById('myPurchases').innerHTML = `
-            <div style="background:#e9ecef;padding:20px;border-radius:12px;text-align:center;">
-              <p>Aún no has comprado boletos</p>
+            <div class="status-box" style="background:#e9ecef;color:#666;">
+              Aún no has comprado boletos
             </div>
           `;
           document.getElementById('goToTicket').style.display = 'none';
@@ -431,6 +446,7 @@
         const codigo = Math.random().toString(36).substr(2, 9).toUpperCase();
         const compra = { cena, ceremonia, total, codigo, fecha: new Date().toISOString() };
 
+        // Guardar compra
         const res = await fetch(PURCHASES_URL, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -439,6 +455,7 @@
 
         if (!res.ok) throw new Error("Error al guardar compra");
 
+        // Actualizar inventario
         const inv = await (await fetch(INVENTORY_URL)).json() || {dinner: 200, ceremony: 200};
         await fetch(INVENTORY_URL, {
           method: 'PATCH',
@@ -448,6 +465,7 @@
           })
         });
 
+        // Recargar todo
         await loadData();
         showMessage('¡Compra realizada con éxito!', 'success');
 
@@ -530,6 +548,7 @@
       setTimeout(() => msg.style.display = 'none', 4000);
     }
 
+    // INICIALIZACIÓN
     calculateTotal();
     loadData();
 
