@@ -3,286 +3,345 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Lista de Alumnos • Graduación 2025</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Bebas+Neue&display=swap" rel="stylesheet">
+  <title>Panel Admin • Graduación 2025</title>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
   <style>
     :root {
-      --red-dark: #8B0000;
-      --red-main: #c41b2a;
-      --gold: #FFD700;
       --primary: #6366f1;
-      --gray: #f1f5f9;
-      --text: #1e1b4b;
+      --primary-dark: #4f46e5;
+      --secondary: #ec4899;
+      --accent: #f59e0b;
+      --success: #10b981;
+      --error: #ef4444;
+      --text: #1f2937;
+      --light: #f8fafc;
     }
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html, body {
+      height: 100%;
+      width: 100%;
+      overflow-x: hidden;
     }
+
     body {
       font-family: 'Poppins', sans-serif;
-      background: linear-gradient(135deg, #0f172a, #1e293b);
-      color: white;
+      background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+      background-size: 400% 400%;
+      animation: gradientBG 15s ease infinite;
       min-height: 100vh;
-      padding: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px 15px;
+      position: relative;
     }
+
+    @keyframes gradientBG {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
     .container {
-      max-width: 1100px;
-      margin: 0 auto;
-      background: rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.18);
       backdrop-filter: blur(20px);
-      border-radius: 20px;
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      width: 100%;
+      max-width: 1200px;
+      min-height: 80vh;
+      border-radius: 28px;
       overflow: hidden;
-      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+      box-shadow: 0 25px 60px rgba(0,0,0,0.35);
+      position: relative;
+      z-index: 10;
+      animation: appear 1.2s ease-out;
     }
+
+    @keyframes appear {
+      from { opacity: 0; transform: scale(0.85) translateY(60px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
     .header {
-      background: linear-gradient(135deg, var(--red-dark), var(--red-main));
-      padding: 40px;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      padding: 40px 30px;
       text-align: center;
+      color: white;
     }
+
     .header h1 {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 48px;
-      color: var(--gold);
-      text-shadow: 0 4px 20px rgba(0, 0, 0, 0.8);
+      font-size: clamp(28px, 6vw, 38px);
+      font-weight: 700;
+      margin-bottom: 8px;
+      text-shadow: 0 4px 15px rgba(0,0,0,0.4);
     }
+
     .header p {
-      font-size: 18px;
-      margin-top: 10px;
+      font-size: clamp(14px, 3.5vw, 17px);
       opacity: 0.95;
+      font-weight: 300;
     }
+
     .content {
       padding: 40px;
+      background: rgba(255,255,255,0.97);
+      max-height: 70vh;
+      overflow-y: auto;
     }
-    .controls {
+
+    .menu {
+      text-align: center;
       margin-bottom: 30px;
-      text-align: center;
     }
-    select {
-      padding: 14px 20px;
+
+    .menu label {
+      display: block;
+      margin-bottom: 10px;
+      color: #444;
+      font-weight: 600;
       font-size: 18px;
-      border-radius: 12px;
-      border: none;
+    }
+
+    .menu select {
+      width: 100%;
+      max-width: 400px;
+      padding: 16px 18px;
+      border: 2px solid #e2e8f0;
+      border-radius: 16px;
+      font-size: 16px;
       background: white;
-      color: var(--text);
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-      min-width: 300px;
-      cursor: pointer;
+      transition: all 0.4s ease;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.06);
     }
-    select:focus {
+
+    .menu select:focus {
       outline: none;
-      box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.3);
+      border-color: var(--primary);
+      box-shadow: 0 0 0 5px rgba(99, 102, 241, 0.25);
+      transform: translateY(-3px);
     }
-    h3 {
+
+    .stats {
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      color: white;
+      padding: 20px;
+      border-radius: 16px;
       text-align: center;
-      margin: 30px 0 20px;
-      font-size: 26px;
-      color: var(--gold);
+      margin-bottom: 30px;
+      font-size: 18px;
+      font-weight: 600;
     }
+
     table {
       width: 100%;
       border-collapse: collapse;
+      margin-top: 20px;
       background: white;
-      color: var(--text);
       border-radius: 16px;
       overflow: hidden;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.1);
     }
-    th {
-      background: var(--red-main);
-      color: white;
-      padding: 18px;
+
+    th, td {
+      padding: 16px;
       text-align: left;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    th {
+      background: linear-gradient(90deg, var(--primary), var(--secondary));
+      color: white;
       font-weight: 600;
-      font-size: 16px;
+      text-transform: uppercase;
+      font-size: 14px;
+      letter-spacing: 0.5px;
     }
-    td {
-      padding: 16px 18px;
-      border-bottom: 1px solid #eee;
-    }
+
     tr:hover {
-      background: #f8f9fa;
+      background: #f8fafc;
     }
-    .total {
-      text-align: center;
-      margin-top: 30px;
-      font-size: 20px;
-      color: var(--gold);
+
+    .total-boletos {
       font-weight: bold;
+      color: var(--accent);
     }
+
     .no-data {
       text-align: center;
-      padding: 60px;
-      color: #999;
-      font-size: 20px;
+      padding: 40px;
+      color: #666;
+      font-style: italic;
     }
+
     .loader {
       text-align: center;
-      padding: 60px;
-      font-size: 22px;
-      color: var(--gold);
+      padding: 40px;
+      font-size: 18px;
+      color: var(--primary);
     }
+
+    .loader::after {
+      content: '';
+      width: 32px;
+      height: 32px;
+      border: 4px solid #f0f0f0;
+      border-top: 4px solid var(--primary);
+      border-radius: 50%;
+      display: inline-block;
+      animation: spin 0.8s linear infinite;
+      margin-left: 10px;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
     footer {
       text-align: center;
-      padding: 30px;
-      color: rgba(255, 255, 255, 0.7);
-      font-size: 14px;
-      margin-top: 40px;
+      padding: 25px;
+      color: rgba(255,255,255,0.9);
+      font-size: clamp(12px, 3vw, 14px);
+      font-weight: 300;
+      backdrop-filter: blur(10px);
+      background: rgba(0,0,0,0.1);
     }
   </style>
 </head>
 <body>
+
   <div class="container">
     <div class="header">
-      <h1>LISTA DE ALUMNOS REGISTRADOS</h1>
-      <p>Graduación 2025 • Universidad del Milenio</p>
+      <h1>Panel Admin</h1>
+      <p>Estadísticas por Carrera • Graduación 2025</p>
     </div>
+
     <div class="content">
-      <div class="controls">
-        <label for="carreraSelect" style="display:block; margin-bottom:10px; font-size:18px;">
-          Filtrar por carrera:
-        </label>
+      <div class="menu">
+        <label for="carreraSelect">Selecciona una carrera:</label>
         <select id="carreraSelect">
-          <option value="">Todas las carreras</option>
+          <option value="">-- Elige una carrera --</option>
+          <option value="Ingeniería en Sistemas">Ingeniería en Sistemas</option>
+          <option value="Ingeniería Industrial">Ingeniería Industrial</option>
+          <option value="Ingeniería Civil">Ingeniería Civil</option>
+          <option value="Arquitectura">Arquitectura</option>
+          <option value="Derecho">Derecho</option>
+          <option value="Medicina">Medicina</option>
+          <option value="Psicología">Psicología</option>
+          <option value="Administración">Administración</option>
+          <option value="Contaduría">Contaduría</option>
+          <option value="Otra">Otra</option>
         </select>
       </div>
-      <h3 id="tituloTabla">Todos los alumnos registrados</h3>
-      <div id="loader" class="loader">Cargando lista de alumnos...</div>
-      <table id="tablaAlumnos" style="display:none;">
-        <thead>
-          <tr>
-            <th>Matrícula</th>
-            <th>Nombre completo</th>
-            <th>Carrera</th>
-            <th>Correo institucional</th>
-          </tr>
-        </thead>
-        <tbody id="tablaBody"></tbody>
-      </table>
-      <div class="total" id="totalAlumnos">Total: 0 alumnos</div>
+
+      <div id="stats" class="stats" style="display: none;">
+        <p>Inscritos en <span id="selectedCarrera"></span>: <span id="totalInscritos"></span> estudiantes</p>
+      </div>
+
+      <div id="tableContainer">
+        <!-- La tabla se genera dinámicamente aquí -->
+      </div>
     </div>
-    <footer>
-      Sistema de Boletos • Graduación 2025<br>
-      Desarrollado con amor para la mejor generación
-    </footer>
+
+    <footer>© 2025 Graduación • Panel Administrativo</footer>
   </div>
+
   <script>
-    // URL de Firebase (asegúrate de que termine en /users.json)
-    const DB_URL = "https://boletos-66dac-default-rtdb.firebaseio.com/";
+    const DB_URL = "https://boletos-66dac-default-rtdb.firebaseio.com/users.json";
+    const carreraSelect = document.getElementById("carreraSelect");
+    const statsDiv = document.getElementById("stats");
+    const tableContainer = document.getElementById("tableContainer");
+    let allUsers = null;
 
-    const selectCarrera = document.getElementById("carreraSelect");
-    const tablaBody = document.getElementById("tablaBody");
-    const tablaAlumnos = document.getElementById("tablaAlumnos");
-    const loader = document.getElementById("loader");
-    const tituloTabla = document.getElementById("tituloTabla");
-    const totalAlumnos = document.getElementById("totalAlumnos");
-
-    let todosLosAlumnos = [];
-    let conteoCarreras = {};
-
-    // Cargar todos los alumnos y contar por carrera
-    async function cargarAlumnos() {
+    // Cargar todos los usuarios al inicio
+    async function loadUsers() {
       try {
         const res = await fetch(DB_URL);
-        const data = await res.json();
-
-        console.log("Datos recibidos de Firebase:", data); // Depuración
-
-        if (!data) {
-          loader.textContent = "No hay alumnos registrados aún.";
-          return;
-        }
-
-        // Procesar datos de Firebase
-        todosLosAlumnos = Object.entries(data).map(([id, info]) => ({
-          id,
-          matricula: info.matricula || "Sin matrícula",
-          nombre: info.nombre || "Sin nombre",
-          carrera: info.carrera || "No especificada",
-          email: info.email || "Sin correo"
-        })).sort((a, b) => a.nombre.localeCompare(b.nombre));
-
-        console.log("Alumnos procesados:", todosLosAlumnos); // Depuración
-
-        // Contar alumnos por carrera
-        conteoCarreras = {};
-        todosLosAlumnos.forEach(alumno => {
-          if (!conteoCarreras[alumno.carrera]) {
-            conteoCarreras[alumno.carrera] = 0;
-          }
-          conteoCarreras[alumno.carrera]++;
-        });
-
-        console.log("Conteo por carrera:", conteoCarreras); // Depuración
-
-        // Llenar el select con carreras y conteo
-        const carrerasUnicas = [...new Set(todosLosAlumnos.map(a => a.carrera))];
-        selectCarrera.innerHTML = '<option value="">Todas las carreras</option>';
-        carrerasUnicas.forEach(carrera => {
-          const option = document.createElement("option");
-          option.value = carrera;
-          option.textContent = `${carrera} (${conteoCarreras[carrera]})`;
-          selectCarrera.appendChild(option);
-        });
-
-        mostrarAlumnos(todosLosAlumnos);
-        loader.style.display = "none";
-        tablaAlumnos.style.display = "table";
-
+        if (!res.ok) throw new Error("Error al cargar datos");
+        allUsers = await res.json();
       } catch (err) {
-        console.error("Error al cargar los datos:", err);
-        loader.textContent = "Error al cargar los datos. Revisa la consola para más detalles.";
+        console.error("Error:", err);
+        tableContainer.innerHTML = '<div class="no-data">Error al cargar datos de Firebase. Verifica la conexión.</div>';
       }
     }
 
-    // Mostrar alumnos en la tabla
-    function mostrarAlumnos(alumnos) {
-      tablaBody.innerHTML = "";
-
-      if (alumnos.length === 0) {
-        tablaBody.innerHTML = `
-          <tr>
-            <td colspan="4" style="text-align:center; padding:40px; color:#999;">
-              No hay alumnos registrados con esta carrera.
-            </td>
-          </tr>
-        `;
-        totalAlumnos.textContent = "Total: 0 alumnos";
+    // Filtrar y mostrar datos por carrera
+    function showDataByCarrera(carrera) {
+      if (!allUsers || !carrera) {
+        tableContainer.innerHTML = '<div class="no-data">Selecciona una carrera para ver los datos.</div>';
+        statsDiv.style.display = 'none';
         return;
       }
 
-      alumnos.forEach(alumno => {
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-          <td><strong>${alumno.matricula}</strong></td>
-          <td>${alumno.nombre}</td>
-          <td>${alumno.carrera}</td>
-          <td>${alumno.email}</td>
+      const usersInCarrera = Object.values(allUsers).filter(user => user.carrera === carrera);
+      const totalInscritos = usersInCarrera.length;
+
+      document.getElementById("selectedCarrera").textContent = carrera;
+      document.getElementById("totalInscritos").textContent = totalInscritos;
+      statsDiv.style.display = 'block';
+
+      if (totalInscritos === 0) {
+        tableContainer.innerHTML = '<div class="no-data">No hay estudiantes inscritos en esta carrera.</div>';
+        return;
+      }
+
+      let totalBoletosGlobal = 0;
+      let tableHTML = `
+        <table>
+          <thead>
+            <tr>
+              <th>Nombre</th>
+              <th>Matrícula</th>
+              <th>Correo Institucional</th>
+              <th>Boletos Totales</th>
+            </tr>
+          </thead>
+          <tbody>
+      `;
+
+      usersInCarrera.forEach(user => {
+        let totalBoletos = 0;
+        if (user.purchases) {
+          Object.values(user.purchases).forEach(purchase => {
+            totalBoletos += (purchase.cena || 0) + (purchase.ceremonia || 0);
+          });
+        }
+        totalBoletosGlobal += totalBoletos;
+
+        tableHTML += `
+          <tr>
+            <td>${user.nombre || 'N/A'}</td>
+            <td>${user.matricula || 'N/A'}</td>
+            <td>${user.email || 'N/A'}</td>
+            <td class="total-boletos">${totalBoletos}</td>
+          </tr>
         `;
-        tablaBody.appendChild(tr);
       });
 
-      const carreraSeleccionada = selectCarrera.value;
-      tituloTabla.textContent = carreraSeleccionada
-        ? `Alumnos de: ${carreraSeleccionada}`
-        : "Todos los alumnos registrados";
+      tableHTML += `
+          </tbody>
+        </table>
+        <div style="text-align: center; margin-top: 20px; font-size: 18px; font-weight: bold; color: var(--success);">
+          Total de boletos en esta carrera: ${totalBoletosGlobal}
+        </div>
+      `;
 
-      totalAlumnos.textContent = `Total: ${alumnos.length} alumno${alumnos.length !== 1 ? 's' : ''}`;
+      tableContainer.innerHTML = tableHTML;
     }
 
-    // Filtrar por carrera
-    selectCarrera.addEventListener("change", () => {
-      const carrera = selectCarrera.value;
-      if (carrera === "") {
-        mostrarAlumnos(todosLosAlumnos);
-      } else {
-        const filtrados = todosLosAlumnos.filter(a => a.carrera === carrera);
-        mostrarAlumnos(filtrados);
-      }
+    // Event listener para el select
+    carreraSelect.addEventListener("change", (e) => {
+      tableContainer.innerHTML = '<div class="loader">Cargando datos...</div>';
+      setTimeout(() => showDataByCarrera(e.target.value), 500); // Simular carga
     });
 
-    // Iniciar carga de datos
-    cargarAlumnos();
+    // Inicializar
+    loadUsers().then(() => {
+      showDataByCarrera(''); // Mostrar mensaje inicial
+    });
   </script>
 </body>
 </html>
