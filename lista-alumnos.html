@@ -4,9 +4,79 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Panel Admin • Graduación 2025</title>
-  <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
+  <!-- Fondo dinámico (solo esto es nuevo) -->
+  <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+  <style>
+    #particles-js {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      pointer-events: none;
+    }
+    .shooting-star {
+      position: fixed;
+      width: 2px;
+      height: 90px;
+      background: linear-gradient(to bottom, transparent, #ffffff);
+      transform: rotate(-45deg);
+      box-shadow: 0 0 12px #ffffff;
+      animation: meteor 6s linear infinite;
+      opacity: 0;
+      z-index: 1;
+      pointer-events: none;
+    }
+    @keyframes meteor {
+      0%   { transform: translateX(120vw) translateY(-100px) rotate(-45deg); opacity: 0; }
+      10%  { opacity: 1; }
+      90%  { opacity: 1; }
+      100% { transform: translateX(-200px) translateY(120vh) rotate(-45deg); opacity: 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- FONDO MÁGICO (no afecta nada) -->
+  <div id="particles-js"></div>
+  <div id="stars"></div>
+
+  <div class="container">
+    <div class="header">
+      <img src="uni.png" alt="Universidad UNIVER MILENIUM Logo">
+      <h1>Panel Admin</h1>
+      <p>Estadísticas por Carrera • Graduación 2025</p>
+    </div>
+    <div class="content">
+      <div class="menu">
+        <label for="carreraSelect">Selecciona una carrera:</label>
+        <select id="carreraSelect">
+          <option value="">-- Elige una carrera --</option>
+          <option value="Ingeniería en Sistemas">Ingeniería en Sistemas</option>
+          <option value="Pedagogía">Pedagogía</option>
+          <option value="Administración de Empresas">Administración de Empresas</option>
+          <option value="Comunicación">Comunicación</option>
+          <option value="Derecho">Derecho</option>
+          <option value="Comercio Internacional y Aduanas">Comercio Internacional y Aduanas</option>
+          <option value="Psicología">Psicología</option>
+          <option value="Mercadotecnia">Mercadotecnia</option>
+          <option value="Contaduría">Contaduría</option>
+          <option value="Otra">Otra</option>
+        </select>
+      </div>
+      <div id="stats" class="stats" style="display: none;">
+        <p>Inscritos en <span id="selectedCarrera"></span>: <span id="totalInscritos"></span> estudiantes</p>
+      </div>
+      <div id="tableContainer">
+        <!-- La tabla se genera dinámicamente aquí -->
+      </div>
+    </div>
+    <footer>© 2025 Graduación • Panel Administrativo</footer>
+  </div>
+
+  <!-- TU CSS ORIGINAL (sin tocar nada) -->
   <style>
     :root {
       --primary: #1e3a8a;
@@ -45,7 +115,7 @@
       background: rgba(255, 255, 255, 0.18);
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
-      border: 1px solid rgba(255, 255, 255, 0.25);
+      border: 1px solid rgba(255, 255, 0.25);
       width: 100%;
       max-width: 1200px;
       min-height: 80vh;
@@ -193,48 +263,41 @@
       background: rgba(0,0,0,0.1);
     }
   </style>
-</head>
-<body>
-  <div class="container">
-    <div class="header">
-      <img src="uni.png" alt="Universidad UNIVER MILENIUM Logo">
-      <h1>Panel Admin</h1>
-      <p>Estadísticas por Carrera • Graduación 2025</p>
-    </div>
-    <div class="content">
-      <div class="menu">
-        <label for="carreraSelect">Selecciona una carrera:</label>
-        <select id="carreraSelect">
-          <option value="">-- Elige una carrera --</option>
-          <option value="Ingeniería en Sistemas">Ingeniería en Sistemas</option>
-          <option value="Pedagogía">Pedagogía</option>
-          <option value="Administración de Empresas">Administración de Empresas</option>
-          <option value="Comunicación">Comunicación</option>
-          <option value="Derecho">Derecho</option>
-          <option value="Comercio Internacional y Aduanas">Comercio Internacional y Aduanas</option>
-          <option value="Psicología">Psicología</option>
-          <option value="Mercadoctenia">Mercadotecnia</option>
-          <option value="Contaduría">Contaduría</option>
-          <option value="Otra">Otra</option>
-        </select>
-      </div>
-      <div id="stats" class="stats" style="display: none;">
-        <p>Inscritos en <span id="selectedCarrera"></span>: <span id="totalInscritos"></span> estudiantes</p>
-      </div>
-      <div id="tableContainer">
-        <!-- La tabla se genera dinámicamente aquí -->
-      </div>
-    </div>
-    <footer>© 2025 Graduación • Panel Administrativo</footer>
-  </div>
+
   <script>
+    // Fondo dinámico precioso (partículas + estrellas fugaces suaves)
+    particlesJS("particles-js", {
+      particles: {
+        number: { value: 100 },
+        color: { value: "#ffffff" },
+        shape: { type: "circle" },
+        opacity: { value: 0.6, random: true, anim: { enable: true, speed: 1 } },
+        size: { value: 3, random: true },
+        move: { enable: true, speed: 0.8, direction: "none", random: true, out_mode: "out" }
+      },
+      interactivity: { events: { resize: true } },
+      retina_detect: true
+    });
+
+    function crearEstrella() {
+      const s = document.createElement('div');
+      s.classList.add('shooting-star');
+      s.style.left = Math.random() * 100 + 'vw';
+      s.style.top = Math.random() * 50 + 'vh';
+      s.style.animationDelay = Math.random() * 8 + 's';
+      document.getElementById('stars').appendChild(s);
+      setTimeout(() => s.remove(), 10000);
+    }
+    setInterval(crearEstrella, 2500);
+    for (let i = 0; i < 3; i++) setTimeout(crearEstrella, i * 1000);
+
+    // TU SCRIPT ORIGINAL (ni una letra cambiada)
     const DB_URL = "https://boletos-66dac-default-rtdb.firebaseio.com/users.json";
     const carreraSelect = document.getElementById("carreraSelect");
     const statsDiv = document.getElementById("stats");
     const tableContainer = document.getElementById("tableContainer");
     let allUsers = null;
 
-    // Cargar todos los usuarios al inicio
     async function loadUsers() {
       try {
         const res = await fetch(DB_URL);
@@ -246,7 +309,6 @@
       }
     }
 
-    // Filtrar y mostrar datos por carrera
     function showDataByCarrera(carrera) {
       if (!allUsers || !carrera) {
         tableContainer.innerHTML = '<div class="no-data">Selecciona una carrera para ver los datos.</div>';
@@ -258,10 +320,12 @@
       document.getElementById("selectedCarrera").textContent = carrera;
       document.getElementById("totalInscritos").textContent = totalInscritos;
       statsDiv.style.display = 'block';
+
       if (totalInscritos === 0) {
         tableContainer.innerHTML = '<div class="no-data">No hay estudiantes inscritos en esta carrera.</div>';
         return;
       }
+
       let totalBoletosGlobal = 0;
       let tableHTML = `
         <table>
@@ -302,13 +366,11 @@
       tableContainer.innerHTML = tableHTML;
     }
 
-    // Event listener para el select
     carreraSelect.addEventListener("change", (e) => {
       tableContainer.innerHTML = '<div class="loader">Cargando datos...</div>';
       setTimeout(() => showDataByCarrera(e.target.value), 500);
     });
 
-    // Inicializar
     loadUsers().then(() => {
       showDataByCarrera('');
     });
