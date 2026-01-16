@@ -208,7 +208,7 @@
 
     // TU SCRIPT 100% ORIGINAL (ni una coma cambiada)
     const DB_URL = "https://boletos-66dac-default-rtdb.firebaseio.com/users.json";
-    const FECHA_LIMITE = new Date('2025-12-15T23:59:59');
+    const FECHA_LIMITE = new Date('2026-01-17T23:59:59');
     const params = new URLSearchParams(window.location.search);
     const matricula = params.get('mat');
     const codigo = params.get('code')?.toUpperCase();
@@ -250,7 +250,7 @@
         const fechaStr = fechaCompra.toLocaleDateString('es-MX');
         const horaStr = fechaCompra.toLocaleTimeString('es-MX', {hour:'2-digit', minute:'2-digit'});
         if (new Date() > FECHA_LIMITE) {
-          resultDiv.innerHTML = `<div class="expired">BOLETO VENCIDO<br>Expiró el 09/12/2025<br><strong>ACCESO DENEGADO</strong></div>`;
+          resultDiv.innerHTML = `<div class="expired">BOLETO VENCIDO<br>Expiró el 17/01/2026<br><strong>ACCESO DENEGADO</strong></div>`;
           return;
         }
         // BOLETO VÁLIDO → MOSTRAR VERDE + REDIRECCIÓN EN 15 SEGUNDOS
